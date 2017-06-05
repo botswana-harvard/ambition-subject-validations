@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'edc_constants.apps.AppConfig'
+    'edc_base.apps.AppConfig',
     'ambition_subject_validations.apps.AppConfig'
 ]
 
