@@ -1,1 +1,1 @@
-from .adverse_event_validations import AdverseEvent
+from .adverse_event import AdverseEvent
