@@ -3,18 +3,18 @@ from django.test import TestCase
 
 from edc_constants.constants import YES, NO
 
-from .adverse_event_validations import AdverseEvent
+from ..validations import AdverseEvent
 
 
 class TestAdverseEventValidations(TestCase):
 
-    def test_1(self):
+    def test_ae_cause_yes(self):
         options = {
             'ae_cause': YES}
         form = AdverseEvent(cleaned_data=options)
         self.assertTrue(form.clean())
 
-    def test_2(self):
+    def test_ae_cause_no(self):
         options = {
             'ae_cause': NO,
             'ae_cause_other': YES}
