@@ -1,14 +1,13 @@
+from edc_base.modelform_mixins import RequiredFieldValidationMixin
 from edc_constants.constants import OTHER, YES
 
-from ..constants import INFILTRATE_LOCATION
-from ..models import Radiology
-from .form_mixins import SubjectModelFormMixin
 
+class Radiology(RequiredFieldValidationMixin):
 
-class RadiologyForm(SubjectModelFormMixin):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
-        pass
 
         self.required_if(
             YES,
@@ -69,7 +68,3 @@ class RadiologyForm(SubjectModelFormMixin):
             'infarcts',
             field='abnormal_results_reason',
             field_required='if_infarcts_location')
-
-    class Meta:
-        model = Radiology
-        fields = '__all__'

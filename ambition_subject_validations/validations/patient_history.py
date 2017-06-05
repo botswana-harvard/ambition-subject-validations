@@ -1,15 +1,15 @@
+from edc_base.modelform_mixins import (
+    RequiredFieldValidationMixin, Many2ManyModelValidationMixin)
 from edc_constants.constants import YES, NO, OTHER
 
-from ..models import PatientHistory
-from .form_mixins import SubjectModelFormMixin
 
+class PatientHistory(RequiredFieldValidationMixin, Many2ManyModelValidationMixin):
 
-class PatientHistoryForm(SubjectModelFormMixin):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
-        cleaned_data = super().clean()
-
-        condition = cleaned_data.get('first_line_arvs') == (
+        condition = self.cleaned_data.get('first_line_arvs') == (
             'AZT + 3-TC + either EFV or NVP or DTG')
         self.required_if_true(
             condition=condition, field_required='first_line_choice')
@@ -67,7 +67,3 @@ class PatientHistoryForm(SubjectModelFormMixin):
             YES,
             field='other_medications',
             field_required='specify_medications')
-
-    class Meta:
-        model = PatientHistory
-        fields = '__all__'

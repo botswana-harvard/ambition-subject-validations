@@ -1,15 +1,13 @@
+from edc_base.modelform_mixins import RequiredFieldValidationMixin
 from edc_constants.constants import OTHER, POS, YES
 
-from ..constants import BACTERIA
-from ..models import Microbiology
 
-from .form_mixins import SubjectModelFormMixin
+class Microbiology(RequiredFieldValidationMixin):
 
-
-class MicrobiologyForm(SubjectModelFormMixin):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
-
         self.required_if(
             YES,
             field='urine_culture_performed',
@@ -46,7 +44,7 @@ class MicrobiologyForm(SubjectModelFormMixin):
             field_required='blood_culture_organism_other')
 
         self.required_if(
-            BACTERIA,
+            'BACTERIA',
             field='blood_culture_organism',
             field_required='bacteria_identified')
 
@@ -79,7 +77,3 @@ class MicrobiologyForm(SubjectModelFormMixin):
             OTHER,
             field='tissue_biopsy_organism',
             field_required='tissue_biopsy_organism_other')
-
-    class Meta:
-        model = Microbiology
-        fields = '__all__'

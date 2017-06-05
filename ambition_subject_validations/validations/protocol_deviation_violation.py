@@ -1,13 +1,13 @@
+from edc_base.modelform_mixins import RequiredFieldValidationMixin
 from edc_constants.constants import YES, OTHER
 
-from .form_mixins import SubjectModelFormMixin
-from ..models import ProtocolDeviationViolation
 
+class ProtocolDeviationViolation(RequiredFieldValidationMixin):
 
-class ProtocolDeviationViolationForm(SubjectModelFormMixin):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
-
         self.required_if(
             YES,
             field='participant_safety_impact',
@@ -20,7 +20,3 @@ class ProtocolDeviationViolationForm(SubjectModelFormMixin):
             OTHER,
             field='protocol_violation_type',
             field_required='other_protocol_violation_type')
-
-    class Meta:
-        model = ProtocolDeviationViolation
-        fields = '__all__'

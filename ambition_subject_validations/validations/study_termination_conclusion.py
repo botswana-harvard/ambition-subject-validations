@@ -1,11 +1,11 @@
+from edc_base.modelform_mixins import RequiredFieldValidationMixin
 from edc_constants.constants import YES, NOT_APPLICABLE, OTHER
 
-from ..constants import CONSENT_WITHDRAWAL
-from ..models import StudyTerminationConclusion
-from .form_mixins import SubjectModelFormMixin
 
+class StudyTerminationConclusion(RequiredFieldValidationMixin):
 
-class StudyTerminationConclusionForm(SubjectModelFormMixin):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
 
@@ -43,22 +43,18 @@ class StudyTerminationConclusionForm(SubjectModelFormMixin):
             YES,
             field='late_protocol_exclusion',
             field_required='rifampicin_started')
-        
+
         self.required_if(
             OTHER,
             field='first_line_regimen_patients',
             field_required='first_line_regimen_patients_other')
-        
+
         self.required_if(
             OTHER,
             field='second_line_regimen_patients',
             field_required='second_line_regimen_patients_other')
-        
+
         self.required_if(
             NOT_APPLICABLE,
             field='date_arvs_started_or_switched',
             field_required='arvs_delay_reason')
-
-    class Meta:
-        model = StudyTerminationConclusion
-        fields = '__all__'

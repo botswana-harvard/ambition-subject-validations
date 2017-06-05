@@ -1,10 +1,11 @@
 from dateutil.relativedelta import relativedelta
 from django import forms
 
-from ..models import SubjectConsent
 
+class SubjectConsent:
 
-class SubjectConsentForm(forms.ModelForm):
+    def __init__(self, cleaned_data=None):
+        self.cleaned_data = cleaned_data
 
     def clean(self):
         if 'consent_datetime' in self.cleaned_data:
@@ -29,7 +30,3 @@ class SubjectConsentForm(forms.ModelForm):
         except subject_screening.DoesNotExist:
             raise forms.ValidationError(
                 'Complete the Subject screening form before proceeding.')
-
-    class Meta:
-        model = SubjectConsent
-        fields = '__all__'
