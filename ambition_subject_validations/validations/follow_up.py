@@ -14,11 +14,15 @@ class FollowUpForm(RequiredFieldValidationMixin):
             field_required='tb_pulmonary_dx_date',
             cleaned_data=self.cleaned_data)
 
-#         self.required_if(
-#             YES,
-#             field='extra_pulmonary_tb_dx',
-#             field_required='extra_tb_pulmonary_dx_date')
-# 
+        self.required_if(
+            YES,
+            field='extra_pulmonary_tb_dx',
+            field_required='extra_tb_pulmonary_dx_date',
+            cleaned_data=self.cleaned_data)
+        
+        return self.cleaned_data
+
+# # 
 #         self.required_if(
 #             YES,
 #             field='kaposi_sarcoma_dx',
@@ -68,3 +72,5 @@ class FollowUpForm(RequiredFieldValidationMixin):
 #             YES,
 #             field='rifampicin_started',
 #             field_required='rifampicin_start_date')
+
+#         return self.cleaned_data
