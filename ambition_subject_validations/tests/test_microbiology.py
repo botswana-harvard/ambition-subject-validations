@@ -15,5 +15,5 @@ class TestMicrobiologyValidations(TestCase):
 
         cleaned_data = {'urine_culture_performed': YES,
                         'urine_culture_results': 'no_growth'}
-        follow_up = Microbiology(cleaned_data=cleaned_data)
-        self.assertTrue(follow_up.clean())
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
