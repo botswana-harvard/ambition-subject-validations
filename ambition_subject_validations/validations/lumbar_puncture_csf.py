@@ -27,3 +27,5 @@ class LumbarPunctureCSF(RequiredFieldValidationMixin):
  
         self.not_required_if(0, field='csf_wbc_cell_count',
                              field_required='differential_neutrophil_count')
+        
+        return self.cleaned_data
