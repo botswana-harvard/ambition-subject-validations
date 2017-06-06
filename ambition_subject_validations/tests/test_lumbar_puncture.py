@@ -14,7 +14,7 @@ class TestLumbarPunctureValidations(TestCase):
         form = LumbarPunctureCSF(cleaned_data=options)
         self.assertTrue(form.clean())
         
-    def test_ae_cause_no(self):
+    def test_csf_culture_no(self):
         options = {
             'csf_culture': NO,
             'other_csf_culture': YES}
