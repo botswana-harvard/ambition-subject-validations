@@ -1,5 +1,5 @@
 from edc_base.modelform_mixins import RequiredFieldValidationMixin
-from edc_constants.constants import OTHER, POS, YES
+from edc_constants.constants import POS, YES
 
 
 class Microbiology(RequiredFieldValidationMixin):
@@ -14,11 +14,12 @@ class Microbiology(RequiredFieldValidationMixin):
             field_required='urine_culture_results',
             cleaned_data=self.cleaned_data)
 
-#         self.required_if(
-#             POS,
-#             field='urine_culture_results',
-#             field_required='urine_culture_organism')
-# 
+        self.required_if(
+            POS,
+            field='urine_culture_results',
+            field_required='urine_culture_organism',
+            cleaned_data=self.cleaned_data)
+
 #         self.required_if(
 #             OTHER,
 #             field='urine_culture_organism',
