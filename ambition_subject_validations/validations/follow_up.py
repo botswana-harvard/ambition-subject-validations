@@ -2,7 +2,7 @@ from edc_base.modelform_mixins import RequiredFieldValidationMixin
 from edc_constants.constants import YES, NO
 
 
-class FollowUpForm(RequiredFieldValidationMixin):
+class FollowUp(RequiredFieldValidationMixin):
 
     def __init__(self, cleaned_data=None):
         self.cleaned_data = cleaned_data
