@@ -43,16 +43,18 @@ class Microbiology(RequiredFieldValidationMixin):
             field='blood_culture_results',
             field_required='blood_culture_organism',
             cleaned_data=self.cleaned_data)
-# 
-#         self.required_if(
-#             OTHER,
-#             field='blood_culture_organism',
-#             field_required='blood_culture_organism_other')
-# 
-#         self.required_if(
-#             'BACTERIA',
-#             field='blood_culture_organism',
-#             field_required='bacteria_identified')
+
+        self.required_if(
+            OTHER,
+            field='blood_culture_organism',
+            field_required='blood_culture_organism_other',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            'BACTERIA',
+            field='blood_culture_organism',
+            field_required='bacteria_identified',
+            cleaned_data=self.cleaned_data)
 # 
 #         self.required_if(
 #             OTHER,

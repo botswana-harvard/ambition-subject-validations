@@ -110,4 +110,41 @@ class TestMicrobiologyValidations(TestCase):
         microbilogy = Microbiology(cleaned_data=cleaned_data)
         self.assertTrue(microbilogy.clean())
 
+    def test_other_blood_culture_organism_require_culture_organism_other(self):
+        cleaned_data = {'blood_culture_organism': OTHER,
+                        'blood_culture_organism_other': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'blood_culture_organism': OTHER,
+                        'blood_culture_organism_other': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'blood_culture_organism': OTHER,
+                        'blood_culture_organism_other': 'other organism'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+    def test_blood_organism_is_bacteria_require_bacteria_identified(self):
+        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+                        'bacteria_identified': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+                        'bacteria_identified': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+                        'bacteria_identified': 'staphylococus_aureus'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+                        'bacteria_identified': OTHER}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
 
