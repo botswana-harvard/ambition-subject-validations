@@ -147,4 +147,106 @@ class TestMicrobiologyValidations(TestCase):
         microbilogy = Microbiology(cleaned_data=cleaned_data)
         self.assertTrue(microbilogy.clean())
 
+    def test_other_bacteria_identified_require_bacteria_identified_other(self):
+        cleaned_data = {'bacteria_identified': OTHER,
+                        'bacteria_identified_other': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'bacteria_identified': OTHER,
+                        'bacteria_identified_other': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'bacteria_identified': OTHER,
+                        'bacteria_identified_other': 'other_bacteria'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+    def test_pos_sputum_results_culture_require_sputum_results_positive(self):
+        cleaned_data = {'sputum_results_culture': POS,
+                        'sputum_results_positive': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'sputum_results_culture': POS,
+                        'sputum_results_positive': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'sputum_results_culture': POS,
+                        'sputum_results_positive': 'Value results_positive'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+    def test_tissue_biopsy_taken_require_tissue_biopsy_results(self):
+        cleaned_data = {'tissue_biopsy_taken': YES,
+                        'tissue_biopsy_results': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_taken': YES,
+                        'tissue_biopsy_results': 'no_growth'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+        cleaned_data = {'tissue_biopsy_taken': NO,
+                        'tissue_biopsy_results': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+        cleaned_data = {'tissue_biopsy_taken': NO,
+                        'tissue_biopsy_results': 'no_growth'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+    def test_pos_tissue_biopsy_results_require_date_biopsy_taken(self):
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'date_biopsy_taken': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'date_biopsy_taken': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'date_biopsy_taken': get_utcnow()}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+    def test_pos_tissue_biopsy_results_require_tissue_biopsy_organism(self):
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'tissue_biopsy_organism': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'tissue_biopsy_organism': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'tissue_biopsy_organism': 'cryptococcus_neoformans'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+    def test_other_tissue_biopsy_org_require_tissue_biopsy_org_other(self):
+        cleaned_data = {'tissue_biopsy_organism': OTHER,
+                        'tissue_biopsy_organism_other': None}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_organism': OTHER,
+                        'tissue_biopsy_organism_other': NOT_APPLICABLE}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, microbilogy.clean)
+
+        cleaned_data = {'tissue_biopsy_organism': OTHER,
+                        'tissue_biopsy_organism_other': 'tissue organism'}
+        microbilogy = Microbiology(cleaned_data=cleaned_data)
+        self.assertTrue(microbilogy.clean())
+
+
 

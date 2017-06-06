@@ -55,36 +55,41 @@ class Microbiology(RequiredFieldValidationMixin):
             field='blood_culture_organism',
             field_required='bacteria_identified',
             cleaned_data=self.cleaned_data)
-# 
-#         self.required_if(
-#             OTHER,
-#             field='bacteria_identified',
-#             field_required='bacteria_identified_other')
-# 
-#         self.required_if(
-#             POS,
-#             field='sputum_results_culture',
-#             field_required='sputum_results_positive')
-# 
-#         self.required_if(
-#             YES,
-#             field='tissue_biopsy_taken',
-#             field_required='tissue_biopsy_results')
-# 
-#         self.required_if(
-#             POS,
-#             field='tissue_biopsy_results',
-#             field_required='date_biopsy_taken')
-# 
-#         self.required_if(
-#             POS,
-#             field='tissue_biopsy_results',
-#             field_required='tissue_biopsy_organism')
-# 
-#         self.required_if(
-#             OTHER,
-#             field='tissue_biopsy_organism',
-#             field_required='tissue_biopsy_organism_other')
+
+        self.required_if(
+            OTHER,
+            field='bacteria_identified',
+            field_required='bacteria_identified_other',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            POS,
+            field='sputum_results_culture',
+            field_required='sputum_results_positive',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            YES,
+            field='tissue_biopsy_taken',
+            field_required='tissue_biopsy_results',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            POS,
+            field='tissue_biopsy_results',
+            field_required='date_biopsy_taken',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            POS,
+            field='tissue_biopsy_results',
+            field_required='tissue_biopsy_organism',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            OTHER,
+            field='tissue_biopsy_organism',
+            field_required='tissue_biopsy_organism_other',
+            cleaned_data=self.cleaned_data)
 
         return self.cleaned_data
- 
