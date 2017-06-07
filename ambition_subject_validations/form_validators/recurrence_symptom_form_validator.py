@@ -1,11 +1,8 @@
-from edc_base.modelform_mixins import RequiredFieldValidationMixin
+from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import OTHER, YES
 
 
-class RecurrenceSymptom(RequiredFieldValidationMixin):
-
-    def __init__(self, cleaned_data=None):
-        self.cleaned_data = cleaned_data
+class RecurrenceSymptomFormValidator(FormValidator):
 
     def clean(self):
 
@@ -48,3 +45,5 @@ class RecurrenceSymptom(RequiredFieldValidationMixin):
             YES,
             field='on_arvs',
             field_required='arv_date')
+
+        return self.cleaned_data
