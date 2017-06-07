@@ -1,5 +1,5 @@
 from edc_base.modelform_mixins import RequiredFieldValidationMixin
-from edc_constants.constants import YES, NOT_APPLICABLE, OTHER
+from edc_constants.constants import YES
 
 
 class StudyTerminationConclusion(RequiredFieldValidationMixin):
@@ -15,15 +15,17 @@ class StudyTerminationConclusion(RequiredFieldValidationMixin):
             field_required='date_initial_discharge',
             cleaned_data=self.cleaned_data)
 
-#         self.required_if(
-#             YES,
-#             field='readmission_after_initial_discharge',
-#             field_required='date_readmission')
-# 
-#         self.required_if(
-#             'withdrawal_of_subject_consent',
-#             field='termination_reason',
-#             field_required='consent_withdrawal_reason')
+        self.required_if(
+            YES,
+            field='readmission_after_initial_discharge',
+            field_required='date_readmission',
+            cleaned_data=self.cleaned_data)
+
+        self.required_if(
+            'withdrawal_of_subject_consent',
+            field='termination_reason',
+            field_required='consent_withdrawal_reason',
+            cleaned_data=self.cleaned_data)
 # 
 #         self.required_if(
 #             YES,
