@@ -10,50 +10,35 @@ from ..form_validators import StudyTerminationConclusionFormValidator
 
 class TestStudyTerminationConclusionFormValidator(TestCase):
 
-    def test_discharged_after_initial_admission_require_date_discharged(self):
+    def test_yes_discharged_after_initial_admission_none_date_discharged(self):
         cleaned_data = {'discharged_after_initial_admission': YES,
                         'date_initial_discharge': None}
         form = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-        cleaned_data = {'discharged_after_initial_admission': YES,
-                        'date_initial_discharge': get_utcnow}
-        form = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertTrue(form.clean())
-
-        cleaned_data = {'discharged_after_initial_admission': NO,
-                        'date_initial_discharge': None}
-        form = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertTrue(form.clean())
-
+    def test_no_discharged_after_initial_admission_with_date_discharged(self):
         cleaned_data = {'discharged_after_initial_admission': NO,
                         'date_initial_discharge': get_utcnow}
         form = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-    def test_readmission_require_readmission_date(self):
+    def test_yes_readmission_none_readmission_date(self):
         cleaned_data = {'readmission_after_initial_discharge': YES,
                         'date_readmission': None}
         form = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-        cleaned_data = {'readmission_after_initial_discharge': YES,
-                        'date_readmission': get_utcnow}
-        form = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertTrue(form.clean())
-
+    def test_no_readmission_none_readmission_date(self):
         cleaned_data = {'readmission_after_initial_discharge': NO,
                         'date_readmission': None}
         form = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertTrue(form.clean())
 
+    def test_no_readmission_with_readmission_date(self):
         cleaned_data = {'readmission_after_initial_discharge': NO,
                         'date_readmission': get_utcnow}
         form = StudyTerminationConclusionFormValidator(
@@ -70,18 +55,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-        cleaned_data = {'termination_reason': 'withdrawal_of_subject_consent',
-                        'consent_withdrawal_reason': 'reason is given'}
-        form = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertTrue(form.clean())
-
-        cleaned_data = {'termination_reason': '10_weeks_completed_followUp',
-                        'consent_withdrawal_reason': None}
-        form = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertTrue(form.clean())
-
+    def test_non_consent_termination_reason(self):
         cleaned_data = {'termination_reason': '10_weeks_completed_followUp',
                         'consent_withdrawal_reason': 'reason is given'}
         form = StudyTerminationConclusionFormValidator(
