@@ -5,7 +5,9 @@ from edc_consent.modelform_mixins import RequiresConsentModelFormMixin
 from edc_consent.site_consents import site_consents
 from edc_visit_tracking.form_mixins import VisitFormMixin
 
-from ..models import SubjectVisit
+from ambition_subject.models import SubjectVisit
+
+# FIXME: WHY is this here?????
 
 
 class SubjectVisitForm (VisitFormMixin, RequiresConsentModelFormMixin,
@@ -31,7 +33,3 @@ class SubjectVisitForm (VisitFormMixin, RequiresConsentModelFormMixin,
                     consent_object.model._meta.verbose_name,
                     report_datetime=report_datetime.strftime('Y%-%m-%d %Z')))
         return obj
-
-    class Meta:
-        model = SubjectVisit
-        fields = '__all__'

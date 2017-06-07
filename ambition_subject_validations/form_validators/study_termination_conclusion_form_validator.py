@@ -4,28 +4,25 @@ from edc_constants.constants import YES
 
 class StudyTerminationConclusionFormValidator(FormValidator):
 
-    def __init__(self, cleaned_data=None):
-        self.cleaned_data = cleaned_data
-
     def clean(self):
 
         self.required_if(
             YES,
             field='discharged_after_initial_admission',
             field_required='date_initial_discharge',
-            cleaned_data=self.cleaned_data)
+        )
 
         self.required_if(
             YES,
             field='readmission_after_initial_discharge',
             field_required='date_readmission',
-            cleaned_data=self.cleaned_data)
+        )
 
         self.required_if(
             'withdrawal_of_subject_consent',
             field='termination_reason',
             field_required='consent_withdrawal_reason',
-            cleaned_data=self.cleaned_data)
+        )
 #
 #         self.required_if(
 #             YES,
