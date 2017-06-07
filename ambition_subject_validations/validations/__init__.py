@@ -4,3 +4,6 @@ from .follow_up import FollowUp
 from .lumbar_puncture_csf import LumbarPunctureCSF
 from .microbiology import Microbiology
 from .patient_history import PatientHistory
+from .protocol_deviation_violation import ProtocolDeviationViolation
+from .radiology import Radiology
+from .study_termination_conclusion import StudyTerminationConclusion
