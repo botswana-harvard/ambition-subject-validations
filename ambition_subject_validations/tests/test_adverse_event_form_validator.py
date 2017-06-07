@@ -6,7 +6,7 @@ from edc_constants.constants import YES, NO, UNKNOWN
 from ..form_validators import AdverseEventFormValidator
 
 
-class TestAdverseEventFormValidatorValidations(TestCase):
+class TestAdverseEventFormValidator(TestCase):
 
     def test_ae_cause_yes(self):
         options = {

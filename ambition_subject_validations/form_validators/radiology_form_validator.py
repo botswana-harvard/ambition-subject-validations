@@ -1,14 +1,10 @@
-from edc_base.modelform_mixins import RequiredFieldValidationMixin
+from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import OTHER, YES
 
 
-class Radiology(RequiredFieldValidationMixin):
-
-    def __init__(self, cleaned_data=None):
-        self.cleaned_data = cleaned_data
+class RadiologyFormValidator(FormValidator):
 
     def clean(self):
-
         self.required_if(
             YES,
             field='is_cxr_done',
@@ -80,4 +76,5 @@ class Radiology(RequiredFieldValidationMixin):
             field='abnormal_results_reason',
             field_required='if_infarcts_location',
             cleaned_data=self.cleaned_data)
+
         return self.cleaned_data

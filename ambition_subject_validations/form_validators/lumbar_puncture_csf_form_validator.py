@@ -1,13 +1,9 @@
 from django import forms
 
 from edc_constants.constants import YES
-from edc_base.modelform_mixins import RequiredFieldValidationMixin
 
 
-class LumbarPunctureCSF(RequiredFieldValidationMixin):
-
-    def __init__(self, cleaned_data=None):
-        self.cleaned_data = cleaned_data
+class LumbarPunctureCSFFormValidator():
 
     def clean(self):
 

@@ -7,7 +7,7 @@ from edc_base.utils import get_utcnow
 from ..form_validators import FollowUpFormValidator
 
 
-class TestFollowUpFormValidatorFormValidators(TestCase):
+class TestFollowUpFormValidator(TestCase):
 
     def test_tb_pulmonary_dx_yes_require_tb_pulmonary_dx_date(self):
         cleaned_data = {'tb_pulmonary_dx': YES,

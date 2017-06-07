@@ -1,8 +1,8 @@
-from edc_base.modelform_mixins import RequiredFieldValidationMixin
+from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import YES, OTHER
 
 
-class ProtocolDeviationViolation(RequiredFieldValidationMixin):
+class ProtocolDeviationViolationFormValidator(FormValidator):
 
     def __init__(self, cleaned_data=None):
         self.cleaned_data = cleaned_data

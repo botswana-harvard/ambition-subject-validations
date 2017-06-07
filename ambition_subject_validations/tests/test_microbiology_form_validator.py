@@ -8,7 +8,7 @@ from ..form_validators import MicrobiologyFormValidator
 
 
 @tag('microbiology')
-class TestMicrobiologyFormValidatorValidations(TestCase):
+class TestMicrobiologyFormValidator(TestCase):
 
     def test_urine_culture_performed_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': YES,
