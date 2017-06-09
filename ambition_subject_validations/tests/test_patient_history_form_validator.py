@@ -26,7 +26,8 @@ class TestPatientHistoryFormValidator(TestCase):
     def test_if_focal_neurological_deficit_yes(self):
         """Assert that patient has focal neurological deficit
         """
-        options = {'neurological': YES, 'focal_neurologic_deficit': 'meningismus', 'first_line_choice': 'EFV'}
+        options = {'neurological': YES, 'focal_neurologic_deficit': 'meningismus',
+                   'first_line_choice': 'EFV'}
         form = PatientHistoryFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
