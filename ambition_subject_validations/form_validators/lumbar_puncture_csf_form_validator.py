@@ -9,8 +9,7 @@ class LumbarPunctureCSFFormValidator(FormValidator):
 
         self.required_if(
             YES, field='csf_culture',
-            field_required='other_csf_culture',
-            cleaned_data=self.cleaned_data)
+            field_required='other_csf_culture')
 
         if self.cleaned_data.get('csf_wbc_cell_count'):
             if (self.cleaned_data.get('csf_wbc_cell_count') > 0
@@ -21,12 +20,10 @@ class LumbarPunctureCSFFormValidator(FormValidator):
 
         self.not_required_if(
             0, field='csf_wbc_cell_count',
-            field_required='differential_lymphocyte_count',
-            cleaned_data=self.cleaned_data)
+            field_required='differential_lymphocyte_count')
 
         self.not_required_if(
             0, field='csf_wbc_cell_count',
-            field_required='differential_neutrophil_count',
-            cleaned_data=self.cleaned_data)
+            field_required='differential_neutrophil_count')
 
         return self.cleaned_data

@@ -8,32 +8,27 @@ class MicrobiologyFormValidator(FormValidator):
         self.required_if(
             YES,
             field='urine_culture_performed',
-            field_required='urine_culture_results',
-        )
+            field_required='urine_culture_results')
 
         self.required_if(
             POS,
             field='urine_culture_results',
-            field_required='urine_culture_organism',
-        )
+            field_required='urine_culture_organism')
 
         self.required_if(
             OTHER,
             field='urine_culture_results',
-            field_required='urine_culture_organism_other',
-        )
+            field_required='urine_culture_organism_other')
 
         self.required_if(
             YES,
             field='blood_culture_performed',
-            field_required='blood_culture_results',
-        )
+            field_required='blood_culture_results')
 
         self.required_if(
             POS,
             field='blood_culture_results',
-            field_required='date_blood_taken',
-        )
+            field_required='date_blood_taken')
 
         self.required_if(
             POS,
