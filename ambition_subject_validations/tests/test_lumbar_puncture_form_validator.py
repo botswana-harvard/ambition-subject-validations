@@ -9,12 +9,9 @@ from ..form_validators import LumbarPunctureCSFFormValidator
 class TestLumbarPunctureFormValidator(TestCase):
 
     def test_csf_culture_yes(self):
-        cleaned_data = {'csf_culture': YES, 'other_csf_culture': NO}
+        cleaned_data = {'csf_culture': YES, 'other_csf_culture': None}
         form = LumbarPunctureCSFFormValidator(cleaned_data=cleaned_data)
-        try:
-            form.clean()
-        except form.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got {e}')
+        self.assertRaises(ValidationError, form.clean)
 
     def test_csf_culture_no(self):
         options = {'csf_culture': NO, 'other_csf_culture': YES}
