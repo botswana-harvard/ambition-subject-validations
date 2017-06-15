@@ -1,5 +1,5 @@
 from .adverse_event_form_validator import AdverseEventFormValidator
-from .death import Death
+from .death_form_validator import DeathFormValidator
 from .follow_up_form_validator import FollowUpFormValidator
 from .lumbar_puncture_csf_form_validator import LumbarPunctureCSFFormValidator
 from .microbiology_form_validator import MicrobiologyFormValidator
