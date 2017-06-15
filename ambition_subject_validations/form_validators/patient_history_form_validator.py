@@ -8,12 +8,12 @@ class PatientHistoryFormValidator(FormValidator):
         condition = self.cleaned_data.get('first_line_arvs') == (
             'AZT + 3-TC + either EFV or NVP or DTG')
         self.required_if_true(
-            condition=condition, field_required='first_line_choice',
-            cleaned_data=self.cleaned_data)
+            condition=condition, field_required='first_line_choice')
 
         self.m2m_required_if(response='focal_neurologic_deficit',
                              field='focal_neurologic_deficit',
-                             m2m_field='neurological')
+                             m2m_field='neurological',
+                             cleaned_data=self.cleaned_data)
 
         self.required_if(
             YES,
