@@ -5,3 +5,4 @@ class Validation:
         self.cleaned_data = cleaned_data
 
     def clean(self):
+        pass
