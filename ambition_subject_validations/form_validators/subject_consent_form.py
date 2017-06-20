@@ -12,7 +12,6 @@ class SubjectConsentFormValidator(FormValidator):
                 raise forms.ValidationError(
                     'Please indicate the consent datetime.')
         self.validate_age_with_screening(self.cleaned_data)
-        self.validate_gender_with_screening(self.cleaned_data)
 
         return self.cleaned_data
 
@@ -28,20 +27,6 @@ class SubjectConsentFormValidator(FormValidator):
                     {'dob':
                      'The date of birth entered does not match the age at '
                      'screening.'})
-        except subject_screening.DoesNotExist:
-            raise forms.ValidationError(
-                'Complete the Subject screening form before proceeding.')
-
-    def validate_gender_with_screening(self, cleaned_data):
-        subject_screening = cleaned_data.get(
-            'subject_screening')
-        consent_gender = cleaned_data.get('gender')
-        try:
-            if subject_screening.gender != cleaned_data.get('gender'):
-                raise forms.ValidationError(
-                    {'gender':
-                     f'Gender mismatch, Screening gender: {subject_screening.gender}, '
-                     f'Consent gender: {consent_gender}'})
         except subject_screening.DoesNotExist:
             raise forms.ValidationError(
                 'Complete the Subject screening form before proceeding.')

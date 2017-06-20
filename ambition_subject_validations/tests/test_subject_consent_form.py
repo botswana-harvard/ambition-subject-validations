@@ -19,29 +19,23 @@ class SubjectScreening(BaseUuidModel):
 
     age_in_years = models.IntegerField()
 
-    gender = models.CharField(max_length=10)
-    pass
-
 
 class TestSubjectConsentForm(TestCase):
 
     def setUp(self):
         self.subject_screening = SubjectScreening()
         self.subject_screening.age_in_years = 20
-        self.subject_screening.gender = 'Female'
 
     def test_no_subject_screening_invalid(self):
         cleaned_data = {'consent_datetime': None,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Female'}
+                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, subject_consent.clean)
 
         cleaned_data = {'consent_datetime': get_utcnow(),
                         'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Female'}
+                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
 
@@ -53,16 +47,14 @@ class TestSubjectConsentForm(TestCase):
     def test_consent_datetime_not_provided_invalid(self):
         cleaned_data = {'consent_datetime': None,
                         'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Female'}
+                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, subject_consent.clean)
 
         cleaned_data = {'consent_datetime': get_utcnow(),
                         'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Female'}
+                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
 
@@ -74,37 +66,14 @@ class TestSubjectConsentForm(TestCase):
     def test_consent_age_mismatch_with_screening_age_invalid(self):
         cleaned_data = {'consent_datetime': get_utcnow(),
                         'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=18)).date(),
-                        'gender': 'Female'}
+                        'dob': (get_utcnow() - relativedelta(years=18)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, subject_consent.clean)
 
         cleaned_data = {'consent_datetime': get_utcnow(),
                         'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Female'}
-        subject_consent = SubjectConsentFormValidator(
-            cleaned_data=cleaned_data)
-
-        try:
-            subject_consent.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_consent_gender_mismatch_with_screening_age_invalid(self):
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=18)).date(),
-                        'gender': 'Female'}
-        subject_consent = SubjectConsentFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, subject_consent.clean)
-
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date(),
-                        'gender': 'Male'}
+                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
         subject_consent = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
 
