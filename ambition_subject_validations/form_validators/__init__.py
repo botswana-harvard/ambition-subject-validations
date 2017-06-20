@@ -9,3 +9,4 @@ from .protocol_deviation_violation_form_validator import ProtocolDeviationViolat
 from .radiology_form_validator import RadiologyFormValidator
 from .recurrence_symptom_form_validator import RecurrenceSymptomFormValidator
 from .study_termination_conclusion_form_validator import StudyTerminationConclusionFormValidator
+from .subject_consent_form import SubjectConsentFormValidator
