@@ -5,15 +5,16 @@ from edc_constants.constants import YES, NO, OTHER
 class PatientHistoryFormValidator(FormValidator):
 
     def clean(self):
-        condition = self.cleaned_data.get('first_line_arvs') == (
-            'AZT + 3-TC + either EFV or NVP or DTG')
-        self.required_if_true(
-            condition=condition, field_required='first_line_choice')
+        if self.cleaned_data.get('arv_regimen'):
+            first_line = ('EFZ', 'NVP', 'DTG')
+            condition = False
+            for a in first_line:
+                if a in self.cleaned_data.get('arv_regimen'):
+                    condition = True
 
-        self.m2m_required_if(response='focal_neurologic_deficit',
-                             field='focal_neurologic_deficit',
-                             m2m_field='neurological',
-                             cleaned_data=self.cleaned_data)
+            self.required_if_true(
+                condition=condition,
+                field_required='first_line_choice')
 
         self.required_if(
             YES,
@@ -47,22 +48,12 @@ class PatientHistoryFormValidator(FormValidator):
 
         self.required_if(
             OTHER,
-            field='first_line_arvs',
-            field_required='first_line_arvs_other')
-
-        self.required_if(
-            OTHER,
-            field='second_line_arvs',
-            field_required='second_line_arvs_other')
+            field='arv_regimen',
+            field_required='arv_regimen_other')
 
         self.required_if(
             NO,
             field='patient_adherence',
             field_required='last_dose')
-
-        self.required_if(
-            YES,
-            field='other_medications',
-            field_required='specify_medications')
 
         return self.cleaned_data
