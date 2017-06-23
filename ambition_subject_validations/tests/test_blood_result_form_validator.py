@@ -44,39 +44,3 @@ class TestAdverseEventFormValidator(TestCase):
             blood_form.clean()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_magnesium_mmol_unit_decimal_invalid(self):
-        options = {
-            'magnesium_unit': 'mmol/L',
-            'magnesium': '346.12'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, blood_form.clean)
-
-    def test_magnesium_mmol_unit_decimal_valid(self):
-        options = {
-            'magnesium_unit': 'mmol/L',
-            'magnesium': '346'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-
-        try:
-            blood_form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_urea_mmol_unit_decimal_invalid(self):
-        options = {
-            'urea_unit': 'mmol/L',
-            'urea': '346.12'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, blood_form.clean)
-
-    def test_urea_mmol_unit_decimal_valid(self):
-        options = {
-            'urea_unit': 'mmol/L',
-            'urea': '346'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-
-        try:
-            blood_form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
