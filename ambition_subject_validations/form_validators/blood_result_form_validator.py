@@ -37,4 +37,4 @@ class BloodResultFormValidator(FormValidator):
         if ((field_unit == 'μmol/L' or field_unit == 'mmol/L')
                 and len(str(self.cleaned_data.get(field)).split('.')) == 2):
             raise ValidationError({
-                field: 'Please provide a whole number for mmol/L units'})
+                field: 'Please provide a whole number for mmol/L or μmol/L units'})
