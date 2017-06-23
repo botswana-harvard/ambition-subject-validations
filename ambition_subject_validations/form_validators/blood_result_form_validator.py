@@ -34,6 +34,6 @@ class BloodResultFormValidator(FormValidator):
         return self.cleaned_data
 
     def validate_non_decimal_values(self, field=None, field_unit=None):
-        if (field_unit == 'mmol/L' and str(field).split('.')[1] != '00'):
+        if ((field_unit == 'μmol/L' or field_unit == 'mmol/L') and str(field).split('.')[1] != '00'):
             raise ValidationError({
                 field: 'Please provide a whole number for mmol/L units'})

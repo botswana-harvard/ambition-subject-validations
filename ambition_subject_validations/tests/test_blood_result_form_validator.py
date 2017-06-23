@@ -29,14 +29,14 @@ class TestAdverseEventFormValidator(TestCase):
 
     def test_creatinine_mmol_unit_decimal_invalid(self):
         options = {
-            'creatinine_unit': 'mmol/L',
-            'creatinine': 346.12}
+            'creatinine_unit': 'μmol/L',
+            'creatinine': '346.12'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, blood_form.clean)
 
     def test_creatinine_mmol_unit_decimal_valid(self):
         options = {
-            'creatinine_unit': 'mmol/L',
+            'creatinine_unit': 'μmol/L',
             'creatinine': '346.00'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
 
@@ -48,7 +48,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_magnesium_mmol_unit_decimal_invalid(self):
         options = {
             'magnesium_unit': 'mmol/L',
-            'magnesium': 346.12}
+            'magnesium': '346.12'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, blood_form.clean)
 
@@ -66,7 +66,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_urea_mmol_unit_decimal_invalid(self):
         options = {
             'urea_unit': 'mmol/L',
-            'urea': 346.12}
+            'urea': '346.12'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, blood_form.clean)
 
