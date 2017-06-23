@@ -67,8 +67,28 @@ class TestLumbarPunctureFormValidator(TestCase):
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
-    def differential_neutrophil_count_not_required(self):
+    def test_differential_neutrophil_count_not_required(self):
         options = {
             'csf_wbc_cell_count': 2, 'differential_neutrophil_count': None}
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
+
+    def test_csf_cr_ag_no_csf_cr_ag_lfa_invalid(self):
+        """Assert that the csf wbc count greater than 0.
+        """
+        options = {'csf_cr_ag': 'not_done',
+                   'csf_cr_ag_lfa': YES}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_csf_cr_ag_csf_cr_ag_lfa_valid(self):
+        """Assert that the csf wbc count greater than 0.
+        """
+        options = {'csf_cr_ag': 'Positive',
+                   'not_done': None}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')

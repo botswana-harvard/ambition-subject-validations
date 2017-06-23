@@ -39,6 +39,10 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             field_required='differential_neutrophil_count',
             cleaned_data=self.cleaned_data)
 
+        self.not_required_if(
+            'not_done', field='csf_cr_ag',
+            field_required='csf_cr_ag_lfa')
+
         return self.cleaned_data
 
     def only_required_if(self, *responses, field=None, field_required=None,
