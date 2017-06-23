@@ -34,8 +34,8 @@ class TestLumbarPunctureFormValidator(TestCase):
     def test_india_ink_csf_arg_not_done_invalid(self):
         """Assert that the csf wbc count greater than 0.
         """
-        options = {'csf_cr_ag': 'Not Done',
-                   'india_ink': 'Not Done'}
+        options = {'csf_cr_ag': 'not_done',
+                   'india_ink': 'not_done'}
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 

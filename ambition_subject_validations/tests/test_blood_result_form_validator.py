@@ -29,14 +29,14 @@ class TestAdverseEventFormValidator(TestCase):
 
     def test_creatinine_mmol_unit_decimal_invalid(self):
         options = {
-            'creatinine_unit': 'μmol/L',
+            'creatinine_unit': 'umol/L',
             'creatinine': '346.12'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, blood_form.clean)
 
     def test_creatinine_mmol_unit_decimal_valid(self):
         options = {
-            'creatinine_unit': 'μmol/L',
+            'creatinine_unit': 'umol/L',
             'creatinine': '346'}
         blood_form = BloodResultFormValidator(cleaned_data=options)
 
