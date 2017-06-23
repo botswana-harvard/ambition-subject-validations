@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -30,13 +31,34 @@ class TestLumbarPunctureFormValidator(TestCase):
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
+    def test_india_ink_csf_arg_not_done_invalid(self):
+        """Assert that the csf wbc count greater than 0.
+        """
+        options = {'csf_cr_ag': 'Not Done',
+                   'india_ink': 'Not Done'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_india_ink_csf_arg_done_valid(self):
+        """Assert that the csf wbc count greater than 0.
+        """
+        options = {'csf_cr_ag': 'Positive',
+                   'india_ink': 'Positive'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
     def test_differential_lymphocyte_count_greater_than_zero(self):
         options = {'csf_wbc_cell_count': 1, 'differential_lymphocyte_count': 4}
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
     def test_differential_lymphocyte_count_not_required(self):
-        options = {'csf_wbc_cell_count': 1, 'differential_lymphocyte_count': None}
+        options = {
+            'csf_wbc_cell_count': 1, 'differential_lymphocyte_count': None}
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
@@ -46,6 +68,7 @@ class TestLumbarPunctureFormValidator(TestCase):
         self.assertRaises(ValidationError, form.clean)
 
     def differential_neutrophil_count_not_required(self):
-        options = {'csf_wbc_cell_count': 2, 'differential_neutrophil_count': None}
+        options = {
+            'csf_wbc_cell_count': 2, 'differential_neutrophil_count': None}
         form = LumbarPunctureCSFFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
