@@ -92,3 +92,35 @@ class TestLumbarPunctureFormValidator(TestCase):
             form.clean()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_differential_neutrophil_count_percent_limit_passed(self):
+        options = {'differential_neutrophil_count': 125.6,
+                   'differential_neutrophil_unit': '%'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_differential_neutrophil_count_percent_limit_not_passed(self):
+        options = {'differential_neutrophil_count': 100,
+                   'differential_neutrophil_unit': '%'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_differential_lymphocyte_count_percent_limit_passed(self):
+        options = {'differential_lymphocyte_count': 125.6,
+                   'differential_lymphocyte_unit': '%'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_differential_lymphocyte_count_percent_limit_not_passed(self):
+        options = {'differential_lymphocyte_count': 100,
+                   'differential_lymphocyte_unit': '%'}
+        form = LumbarPunctureCSFFormValidator(cleaned_data=options)
+
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')

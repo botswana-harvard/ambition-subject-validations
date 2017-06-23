@@ -39,6 +39,14 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             field_required='differential_neutrophil_count',
             cleaned_data=self.cleaned_data)
 
+        self.percentage_limit_validation(field='differential_lymphocyte_count',
+                                         unit='differential_lymphocyte_unit',
+                                         cleaned_data=self.cleaned_data)
+
+        self.percentage_limit_validation(field='differential_neutrophil_count',
+                                         unit='differential_neutrophil_unit',
+                                         cleaned_data=self.cleaned_data)
+
         self.not_required_if(
             'not_done', field='csf_cr_ag',
             field_required='csf_cr_ag_lfa')
@@ -56,3 +64,10 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+
+    def percentage_limit_validation(self, field=None, unit=None, cleaned_data=None):
+        if (self.cleaned_data.get(unit) == '%'
+                and self.cleaned_data.get(field) > 100):
+
+            raise forms.ValidationError({
+                field: 'Percent cannot be greater than 100'})
