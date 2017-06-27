@@ -22,11 +22,6 @@ class RadiologyFormValidator(FormValidator):
 
         self.required_if(
             YES,
-            field='is_cxr_done',
-            field_required='cxr_description')
-
-        self.required_if(
-            YES,
             field='is_ct_performed',
             field_required='is_scanned_with_contrast')
 
@@ -47,7 +42,7 @@ class RadiologyFormValidator(FormValidator):
 
         self.required_if(
             YES,
-            field='is_cxr_done',
+            field='is_ct_performed',
             field_required='are_results_abnormal')
 
         self.required_if(

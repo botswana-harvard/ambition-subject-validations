@@ -42,18 +42,6 @@ class TestRadiolodyFormValidator(TestCase):
         form = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
-    def test_cxr_description_none(self):
-        options = {
-            'is_cxr_done': YES, 'cxr_description': None}
-        form = RadiologyFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form.clean)
-
-    def test_cxr_description_not_none(self):
-        options = {
-            'is_cxr_done': NO, 'cxr_description': 'Not normal'}
-        form = RadiologyFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form.clean)
-
     def test_is_scanned_with_contrast_none(self):
         options = {
             'is_ct_performed': YES, 'is_scanned_with_contrast': None}
@@ -106,14 +94,14 @@ class TestRadiolodyFormValidator(TestCase):
 
     def test_are_results_abnormal_none(self):
         options = {
-            'is_cxr_done': YES,
+            'is_ct_performed': YES,
             'are_results_abnormal': None}
         form = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 
     def test_are_results_abnormal_not_none(self):
         options = {
-            'is_cxr_done': NO,
+            'is_ct_performed': NO,
             'are_results_abnormal': NO}
         form = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
