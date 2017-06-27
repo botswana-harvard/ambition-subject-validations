@@ -160,19 +160,19 @@ class TestMicrobiologyFormValidator(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_blood_organism_is_bacteria_require_bacteria_identified(self):
-        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+        cleaned_data = {'blood_culture_organism': 'bacteria',
                         'bacteria_identified': None}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.clean)
 
     def test_blood_organism_is_bacteria_na_bacteria_identified(self):
-        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+        cleaned_data = {'blood_culture_organism': 'bacteria',
                         'bacteria_identified': NOT_APPLICABLE}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.clean)
 
     def test_blood_organism_is_bacteria_with_bacteria_identified(self):
-        cleaned_data = {'blood_culture_organism': 'BACTERIA',
+        cleaned_data = {'blood_culture_organism': 'bacteria',
                         'bacteria_identified': 'staphylococus_aureus'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:

@@ -43,7 +43,7 @@ class MicrobiologyFormValidator(FormValidator):
         )
 
         self.required_if(
-            'BACTERIA',
+            'bacteria',
             field='blood_culture_organism',
             field_required='bacteria_identified',
         )
