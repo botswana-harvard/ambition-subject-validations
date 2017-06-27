@@ -84,3 +84,17 @@ class TestAdverseEventFormValidator(TestCase):
             'amphotericin_b_relation': YES}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
+
+    def test_flucytosine_relation_none(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'flucytosine_relation': None}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.clean)
+
+    def test_flucytosine_relation_YES(self):
+        options = {
+            'ae_study_relation_possibility': NO,
+            'flucytosine_relation': YES}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.clean)

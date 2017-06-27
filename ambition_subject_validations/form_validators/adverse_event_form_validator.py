@@ -34,4 +34,10 @@ class AdverseEventFormValidator(FormValidator):
             field='ae_study_relation_possibility',
             field_required='amphotericin_b_relation',
         )
+
+        self.required_if(
+            YES,
+            field='ae_study_relation_possibility',
+            field_required='flucytosine_relation',
+        )
         return self.cleaned_data
