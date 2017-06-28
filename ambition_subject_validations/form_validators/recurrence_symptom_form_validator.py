@@ -17,11 +17,6 @@ class RecurrenceSymptomFormValidator(FormValidator):
             field_required='focal_neurologic_deficit')
 
         self.required_if(
-            OTHER,
-            field='neurological',
-            field_required='cn_palsy')
-
-        self.required_if(
             YES,
             field='amb_administered',
             field_required='amb_duration')
