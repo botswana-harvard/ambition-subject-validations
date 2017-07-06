@@ -12,7 +12,7 @@ class DeathFormValidator(FormValidator):
             field_required='cause_of_death_study_doctor_opinion')
 
         self.required_if(
-            YES,
+            'TB',
             field='cause_of_death_study_doctor_opinion',
             field_required='cause_tb_study_doctor_opinion')
 

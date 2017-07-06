@@ -3,28 +3,30 @@ from dateutil.relativedelta import relativedelta
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.query import QuerySet
 from django.test import TestCase
 
-
-from edc_base.model_mixins import BaseUuidModel, ListModelMixin
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
 from ..form_validators import PatientHistoryFormValidator
 
 
-class Neurological(ListModelMixin, BaseUuidModel):
-
-    class Meta:
-        app_label = 'ambition_subject_validations'
+# class Neurological(ListModelMixin):
+#
+#     class Meta:
+#         app_label = 'ambition_subject_validations'
 
 
 class TestPatientHistoryFormValidator(TestCase):
 
-    def setUp(self):
-        self.obj_one = Neurological(id=2, name='focal_neurologic_deficit')
-
-        self.obj_two = Neurological(id=3, name='blah blah blah')
+    #     def setUp(self):
+    #         self.obj_one = Neurological.objects.create(
+    #             id=2, name='focal_neurologic_deficit')
+    #
+    #         self.obj_two = Neurological.objects.create(id=3, name='blah blah blah')
+    #
+    #         self.qs = QuerySet(Neurological)
 
     def test_first_line_choice_yes(self):
         """Assert that the first line choice is within the first_line_arvs
@@ -49,9 +51,9 @@ class TestPatientHistoryFormValidator(TestCase):
 #     def test_if_focal_neurological_deficit_yes(self):
 #         """Assert that patient has focal neurological deficit
 #         """
-#         print('I am here', self.obj_one)
+#          print('I am here', QuerySet(self.obj_one, self.obj_two))
 #
-#         cleaned_data = {'neurological': (self.obj_one.id, self.obj_two.id),
+#         cleaned_data = {'neurological': self.qs,
 #                         'focal_neurologic_deficit': None}
 #         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form.clean)
