@@ -110,7 +110,6 @@ class TestAdverseEventFormValidator(TestCase):
     def test_flucytosine_relation_NA_invalid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'flucytosine_relation': 'possibly_related',
             'flucytosine_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
@@ -118,7 +117,6 @@ class TestAdverseEventFormValidator(TestCase):
     def test_flucytosine_relation_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'flucytosine_relation': 'possibly_related',
             'flucytosine_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         try:
