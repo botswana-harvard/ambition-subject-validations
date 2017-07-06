@@ -69,4 +69,7 @@ class TestDeathFormValidations(TestCase):
             'cause_of_death_study_doctor_opinion': OTHER,
             'cause_other_study_doctor_opinion': 'blah'}
         form = DeathFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')

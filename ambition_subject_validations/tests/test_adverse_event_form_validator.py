@@ -1,7 +1,8 @@
+from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from edc_constants.constants import YES, NO, UNKNOWN
+from edc_constants.constants import YES, NO, UNKNOWN, NOT_APPLICABLE
 
 from ..form_validators import AdverseEventFormValidator
 
@@ -43,58 +44,84 @@ class TestAdverseEventFormValidator(TestCase):
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
 
-    def test_ambisome_relation_none(self):
+    def test_ambisome_relation_NA_regimen_1(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'ambisome_relation': None}
+            'regimen': 'regimen_1',
+            'flucytosine_relation': 'possibly_related',
+            'ambisome_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
 
-    def test_ambisome_relation_yes(self):
-        options = {
-            'ae_study_relation_possibility': NO,
-            'ambisome_relation': YES}
-        form_validator = AdverseEventFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
-
-    def test_fluconazole_relation_yes(self):
+    def test_ambisome_relation_regimen_1_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'fluconazole_relation': None}
+            'regimen': 'regimen_1',
+            'flucytosine_relation': 'possibly_related',
+            'ambisome_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        try:
+            form_validator.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_fluconazole_relation_none(self):
-        options = {
-            'ae_study_relation_possibility': NO,
-            'fluconazole_relation': YES}
-        form_validator = AdverseEventFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
-
-    def test_amphotericin_b_relation_none(self):
+    def test_fluconazole_relation_NA_regimen_1(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'amphotericin_b_relation': None}
+            'regimen': 'regimen_1',
+            'flucytosine_relation': 'possibly_related',
+            'fluconazole_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
 
-    def test_amphotericin_b_relation_YES(self):
-        options = {
-            'ae_study_relation_possibility': NO,
-            'amphotericin_b_relation': YES}
-        form_validator = AdverseEventFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
-
-    def test_flucytosine_relation_none(self):
+    def test_fluconazole_relation_regimen_1_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'flucytosine_relation': None}
+            'regimen': 'regimen_1',
+            'flucytosine_relation': 'possibly_related',
+            'fluconazole_relation': 'possibly_related'}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        try:
+            form_validator.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_amphotericin_b_relation_NA_regimen_2(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'regimen': 'regimen_2',
+            'flucytosine_relation': 'possibly_related',
+            'amphotericin_b_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
 
-    def test_flucytosine_relation_YES(self):
+    def test_amphotericin_b_relation_regimen_2_valid(self):
         options = {
-            'ae_study_relation_possibility': NO,
-            'flucytosine_relation': YES}
+            'ae_study_relation_possibility': YES,
+            'regimen': 'regimen_2',
+            'flucytosine_relation': 'possibly_related',
+            'amphotericin_b_relation': 'possibly_related'}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        try:
+            form_validator.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_flucytosine_relation_NA_invalid(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'flucytosine_relation': 'possibly_related',
+            'flucytosine_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
+
+    def test_flucytosine_relation_valid(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'flucytosine_relation': 'possibly_related',
+            'flucytosine_relation': 'possibly_related'}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        try:
+            form_validator.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
