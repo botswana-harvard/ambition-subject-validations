@@ -73,3 +73,54 @@ class TestDeathFormValidations(TestCase):
             form.clean()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_cause_of_death_study_doctor_tb_no_site_specified_invalid(self):
+        cleaned_data = {
+            'cause_of_death_study_doctor_opinion': 'TB',
+            'cause_tb_study_doctor_opinion': None}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_cause_of_death_study_doctor_tb_site_specified_valid(self):
+        cleaned_data = {
+            'cause_of_death_study_doctor_opinion': 'TB',
+            'cause_tb_study_doctor_opinion': 'meningitis'}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_cause_of_death_study_tmg1_tb_no_site_specified_invalid(self):
+        cleaned_data = {
+            'cause_of_death_tmg1_opinion': 'TB',
+            'cause_tb_tmg1_opinion': None}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_cause_of_death_study_tmg1_tb_site_specified_valid(self):
+        cleaned_data = {
+            'cause_of_death_tmg1_opinion': 'TB',
+            'cause_tb_tmg1_opinion': 'meningitis'}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_cause_of_death_study_tmg2_tb_no_site_specified_invalid(self):
+        cleaned_data = {
+            'cause_of_death_tmg2_opinion': 'TB',
+            'cause_tb_tmg2_opinion': None}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_cause_of_death_study_tmg2_tb_site_specified_valid(self):
+        cleaned_data = {
+            'cause_of_death_tmg2_opinion': 'TB',
+            'cause_tb_tmg2_opinion': 'meningitis'}
+        form = DeathFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
