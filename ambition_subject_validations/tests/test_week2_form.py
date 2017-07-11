@@ -3,9 +3,9 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES
+from edc_constants.constants import YES, OTHER
 
-from ..form_validators import Week2FormValidator
+from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValidator
 
 
 class TestWeek2Form(TestCase):
@@ -52,5 +52,57 @@ class TestWeek2Form(TestCase):
 
         try:
             week2.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+
+class TestSignificantDiagnosesForm(TestCase):
+
+    def test_significant_diagnoses_no_specification_invalid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': None}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_significant_diagnoses_specification_valid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': 'pneumonia'}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_significant_diagnoses_no_date_invalid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': 'pneumonia',
+                        'dx_date': None}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_significant_diagnoses_date_valid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': 'pneumonia',
+                        'dx_date': get_utcnow()}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_significant_diagnoses_other_not_specified_invalid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': OTHER,
+                        'dx_other': None}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_significant_diagnoses_other_specified_valid(self):
+        cleaned_data = {'other_significant_diagnoses': YES,
+                        'possible_diagnoses': OTHER,
+                        'dx_other': 'blah'}
+        form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
