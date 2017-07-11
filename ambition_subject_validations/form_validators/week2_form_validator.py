@@ -54,3 +54,63 @@ class SignificantDiagnosesFormValidator(FormValidator):
         )
 
         return self.cleaned_data
+
+
+class FluconazoleMissedDosesFormValidator(FormValidator):
+
+    def clean(self):
+
+        field = self.cleaned_data.get('flucon_day_missed')
+
+        self.required_if_true(
+            condition=field in range(1, 15),
+            field_required='flucon_missed_reason',
+        )
+
+        self.required_if(
+            OTHER,
+            field='flucon_missed_reason',
+            field_required='missed_reason_other',
+        )
+
+        return self.cleaned_data
+
+
+class AmphotericinMissedDosesFormValidator(FormValidator):
+
+    def clean(self):
+
+        field = self.cleaned_data.get('ampho_day_missed')
+
+        self.required_if_true(
+            condition=field in range(1, 15),
+            field_required='ampho_missed_reason',
+        )
+
+        self.required_if(
+            OTHER,
+            field='ampho_missed_reason',
+            field_required='missed_reason_other',
+        )
+
+        return self.cleaned_data
+
+
+class FlucytosineMissedDosesFormValidator(FormValidator):
+
+    def clean(self):
+
+        field = self.cleaned_data.get('flucy_day_missed')
+
+        self.required_if_true(
+            condition=field in range(1, 15),
+            field_required='flucy_missed_reason',
+        )
+
+        self.required_if(
+            OTHER,
+            field='flucy_missed_reason',
+            field_required='missed_reason_other',
+        )
+
+        return self.cleaned_data

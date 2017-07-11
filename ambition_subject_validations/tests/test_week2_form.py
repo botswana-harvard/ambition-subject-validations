@@ -5,7 +5,8 @@ from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, OTHER
 
-from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValidator
+from ..form_validators import (Week2FormValidator, SignificantDiagnosesFormValidator,
+                               FluconazoleMissedDosesFormValidator)
 
 
 class TestWeek2Form(TestCase):
@@ -102,6 +103,38 @@ class TestSignificantDiagnosesForm(TestCase):
                         'possible_diagnoses': OTHER,
                         'dx_other': 'blah'}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_flucon_day_missed_no_reason_invalid(self):
+        cleaned_data = {'flucon_day_missed': 1,
+                        'flucon_missed_reason': None}
+        form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_flucon_day_missed_reason_ivalid(self):
+        cleaned_data = {'flucon_day_missed': 1,
+                        'flucon_missed_reason': 'blah'}
+        form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_flucon_day_missed_no_reason_other_not_provided_invalid(self):
+        cleaned_data = {'flucon_day_missed': 1,
+                        'flucon_missed_reason': OTHER,
+                        'missed_reason_other': None}
+        form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    def test_flucon_day_missed_reason_other_not_provided_ivalid(self):
+        cleaned_data = {'flucon_day_missed': 1,
+                        'flucon_missed_reason': OTHER,
+                        'missed_reason_other': 'blah'}
+        form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         try:
             form.clean()
         except forms.ValidationError as e:
