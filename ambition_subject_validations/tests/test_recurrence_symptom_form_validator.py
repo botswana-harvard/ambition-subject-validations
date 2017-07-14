@@ -61,9 +61,29 @@ class TestRecurrenceSymptomFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
+    def test_steroids_administered_no_choices_invalid(self):
+        options = {
+            'steroids_administered': YES,
+            'steroids_choices': None,
+            'steroids_duration': 5}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.clean)
+
+    def test_steroids_administered_choices_valid(self):
+        options = {
+            'steroids_administered': YES,
+            'steroids_choices': 'oral_prednisolone',
+            'steroids_duration': 5}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        try:
+            form_validator.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
     def test_steroids_administered_no_duration_invalid(self):
         options = {
             'steroids_administered': YES,
+            'steroids_choices': 'oral_prednisolone',
             'steroids_duration': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
@@ -71,6 +91,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
     def test_steroids_administered_duration_valid(self):
         options = {
             'steroids_administered': YES,
+            'steroids_choices': 'oral_prednisolone',
             'steroids_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
@@ -80,14 +101,18 @@ class TestRecurrenceSymptomFormValidator(TestCase):
 
     def test_steroids_administered_no_other_invalid(self):
         options = {
-            'steroids_administered': OTHER,
+            'steroids_administered': YES,
+            'steroids_duration': 5,
+            'steroids_choices': OTHER,
             'steroids_choices_other': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.clean)
 
     def test_steroids_administered_other_valid(self):
         options = {
-            'steroids_administered': OTHER,
+            'steroids_administered': YES,
+            'steroids_duration': 5,
+            'steroids_choices': OTHER,
             'steroids_choices_other': 'blah'}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:

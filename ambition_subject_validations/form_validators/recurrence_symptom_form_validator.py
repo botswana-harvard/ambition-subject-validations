@@ -27,8 +27,13 @@ class RecurrenceSymptomFormValidator(FormValidator):
             field_required='steroids_duration')
 
         self.required_if(
-            OTHER,
+            YES,
             field='steroids_administered',
+            field_required='steroids_choices')
+
+        self.required_if(
+            OTHER,
+            field='steroids_choices',
             field_required='steroids_choices_other')
 
         self.required_if(
