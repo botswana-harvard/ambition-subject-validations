@@ -34,6 +34,16 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='willing_to_complete_centre')
 
         self.required_if(
+            'included_in_error',
+            field='termination_reason',
+            field_required='included_in_error_date')
+
+        self.required_if(
+            'included_in_error',
+            field='termination_reason',
+            field_required='included_in_error')
+
+        self.required_if(
             YES,
             field='willing_to_complete_10W_FU',
             field_required='date_willing_to_complete')

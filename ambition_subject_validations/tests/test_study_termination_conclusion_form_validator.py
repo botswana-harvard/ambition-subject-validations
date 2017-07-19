@@ -88,6 +88,48 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
+    def test_included_in_error_reason_date_provided(self):
+        """ Asserts included_in_error_date when termination reason
+            is included_in_error.
+        """
+        cleaned_data = {'termination_reason': 'included_in_error',
+                        'included_in_error': 'blah blah blah blah',
+                        'included_in_error_date': None}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+        cleaned_data = {'termination_reason': 'included_in_error',
+                        'included_in_error': 'blah blah blah blah',
+                        'included_in_error_date': get_utcnow()}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_included_in_error_reason_narrative_provided(self):
+        """ Asserts included_in_error_date when termination reason
+            is included_in_error.
+        """
+        cleaned_data = {'termination_reason': 'included_in_error',
+                        'included_in_error_date': get_utcnow(),
+                        'included_in_error': None}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+        cleaned_data = {'termination_reason': 'included_in_error',
+                        'included_in_error_date': get_utcnow(),
+                        'included_in_error': 'blah blah blah blah'}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
     def test_centre_care_transfer_willing_to_complete_in_centre_given(self):
         """ Asserts willing_to_complete_centre when termination reason
             is care_transferred_to_another_institution.
