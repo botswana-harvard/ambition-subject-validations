@@ -24,6 +24,16 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='consent_withdrawal_reason')
 
         self.required_if(
+            'withdrawal_of_subject_consent',
+            field='termination_reason',
+            field_required='willing_to_complete_10W_FU')
+
+        self.required_if(
+            'care_transferred_to_another_institution',
+            field='termination_reason',
+            field_required='willing_to_complete_centre')
+
+        self.required_if(
             YES,
             field='willing_to_complete_10W_FU',
             field_required='date_willing_to_complete')

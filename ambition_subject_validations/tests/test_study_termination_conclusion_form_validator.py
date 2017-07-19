@@ -51,10 +51,61 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             is withdrawal_of_subject_consent.
         """
         cleaned_data = {'termination_reason': 'withdrawal_of_subject_consent',
-                        'consent_withdrawal_reason': None}
+                        'consent_withdrawal_reason': None,
+                        'willing_to_complete_10W_FU': NO}
         form = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
+
+        cleaned_data = {'termination_reason': 'withdrawal_of_subject_consent',
+                        'consent_withdrawal_reason': 'blah',
+                        'willing_to_complete_10W_FU': NO}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_twilling_to_complete_10W_FU_withdrawal_of_consent(self):
+        """ Asserts willing_to_complete_10W_FU when termination reason
+            is withdrawal_of_subject_consent.
+        """
+        cleaned_data = {'termination_reason': 'withdrawal_of_subject_consent',
+                        'consent_withdrawal_reason': 'blah',
+                        'willing_to_complete_10W_FU': None}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+        cleaned_data = {'termination_reason': 'withdrawal_of_subject_consent',
+                        'consent_withdrawal_reason': 'blah',
+                        'willing_to_complete_10W_FU': NO}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_centre_care_transfer_willing_to_complete_in_centre_given(self):
+        """ Asserts willing_to_complete_centre when termination reason
+            is care_transferred_to_another_institution.
+        """
+        cleaned_data = {'termination_reason': 'care_transferred_to_another_institution',
+                        'willing_to_complete_centre': None}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+        cleaned_data = {'termination_reason': 'care_transferred_to_another_institution',
+                        'willing_to_complete_centre': NO}
+        form = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_non_consent_termination_reason(self):
         cleaned_data = {'termination_reason': '10_weeks_completed_followUp',
