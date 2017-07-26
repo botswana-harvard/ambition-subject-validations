@@ -32,7 +32,7 @@ class TestRadiolodyFormValidator(TestCase):
 
     def test_infiltrate_location_none(self):
         options = {
-            'cxr_type': 'infiltrate_location', 'infiltrate_location': None}
+            'cxr_type': 'infiltrates', 'infiltrate_location': None}
         form = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form.clean)
 

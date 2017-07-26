@@ -16,7 +16,7 @@ class RadiologyFormValidator(FormValidator):
             field_required='cxr_date')
 
         self.required_if(
-            'infiltrate_location',
+            'infiltrates',
             field='cxr_type',
             field_required='infiltrate_location')
 
