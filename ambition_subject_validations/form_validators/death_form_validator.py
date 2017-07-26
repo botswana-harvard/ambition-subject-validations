@@ -1,5 +1,5 @@
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, OTHER
+from edc_constants.constants import OTHER
 
 
 class DeathFormValidator(FormValidator):
@@ -10,11 +10,6 @@ class DeathFormValidator(FormValidator):
             OTHER,
             field='cause_of_death_study_doctor_opinion',
             field_required='cause_other_study_doctor_opinion')
-
-        self.required_if(
-            YES,
-            field='cause_of_death_study_doctor_opinion',
-            field_required='death_narrative')
 
         field_list = ['cause_of_death_study_doctor_opinion',
                       'cause_of_death_tmg1_opinion',

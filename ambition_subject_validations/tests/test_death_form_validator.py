@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import OTHER
 
 from ..form_validators import DeathFormValidator
 
@@ -49,16 +49,6 @@ class TestDeathFormValidations(TestCase):
             'cause_other_study_doctor_opinion': None}
         form = DeathFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
-
-    def test_cause_of_death_study_doc_opinion_death_narrative(self):
-        cleaned_data = {
-            'cause_of_death_study_doctor_opinion': OTHER,
-            'cause_other_study_doctor_opinion': 'blah'}
-        form = DeathFormValidator(cleaned_data=cleaned_data)
-        try:
-            form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_cause_of_death_study_doctor_tb_no_site_specified_invalid(self):
         cleaned_data = {
