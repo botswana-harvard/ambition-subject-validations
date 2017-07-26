@@ -52,26 +52,6 @@ class TestProtocolDeviationViolationFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.clean)
 
-    def test_other_protocol_violation_type_deviation(self):
-        """ other_protocol_violation_type is not required if it's
-        a protocol deviation
-         """
-        cleaned_data = {'deviation_or_violation': DEVIATION,
-                        'other_protocol_violation_type': 'other type'}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.clean)
-
-    def test_other_protocol_violation_type_violation(self):
-        """ other_protocol_violation_type is required if it's
-        a protocol violation
-         """
-        cleaned_data = {'deviation_or_violation': VIOLATION,
-                        'other_protocol_violation_type': None}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.clean)
-
     def test_violation_description_deviation(self):
         """ violation_description is not required if it's
         a protocol deviation
