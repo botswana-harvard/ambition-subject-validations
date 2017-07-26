@@ -8,7 +8,6 @@ class ProtocolDeviationViolationFormValidator(FormValidator):
     def clean(self):
         field_required_list = ['date_violation_datetime',
                                'protocol_violation_type',
-                               'other_protocol_violation_type',
                                'violation_description',
                                'violation_reason']
         for field_required in field_required_list:
