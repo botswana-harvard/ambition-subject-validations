@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import OTHER, YES
 
@@ -14,7 +14,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
     #             'meningitis_symptom': OTHER,
     #             'meningitis_symptom_other': None}
     #         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-    #         self.assertRaises(ValidationError, form_validator.clean)
+    #         self.assertRaises(ValidationError, form_validator.validate)
 
     #     def test_meningitis_symptom_other_valid(self):
     #         options = {
@@ -22,7 +22,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
     #             'meningitis_symptom_other': 'blah'}
     #         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
     #         try:
-    #             form_validator.clean()
+    #             form_validator.validate()
     #         except forms.ValidationError as e:
     #             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -31,7 +31,8 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'neurological': YES,
             'focal_neurologic_deficit': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('focal_neurologic_deficit', form_validator._errors)
 
     def test_neurological_focal_neurologic_deficit_valid(self):
         options = {
@@ -39,16 +40,17 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'focal_neurologic_deficit': 'blah'}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+        self.assertNotIn('focal_neurologic_deficit', form_validator._errors)
 
     def test_amb_administered_no_duration_invalid(self):
         options = {
             'amb_administered': YES,
             'amb_duration': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_amb_administered_duration_valid(self):
         options = {
@@ -56,7 +58,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'amb_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -66,7 +68,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_choices': None,
             'steroids_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_steroids_administered_choices_valid(self):
         options = {
@@ -75,7 +77,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -85,7 +87,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_choices': 'oral_prednisolone',
             'steroids_duration': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_steroids_administered_duration_valid(self):
         options = {
@@ -94,7 +96,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -105,7 +107,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_choices': OTHER,
             'steroids_choices_other': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_steroids_administered_other_valid(self):
         options = {
@@ -115,7 +117,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'steroids_choices_other': 'blah'}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -124,7 +126,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'antibiotic_treatment': OTHER,
             'antibiotic_treatment_other': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_antibiotic_treatment_other_valid(self):
         options = {
@@ -132,7 +134,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'antibiotic_treatment_other': 'blah'}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -141,7 +143,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'on_arvs': YES,
             'arv_date': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_on_arvs_with_date_valid(self):
         options = {
@@ -149,6 +151,6 @@ class TestRecurrenceSymptomFormValidator(TestCase):
             'arv_date': get_utcnow()}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
-            form_validator.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
