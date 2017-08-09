@@ -1,4 +1,4 @@
-from edc_visit_schedule.form_validators import VisitFormValidator
+from edc_visit_tracking.form_validators import VisitFormValidator
 
 
 class SubjectVisitFormValidator(VisitFormValidator):
