@@ -12,6 +12,6 @@ from .recurrence_symptom import RecurrenceSymptomFormValidator
 from .significant_diagnoses import SignificantDiagnosesFormValidator
 from .study_termination_conclusion import StudyTerminationConclusionFormValidator
 from .subject_consent import SubjectConsentFormValidator
+from .subject_visit import SubjectVisitFormValidator
 from .week16 import Week16FormValidator
 from .week2 import Week2FormValidator
-from .subject_visit import SubjectVisitFormValidator
