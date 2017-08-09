@@ -3,6 +3,7 @@ from .form_validators import AmphotericinMissedDosesFormValidator
 from .form_validators import BloodResultFormValidator
 from .form_validators import DeathFormValidator
 from .form_validators import FluconazoleMissedDosesFormValidator
+from .form_validators import FlucytosineMissedDosesFormValidator
 from .form_validators import FollowUpFormValidator
 from .form_validators import LumbarPunctureCSFFormValidator
 from .form_validators import MicrobiologyFormValidator
@@ -13,5 +14,6 @@ from .form_validators import RecurrenceSymptomFormValidator
 from .form_validators import SignificantDiagnosesFormValidator
 from .form_validators import StudyTerminationConclusionFormValidator
 from .form_validators import SubjectConsentFormValidator
+from .form_validators import SubjectVisitFormValidator
 from .form_validators import Week16FormValidator
 from .form_validators import Week2FormValidator
