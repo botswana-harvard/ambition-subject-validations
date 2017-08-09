@@ -14,3 +14,4 @@ from .study_termination_conclusion import StudyTerminationConclusionFormValidato
 from .subject_consent import SubjectConsentFormValidator
 from .week16 import Week16FormValidator
 from .week2 import Week2FormValidator
+from .subject_visit import SubjectVisitFormValidator
