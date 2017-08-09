@@ -6,7 +6,6 @@ from edc_constants.constants import YES, NO, NORMAL, OTHER
 from ..form_validators import RadiologyFormValidator
 
 
-@tag('1')
 class TestRadiolodyFormValidator(TestCase):
 
     def test_cxr_type_none(self):

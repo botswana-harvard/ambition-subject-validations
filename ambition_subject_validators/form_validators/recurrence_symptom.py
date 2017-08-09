@@ -9,8 +9,7 @@ class RecurrenceSymptomFormValidator(FormValidator):
         self.m2m_other_specify(
             OTHER,
             m2m_field='meningitis_symptom',
-            field_other='meningitis_symptom_other',
-            cleaned_data=self.cleaned_data)
+            field_other='meningitis_symptom_other')
 
         self.required_if(
             YES,
@@ -20,8 +19,7 @@ class RecurrenceSymptomFormValidator(FormValidator):
         self.m2m_other_specify(
             OTHER,
             m2m_field='neurological',
-            field_other='other_cn_palsy_chosen',
-            cleaned_data=self.cleaned_data)
+            field_other='other_cn_palsy_chosen')
 
         self.required_if(
             YES,
@@ -46,8 +44,7 @@ class RecurrenceSymptomFormValidator(FormValidator):
         self.m2m_other_specify(
             OTHER,
             m2m_field='antibiotic_treatment',
-            field_other='antibiotic_treatment_other',
-            cleaned_data=self.cleaned_data)
+            field_other='antibiotic_treatment_other')
 
         self.required_if(
             YES,
