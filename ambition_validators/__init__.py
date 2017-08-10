@@ -14,6 +14,7 @@ from .form_validators import RecurrenceSymptomFormValidator
 from .form_validators import SignificantDiagnosesFormValidator
 from .form_validators import StudyTerminationConclusionFormValidator
 from .form_validators import SubjectConsentFormValidator
+from .form_validators import SubjectScreeningFormValidator
 from .form_validators import SubjectVisitFormValidator
 from .form_validators import Week16FormValidator
 from .form_validators import Week2FormValidator
