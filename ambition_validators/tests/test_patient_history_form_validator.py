@@ -11,7 +11,7 @@ from ..form_validators import PatientHistoryFormValidator
 # class Neurological(ListModelMixin):
 #
 #     class Meta:
-#         app_label = 'ambition_subject_validators'
+#         app_label = 'ambition_validators'
 
 
 class TestPatientHistoryFormValidator(TestCase):

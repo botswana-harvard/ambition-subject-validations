@@ -22,11 +22,11 @@ install:
 - pip install coveralls
 
 before_script:
-- flake8 ambition_subject_validators
+- flake8 ambition_validators
 - mysql -e 'create database edc character set utf8;'
 
 script:
-- coverage run --source=ambition_subject_validators manage.py test
+- coverage run --source=ambition_validators manage.py test
 
 after_success:
 - coveralls

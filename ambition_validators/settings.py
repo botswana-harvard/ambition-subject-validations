@@ -2,7 +2,7 @@ import os
 import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APP_NAME = 'ambition_subject_validators'
+APP_NAME = 'ambition_validators'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'edc_base.apps.AppConfig',
     'edc_device.apps.AppConfig',
-    'ambition_subject_validators.apps.AppConfig'
+    'ambition_validators.apps.AppConfig'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -41,7 +41,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ambition_subject_validators.urls'
+ROOT_URLCONF = 'ambition_validators.urls'
 
 TEMPLATES = [
     {
@@ -59,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ambition_subject_validators.wsgi.application'
+WSGI_APPLICATION = 'ambition_validators.wsgi.application'
 
 
 # Database
