@@ -24,7 +24,8 @@ class SubjectConsentFormValidator(FormValidator):
                 raise forms.ValidationError(
                     {'dob':
                      'The date of birth entered does not match the age at '
-                     'screening.'})
+                     f'screening. Expected {subject_screening.age_in_years}. '
+                     f'Got {dob_age_at_screening}.'})
         except subject_screening.DoesNotExist:
             raise forms.ValidationError(
                 'Complete the Subject screening form before proceeding.')
