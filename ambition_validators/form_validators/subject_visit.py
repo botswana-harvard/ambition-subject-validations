@@ -8,8 +8,23 @@ class SubjectVisitFormValidator(VisitFormValidator):
 
         self.required_if(
             YES,
+            field='missed',
+            field_required='reason_missed')
+
+        self.required_if(
+            YES,
             field='unscheduled',
             field_required='reason_unscheduled')
+
+        self.required_if(
+            YES,
+            field='reason_missed',
+            field_required='info_source')
+
+        self.required_if(
+            OTHER,
+            field='info_source',
+            field_required='info_source_other')
 
         self.required_if(
             OTHER,

@@ -9,6 +9,20 @@ from ..form_validators import SubjectVisitFormValidator
 
 class TestSubjectVisitFormValidator(TestCase):
 
+    def test_reason_missed(self):
+        options = {
+            'missed': YES,
+            'reason_missed': None}
+        form_validator = SubjectVisitFormValidator(
+            cleaned_data=options)
+        try:
+            form_validator.validate()
+        except forms.ValidationError:
+            pass
+        self.assertIn('reason_missed',
+                      form_validator._errors)
+        self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
+
     def test_reason_unscheduled(self):
         options = {
             'unscheduled': YES,
@@ -34,5 +48,19 @@ class TestSubjectVisitFormValidator(TestCase):
         except forms.ValidationError:
             pass
         self.assertIn('reason_unscheduled_other',
+                      form_validator._errors)
+        self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
+
+    def test_info_source_other(self):
+        options = {
+            'info_source': OTHER,
+            'info_source_other': None}
+        form_validator = SubjectVisitFormValidator(
+            cleaned_data=options)
+        try:
+            form_validator.validate()
+        except forms.ValidationError:
+            pass
+        self.assertIn('info_source_other',
                       form_validator._errors)
         self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
