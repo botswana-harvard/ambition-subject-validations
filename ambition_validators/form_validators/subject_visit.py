@@ -7,6 +7,11 @@ class SubjectVisitFormValidator(VisitFormValidator):
     def clean(self):
 
         self.required_if(
+            YES,
+            field='unscheduled',
+            field_required='reason_unscheduled')
+
+        self.required_if(
             OTHER,
             field='reason_unscheduled',
             field_required='reason_unscheduled_other')
