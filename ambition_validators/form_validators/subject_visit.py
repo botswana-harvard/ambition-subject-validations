@@ -1,5 +1,6 @@
-from edc_visit_tracking.form_validators import VisitFormValidator
 from edc_constants.constants import YES, NO, OTHER
+from edc_visit_tracking.constants import MISSED_VISIT, UNSCHEDULED
+from edc_visit_tracking.form_validators import VisitFormValidator
 
 
 class SubjectVisitFormValidator(VisitFormValidator):
@@ -7,19 +8,14 @@ class SubjectVisitFormValidator(VisitFormValidator):
     def clean(self):
 
         self.required_if(
-            YES,
-            field='missed',
+            MISSED_VISIT,
+            field='reason',
             field_required='reason_missed')
 
         self.required_if(
-            YES,
-            field='unscheduled',
+            UNSCHEDULED,
+            field='reason',
             field_required='reason_unscheduled')
-
-        self.required_if(
-            YES,
-            field='reason_missed',
-            field_required='info_source')
 
         self.required_if(
             OTHER,

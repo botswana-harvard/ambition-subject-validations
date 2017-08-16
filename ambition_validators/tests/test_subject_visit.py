@@ -1,17 +1,19 @@
 from django import forms
-from django.test import TestCase
+from django.test import TestCase, tag
 
 from edc_constants.constants import YES, OTHER
 from edc_base.modelform_validators import REQUIRED_ERROR
+from edc_visit_tracking.constants import MISSED_VISIT, UNSCHEDULED
 
 from ..form_validators import SubjectVisitFormValidator
 
 
+@tag('visit')
 class TestSubjectVisitFormValidator(TestCase):
 
     def test_reason_missed(self):
         options = {
-            'missed': YES,
+            'reason': MISSED_VISIT,
             'reason_missed': None}
         form_validator = SubjectVisitFormValidator(
             cleaned_data=options)
@@ -25,7 +27,7 @@ class TestSubjectVisitFormValidator(TestCase):
 
     def test_reason_unscheduled(self):
         options = {
-            'unscheduled': YES,
+            'reason': UNSCHEDULED,
             'reason_unscheduled': None}
         form_validator = SubjectVisitFormValidator(
             cleaned_data=options)
