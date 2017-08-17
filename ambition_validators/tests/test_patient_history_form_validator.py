@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER
 
@@ -63,6 +63,23 @@ class TestPatientHistoryFormValidator(TestCase):
 #             form.clean()
 #         except forms.ValidationError as e:
 #             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+    @tag('1')
+    def test_first_line_choice_other1(self):
+        cleaned_data = {'first_line_choice': OTHER,
+                        'first_line_choice_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.clean)
+
+    @tag('2')
+    def test_first_line_choice_other2(self):
+        cleaned_data = {'first_line_choice': OTHER,
+                        'first_line_choice_other': 'blah'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+
+        try:
+            form.clean()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_med_history_yes_tb_site_none_invalid(self):
         cleaned_data = {'med_history': YES,

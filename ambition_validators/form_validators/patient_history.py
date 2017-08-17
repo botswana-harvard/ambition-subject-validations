@@ -16,6 +16,11 @@ class PatientHistoryFormValidator(FormValidator):
                 condition=condition,
                 field_required='first_line_choice')
 
+        self.required_if(
+            OTHER,
+            field='first_line_choice',
+            field_required='first_line_choice_other')
+
         self.m2m_other_specify(
             'focal_neurologic_deficit',
             m2m_field='neurological',
