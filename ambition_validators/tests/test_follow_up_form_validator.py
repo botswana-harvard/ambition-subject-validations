@@ -65,7 +65,7 @@ class TestFollowUpFormValidator(TestCase):
         follow_up = FollowUpFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, follow_up.clean)
 
-    def other_fluconazole_dose_yes_require_other_fluconazole_dose_reason(self):
+    def test_other_fluconazole_dose_yes_require_other_fluconazole_dose_reason(self):
         cleaned_data = {'other_fluconazole_dose': YES,
                         'other_fluconazole_dose_reason': None}
         follow_up = FollowUpFormValidator(cleaned_data=cleaned_data)
@@ -79,7 +79,7 @@ class TestFollowUpFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def other_fluconazole_dose_no_require_rifampicin_start_datee(self):
+    def test_other_fluconazole_dose_no_require_rifampicin_start_datee(self):
         cleaned_data = {'other_fluconazole_dose': NO,
                         'other_fluconazole_dose_reason': 'reason'}
         follow_up = FollowUpFormValidator(cleaned_data=cleaned_data)
