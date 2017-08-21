@@ -17,20 +17,20 @@ class AdverseEventFormValidator(FormValidator):
         regimen_1_condition = (
             self.cleaned_data.get('regimen') == 'regimen_1' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
-        self.required_if_true(
+        self.applicable_if_true(
             condition=regimen_1_condition,
-            field_required='ambisome_relation')
-        self.required_if_true(
+            field_applicable='ambisome_relation')
+        self.applicable_if_true(
             condition=regimen_1_condition,
-            field_required='fluconazole_relation')
+            field_applicable='fluconazole_relation')
 
         regimen_2_condition = (
             self.cleaned_data.get('regimen') == 'regimen_2' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
-        self.required_if_true(
+        self.applicable_if_true(
             condition=regimen_2_condition,
-            field_required='amphotericin_b_relation')
-        self.required_if(
+            field_applicable='amphotericin_b_relation')
+        self.applicable_if(
             YES,
             field='ae_study_relation_possibility',
-            field_required='flucytosine_relation')
+            field_applicable='flucytosine_relation')
