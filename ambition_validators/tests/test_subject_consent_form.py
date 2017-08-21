@@ -1,80 +1,70 @@
 from dateutil.relativedelta import relativedelta
 from django import forms
-from django.core.exceptions import ValidationError
-from django.db import models
-from django.test import TestCase
-from edc_base.model_mixins import BaseUuidModel
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 
 from ..form_validators import SubjectConsentFormValidator
-
-
-class SubjectScreening(BaseUuidModel):
-
-    report_datetime = models.DateTimeField(
-        default=get_utcnow)
-
-    age_in_years = models.IntegerField()
+from .models import SubjectScreening
 
 
 class TestSubjectConsentForm(TestCase):
 
     def setUp(self):
-        self.subject_screening = SubjectScreening()
-        self.subject_screening.age_in_years = 20
+        self.screening_identifier = 'ABCDEF'
+        self.subject_screening = SubjectScreening.objects.create(
+            screening_identifier=self.screening_identifier, age_in_years=20)
+        subject_screening_model = SubjectConsentFormValidator.subject_screening_model
+        subject_screening_model = subject_screening_model.replace(
+            'ambition_subject', 'ambition_validators')
+        SubjectConsentFormValidator.subject_screening_model = subject_screening_model
 
-    def test_no_subject_screening_invalid(self):
-        cleaned_data = {'consent_datetime': None,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
-        subject_consent = SubjectConsentFormValidator(
+    def test_subject_screening_ok(self):
+        cleaned_data = dict(
+            screening_identifier=self.screening_identifier,
+            consent_datetime=get_utcnow(),
+            dob=(get_utcnow() - relativedelta(years=20)).date())
+        form_validator = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, subject_consent.clean)
-
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
-        subject_consent = SubjectConsentFormValidator(
-            cleaned_data=cleaned_data)
-
         try:
-            subject_consent.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_consent_datetime_not_provided_invalid(self):
-        cleaned_data = {'consent_datetime': None,
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
-        subject_consent = SubjectConsentFormValidator(
+    def test_no_subject_screening_invalid(self):
+        cleaned_data = dict(
+            consent_datetime=get_utcnow(),
+            dob=(get_utcnow() - relativedelta(years=20)).date())
+        form_validator = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, subject_consent.clean)
+        self.assertRaises(forms.ValidationError, form_validator.validate)
+        self.assertIn('missing_subject_screening', form_validator._error_codes)
 
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
-        subject_consent = SubjectConsentFormValidator(
+    def test_consent_datetime(self):
+        dob = (get_utcnow() - relativedelta(years=20)).date()
+        cleaned_data = dict(
+            screening_identifier=self.screening_identifier,
+            dob=dob)
+        form_validator = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
+        self.assertRaises(forms.ValidationError, form_validator.validate)
+        self.assertIn('consent_datetime', form_validator._errors)
 
+        cleaned_data.update(consent_datetime=get_utcnow())
+        form_validator = SubjectConsentFormValidator(
+            cleaned_data=cleaned_data)
         try:
-            subject_consent.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_consent_age_mismatch_with_screening_age_invalid(self):
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=18)).date()}
-        subject_consent = SubjectConsentFormValidator(
+        age_in_years = 18
+        dob = (get_utcnow() - relativedelta(years=age_in_years)).date()
+        cleaned_data = dict(
+            dob=dob,
+            screening_identifier=self.screening_identifier,
+            consent_datetime=get_utcnow())
+        form_validator = SubjectConsentFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, subject_consent.clean)
-
-        cleaned_data = {'consent_datetime': get_utcnow(),
-                        'subject_screening': self.subject_screening,
-                        'dob': (get_utcnow() - relativedelta(years=20)).date()}
-        subject_consent = SubjectConsentFormValidator(
-            cleaned_data=cleaned_data)
-
-        try:
-            subject_consent.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+        self.assertRaises(forms.ValidationError, form_validator.validate)
+        self.assertIn('dob', form_validator._errors)
