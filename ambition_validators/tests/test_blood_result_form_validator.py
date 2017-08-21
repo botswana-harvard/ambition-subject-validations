@@ -12,34 +12,35 @@ class TestAdverseEventFormValidator(TestCase):
         options = {
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': NOT_APPLICABLE}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, blood_form.clean)
+        form_validator = BloodResultFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
 
     def test_abnormal_results_wiht_ae_range_valid(self):
         options = {
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': NO}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
+        form_validator = BloodResultFormValidator(cleaned_data=options)
 
         try:
-            blood_form.clean()
+            form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_creatinine_mmol_unit_decimal_invalid(self):
-        options = {
-            'creatinine_unit': 'umol/L',
-            'creatinine': '346.12'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-        self.assertRaises(ValidationError, blood_form.clean)
+        cleaned_data = dict(creatinine_unit='umol/L')
+        for value in ['346.12', 346.12, '346.']:
+            with self.subTest(value=value):
+                cleaned_data.update(creatinine=value)
+                form_validator = BloodResultFormValidator(
+                    cleaned_data=cleaned_data)
+                self.assertRaises(ValidationError, form_validator.validate)
 
     def test_creatinine_mmol_unit_decimal_valid(self):
-        options = {
-            'creatinine_unit': 'umol/L',
-            'creatinine': '346'}
-        blood_form = BloodResultFormValidator(cleaned_data=options)
-
-        try:
-            blood_form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+        cleaned_data = dict(creatinine_unit='umol/L')
+        for value in ['346.12', 346.12, '346.']:
+            with self.subTest(value=value):
+                cleaned_data.update(creatinine=value)
+                form_validator = BloodResultFormValidator(
+                    cleaned_data=cleaned_data)
+                self.assertRaises(ValidationError, form_validator.validate)
