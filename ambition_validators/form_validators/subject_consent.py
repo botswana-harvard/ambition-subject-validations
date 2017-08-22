@@ -29,7 +29,7 @@ class SubjectConsentFormValidator(FormValidator):
                 'Complete the Subject screening form before proceeding.',
                 code='missing_subject_screening')
 
-        if not self.consent_datetime:
+        if self.add_form and not self.consent_datetime:
             raise forms.ValidationError(
                 {'consent_datetime': 'This field is required.'})
 
