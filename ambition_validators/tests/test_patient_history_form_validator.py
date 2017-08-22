@@ -81,14 +81,14 @@ class TestPatientHistoryFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_med_history_yes_tb_site_none_invalid(self):
-        cleaned_data = {'med_history': YES,
+    def test_tb_history_yes_tb_site_none_invalid(self):
+        cleaned_data = {'tb_history': YES,
                         'tb_site': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-    def test_med_history_yes_tb_site_no_valid(self):
-        cleaned_data = {'med_history': YES,
+    def test_tb_history_yes_tb_site_no_valid(self):
+        cleaned_data = {'tb_history': YES,
                         'tb_site': 'pulmonary'}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
@@ -113,16 +113,16 @@ class TestPatientHistoryFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_previous_infection_date_none_invalid(self):
-        cleaned_data = {'previous_infection': YES,
-                        'previous_infection_specify': 'blah',
+    def test_previous_non_tb_oi_date_none_invalid(self):
+        cleaned_data = {'previous_non_tb_oi': YES,
+                        'previous_non_tb_oi_other': 'blah',
                         'infection_date': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-    def test_previous_infection_date_valid(self):
-        cleaned_data = {'previous_infection': YES,
-                        'previous_infection_specify': 'blah',
+    def test_previous_non_tb_oi_date_valid(self):
+        cleaned_data = {'previous_non_tb_oi': YES,
+                        'previous_non_tb_oi_other': 'blah',
                         'infection_date': get_utcnow() - relativedelta(years=2)}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
@@ -131,16 +131,16 @@ class TestPatientHistoryFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_previous_infection_specify_none_invalid(self):
-        cleaned_data = {'previous_infection': YES,
-                        'previous_infection_specify': None,
+    def test_previous_non_tb_oi_other_none_invalid(self):
+        cleaned_data = {'previous_non_tb_oi': YES,
+                        'previous_non_tb_oi_other': None,
                         'infection_date': get_utcnow() - relativedelta(years=2)}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.clean)
 
-    def test_previous_infection_specify_valid(self):
-        cleaned_data = {'previous_infection': YES,
-                        'previous_infection_specify': 'blah',
+    def test_previous_non_tb_oi_other_valid(self):
+        cleaned_data = {'previous_non_tb_oi': YES,
+                        'previous_non_tb_oi_other': 'blah',
                         'infection_date': get_utcnow() - relativedelta(years=2)}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
