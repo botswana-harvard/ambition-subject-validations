@@ -1,12 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_constants.constants import YES
 
 from ..form_validators import LumbarPunctureCSFFormValidator
 
 
-@tag('lp')
 class TestLumbarPunctureFormValidator(TestCase):
 
     def test_csf_culture_yes(self):
