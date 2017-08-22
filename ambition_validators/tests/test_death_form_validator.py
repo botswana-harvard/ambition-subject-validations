@@ -7,7 +7,6 @@ from ..form_validators import DeathReportFormValidator
 from ..constants import TUBERCULOSIS
 
 
-@tag("df")
 class TestDeathFormValidations(TestCase):
 
     def test_tb_site_missing(self):
