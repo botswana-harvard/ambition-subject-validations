@@ -1,12 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_constants.constants import OTHER
 
 from ..form_validators import DeathReportFormValidator
 from ..constants import TUBERCULOSIS
 
 
+@tag("df")
 class TestDeathFormValidations(TestCase):
 
     def test_tb_site_missing(self):
@@ -59,7 +60,7 @@ class TestDeathFormValidations(TestCase):
         form_validator = DeathReportFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    def test_cause_of_death_study_doctor_tb_site_specified_valid(self):
+    def test_cause_of_death_study_doc_opinion_no(self):
         cleaned_data = {
             'cause_of_death': TUBERCULOSIS,
             'tb_site': 'meningitis'}
