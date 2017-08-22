@@ -6,7 +6,7 @@ from edc_constants.constants import NO, NOT_APPLICABLE
 from ..form_validators import BloodResultFormValidator
 
 
-class TestAdverseEventFormValidator(TestCase):
+class TestBloodResultFormValidator(TestCase):
 
     def test_abnormal_results_no_ae_range_invalid(self):
         options = {
