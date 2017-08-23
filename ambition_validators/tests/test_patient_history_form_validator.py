@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
 from ..form_validators import PatientHistoryFormValidator
 
@@ -24,13 +24,13 @@ class TestPatientHistoryFormValidator(TestCase):
     #
     #         self.qs = QuerySet(Neurological)
 
-    def test_first_line_choice_yes(self):
-        """Assert that the first line choice is within the first_line_arvs
-        """
-        cleaned_data = {'arv_regimen': 'TDF +3TC/FTC + either EFZ or NVP',
-                        'first_line_choice': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+    #     def test_first_line_choice_yes(self):
+    #         """Assert that the first line choice is within the first_line_arvs
+    #         """
+    #         cleaned_data = {'arv_regimen': 'TDF +3TC/FTC + either EFZ or NVP',
+    #                         'first_line_choice': None}
+    #         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+    #         self.assertRaises(ValidationError, form.clean)
 
     def test_first_line_choice_no(self):
         """Assert that the first line choice is not provided
@@ -40,7 +40,7 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -63,12 +63,6 @@ class TestPatientHistoryFormValidator(TestCase):
 #             form.clean()
 #         except forms.ValidationError as e:
 #             self.fail(f'ValidationError unexpectedly raised. Got{e}')
-    @tag('1')
-    def test_first_line_choice_other1(self):
-        cleaned_data = {'first_line_choice': OTHER,
-                        'first_line_choice_other': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
 
     @tag('2')
     def test_first_line_choice_other2(self):
@@ -77,15 +71,16 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_tb_history_yes_tb_site_none_invalid(self):
         cleaned_data = {'tb_history': YES,
-                        'tb_site': None}
+                        'tb_site': NOT_APPLICABLE}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('tb_site', form._errors)
 
     def test_tb_history_yes_tb_site_no_valid(self):
         cleaned_data = {'tb_history': YES,
@@ -93,15 +88,16 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_tb_treatment_taking_rifapicin_none_invalid(self):
         cleaned_data = {'tb_treatment': YES,
-                        'taking_rifampicin': None}
+                        'taking_rifampicin': NOT_APPLICABLE}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('taking_rifampicin', form._errors)
 
     def test_tb_treatment_taking_rifapicin_no_valid(self):
         cleaned_data = {'tb_treatment': YES,
@@ -109,43 +105,7 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_previous_non_tb_oi_date_none_invalid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_other': 'blah',
-                        'infection_date': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
-
-    def test_previous_non_tb_oi_date_valid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_other': 'blah',
-                        'infection_date': get_utcnow() - relativedelta(years=2)}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-
-        try:
-            form.clean()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_previous_non_tb_oi_other_none_invalid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_other': None,
-                        'infection_date': get_utcnow() - relativedelta(years=2)}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
-
-    def test_previous_non_tb_oi_other_valid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_other': 'blah',
-                        'infection_date': get_utcnow() - relativedelta(years=2)}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-
-        try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -153,7 +113,8 @@ class TestPatientHistoryFormValidator(TestCase):
         cleaned_data = {'taking_arv': YES,
                         'arv_date': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('arv_date', form._errors)
 
     def test_taking_arv_date_sepcified_valid(self):
         cleaned_data = {'taking_arv': YES,
@@ -161,7 +122,7 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -169,7 +130,8 @@ class TestPatientHistoryFormValidator(TestCase):
         cleaned_data = {'arv_regimen': OTHER,
                         'arv_regimen_other': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('arv_regimen_other', form._errors)
 
     def test_first_line_arvs_other_specified_valid(self):
         cleaned_data = {'arv_regimen': OTHER,
@@ -177,7 +139,7 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -185,7 +147,8 @@ class TestPatientHistoryFormValidator(TestCase):
         cleaned_data = {'patient_adherence': NO,
                         'last_dose': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('last_dose', form._errors)
 
     def test_patient_adherence_last_dose_valid(self):
         cleaned_data = {'patient_adherence': NO,
@@ -193,7 +156,7 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
