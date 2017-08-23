@@ -9,6 +9,7 @@ class AdverseEventFormValidator(FormValidator):
             YES,
             field='ae_cause',
             field_required='ae_cause_other')
+
         self.required_if_true(
             condition=(self.cleaned_data.get(
                 'ae_study_relation_possibility') in [NO, UNKNOWN]),
@@ -17,9 +18,11 @@ class AdverseEventFormValidator(FormValidator):
         regimen_1_condition = (
             self.cleaned_data.get('regimen') == 'regimen_1' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
+
         self.applicable_if_true(
             condition=regimen_1_condition,
             field_applicable='ambisome_relation')
+
         self.applicable_if_true(
             condition=regimen_1_condition,
             field_applicable='fluconazole_relation')
@@ -27,9 +30,11 @@ class AdverseEventFormValidator(FormValidator):
         regimen_2_condition = (
             self.cleaned_data.get('regimen') == 'regimen_2' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
+
         self.applicable_if_true(
             condition=regimen_2_condition,
             field_applicable='amphotericin_b_relation')
+
         self.applicable_if(
             YES,
             field='ae_study_relation_possibility',
