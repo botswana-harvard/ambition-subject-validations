@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
@@ -9,7 +9,6 @@ from ..constants import HEADACHE, VISUAL_LOSS
 from ..form_validators import PatientHistoryFormValidator
 
 
-@tag('ha')
 class TestPatientHistoryFormValidator(TestCase):
 
     #     def test_headache_requires_headache_duration(self):
