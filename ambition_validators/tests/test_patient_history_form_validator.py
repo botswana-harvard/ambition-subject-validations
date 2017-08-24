@@ -134,6 +134,13 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care', form._errors)
 
+    def test_care_before_hospital_other(self):
+        cleaned_data = {'care_before_hospital': OTHER,
+                        'care_before_hospital_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('care_before_hospital_other', form._errors)
+
     def test_location_care_other(self):
         cleaned_data = {'location_care': OTHER,
                         'location_care_other': None}

@@ -79,6 +79,11 @@ class PatientHistoryFormValidator(FormValidator):
             field_other='focal_neurologic_deficit')
 
         self.required_if(
+            OTHER,
+            field='care_before_hospital',
+            field_required='care_before_hospital_other')
+
+        self.required_if(
             YES,
             field='care_before_hospital',
             field_required='location_care')
