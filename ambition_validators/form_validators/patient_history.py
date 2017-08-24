@@ -130,7 +130,7 @@ class PatientHistoryFormValidator(FormValidator):
         self.not_required_if(
             NO,
             field='elementary_school',
-            field_required='attendance_in_years')
+            field_required='elementary_attendance_years')
 
         self.not_required_if(
             NO,

@@ -216,10 +216,10 @@ class TestPatientHistoryFormValidator(TestCase):
                         'education_years': None,
                         'education_certificate': None,
                         'elementary_school': None,
-                        'attendance_in_years': 10}
+                        'elementary_attendance_years': 10}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('attendance_in_years', form._errors)
+        self.assertIn('elementary_attendance_years', form._errors)
 
     def test_secondary_school(self):
         cleaned_data = {'household_head': NO,
@@ -227,7 +227,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'education_years': None,
                         'education_certificate': None,
                         'elementary_school': None,
-                        'attendance_in_years': None,
+                        'elementary_attendance_years': None,
                         'secondary_school': YES}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
@@ -239,7 +239,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'education_years': None,
                         'education_certificate': None,
                         'elementary_school': None,
-                        'attendance_in_years': None,
+                        'elementary_attendance_years': None,
                         'secondary_school': None,
                         'secondary_attendance_years': 11}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
@@ -252,7 +252,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'education_years': None,
                         'education_certificate': None,
                         'elementary_school': None,
-                        'attendance_in_years': None,
+                        'elementary_attendance_years': None,
                         'secondary_school': None,
                         'secondary_attendance_years': None,
                         'higher_education': YES}
@@ -266,7 +266,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'education_years': None,
                         'education_certificate': None,
                         'elementary_school': None,
-                        'attendance_in_years': None,
+                        'elementary_attendance_years': None,
                         'secondary_school': None,
                         'secondary_attendance_years': None,
                         'higher_education': None,
@@ -275,12 +275,12 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('higher_attendance_years', form._errors)
 
-    def test_attendance_in_years2(self):
+    def test_elementary_attendance_years2(self):
         cleaned_data = {'elementary_school': NO,
-                        'attendance_in_years': 1}
+                        'elementary_attendance_years': 1}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('attendance_in_years', form._errors)
+        self.assertIn('elementary_attendance_years', form._errors)
 
     def test_secondary_attendance_years2(self):
         cleaned_data = {'secondary_school': NO,
