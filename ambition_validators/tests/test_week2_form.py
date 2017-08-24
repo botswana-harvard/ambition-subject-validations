@@ -14,14 +14,14 @@ class TestWeek2Form(TestCase):
         cleaned_data = {'discharged': YES,
                         'discharge_date': None}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week2.clean)
+        self.assertRaises(ValidationError, week2.validate)
 
         cleaned_data = {'discharged': YES,
                         'discharge_date': get_utcnow()}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week2.clean()
+            week2.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -29,14 +29,14 @@ class TestWeek2Form(TestCase):
         cleaned_data = {'died': YES,
                         'death_date': None}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week2.clean)
+        self.assertRaises(ValidationError, week2.validate)
 
         cleaned_data = {'died': YES,
                         'death_date': get_utcnow()}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week2.clean()
+            week2.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -44,14 +44,14 @@ class TestWeek2Form(TestCase):
         cleaned_data = {'blood_received': YES,
                         'units': None}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week2.clean)
+        self.assertRaises(ValidationError, week2.validate)
 
         cleaned_data = {'blood_received': YES,
                         'units': 2}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week2.clean()
+            week2.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -62,14 +62,14 @@ class TestSignificantDiagnosesForm(TestCase):
         cleaned_data = {'other_significant_diagnoses': YES,
                         'possible_diagnoses': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_specification_valid(self):
         cleaned_data = {'other_significant_diagnoses': YES,
                         'possible_diagnoses': 'pneumonia'}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -78,7 +78,7 @@ class TestSignificantDiagnosesForm(TestCase):
                         'possible_diagnoses': 'pneumonia',
                         'dx_date': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_date_valid(self):
         cleaned_data = {'other_significant_diagnoses': YES,
@@ -86,7 +86,7 @@ class TestSignificantDiagnosesForm(TestCase):
                         'dx_date': get_utcnow()}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -95,7 +95,7 @@ class TestSignificantDiagnosesForm(TestCase):
                         'possible_diagnoses': OTHER,
                         'dx_other': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_other_specified_valid(self):
         cleaned_data = {'other_significant_diagnoses': YES,
@@ -103,7 +103,7 @@ class TestSignificantDiagnosesForm(TestCase):
                         'dx_other': 'blah'}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -111,14 +111,14 @@ class TestSignificantDiagnosesForm(TestCase):
         cleaned_data = {'flucon_day_missed': 1,
                         'flucon_missed_reason': None}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
 
     def test_flucon_day_missed_reason_ivalid(self):
         cleaned_data = {'flucon_day_missed': 1,
                         'flucon_missed_reason': 'blah'}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -127,7 +127,7 @@ class TestSignificantDiagnosesForm(TestCase):
                         'flucon_missed_reason': OTHER,
                         'missed_reason_other': None}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.clean)
+        self.assertRaises(ValidationError, form.validate)
 
     def test_flucon_day_missed_reason_other_not_provided_ivalid(self):
         cleaned_data = {'flucon_day_missed': 1,
@@ -135,6 +135,6 @@ class TestSignificantDiagnosesForm(TestCase):
                         'missed_reason_other': 'blah'}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         try:
-            form.clean()
+            form.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
