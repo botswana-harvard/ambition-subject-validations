@@ -9,8 +9,3 @@ class SubjectScreeningFormValidator(FormValidator):
             FEMALE,
             field='gender',
             field_required='pregnancy_or_lactation')
-
-        self.required_if(
-            YES,
-            field='pregnancy_or_lactation',
-            field_required='preg_test_date')

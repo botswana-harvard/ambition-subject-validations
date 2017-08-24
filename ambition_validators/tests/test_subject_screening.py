@@ -8,6 +8,7 @@ from ..form_validators import SubjectScreeningFormValidator
 
 
 class TestSubjectScreeningFormValidator(TestCase):
+
     def test_gender(self):
         options = {
             'gender': FEMALE,
@@ -19,19 +20,5 @@ class TestSubjectScreeningFormValidator(TestCase):
         except forms.ValidationError:
             pass
         self.assertIn('pregnancy_or_lactation',
-                      form_validator._errors)
-        self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
-
-    def test_pregnancy_or_lactation(self):
-        options = {
-            'pregnancy_or_lactation': YES,
-            'preg_test_date': None}
-        form_validator = SubjectScreeningFormValidator(
-            cleaned_data=options)
-        try:
-            form_validator.validate()
-        except forms.ValidationError:
-            pass
-        self.assertIn('preg_test_date',
                       form_validator._errors)
         self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
