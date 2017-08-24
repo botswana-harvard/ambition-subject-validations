@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
@@ -8,12 +8,12 @@ from ..form_validators import MicrobiologyFormValidator
 
 
 class TestMicrobiologyFormValidator(TestCase):
-
+    @tag('666')
     def test_urine_culture_performed_yes_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': YES,
                         'urine_culture_results': None}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.clean)
+        self.assertRaises(ValidationError, form_validator.validate)
 
     def test_urine_culture_performed_no_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': NO,
