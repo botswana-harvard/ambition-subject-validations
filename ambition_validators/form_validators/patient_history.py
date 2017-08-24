@@ -102,3 +102,26 @@ class PatientHistoryFormValidator(FormValidator):
             OTHER,
             field='activities_missed',
             field_required='activities_missed_other')
+
+        self.not_required_if(
+            NO,
+            field='loss_of_earnings',
+            field_required='earnings_lost_amount')
+
+        not_req_fields = [
+            'profession',
+            'education_years',
+            'education_certificate',
+            'elementary_school',
+            'attendance_in_years',
+            'secondary_school',
+            'secondary_attendance_years',
+            'higher_education',
+            'higher_attendance_years'
+        ]
+        for not_req_field in not_req_fields:
+            self.not_required_if(
+                NO,
+                field='household_head',
+                field_required=not_req_field,
+            )
