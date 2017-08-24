@@ -274,3 +274,45 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('higher_attendance_years', form._errors)
+
+    def test_attendance_in_years2(self):
+        cleaned_data = {'elementary_school': NO,
+                        'attendance_in_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('attendance_in_years', form._errors)
+
+    def test_secondary_attendance_years2(self):
+        cleaned_data = {'secondary_school': NO,
+                        'secondary_attendance_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('secondary_attendance_years', form._errors)
+
+    def test_higher_attendance_years2(self):
+        cleaned_data = {'higher_education': NO,
+                        'higher_attendance_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('higher_attendance_years', form._errors)
+
+    def test_head_attendance_years(self):
+        cleaned_data = {'head_elementary': NO,
+                        'head_attendance_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('head_attendance_years', form._errors)
+
+    def test_head_secondary_years(self):
+        cleaned_data = {'head_secondary': NO,
+                        'head_secondary_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('head_secondary_years', form._errors)
+
+    def test_head_higher_education(self):
+        cleaned_data = {'head_higher_education': NO,
+                        'head_higher_years': 1}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('head_higher_years', form._errors)

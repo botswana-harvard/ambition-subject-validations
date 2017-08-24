@@ -125,3 +125,33 @@ class PatientHistoryFormValidator(FormValidator):
                 field='household_head',
                 field_required=not_req_field,
             )
+
+        self.not_required_if(
+            NO,
+            field='elementary_school',
+            field_required='attendance_in_years')
+
+        self.not_required_if(
+            NO,
+            field='secondary_school',
+            field_required='secondary_attendance_years')
+
+        self.not_required_if(
+            NO,
+            field='higher_education',
+            field_required='higher_attendance_years')
+
+        self.not_required_if(
+            NO,
+            field='head_elementary',
+            field_required='head_attendance_years')
+
+        self.not_required_if(
+            NO,
+            field='head_secondary',
+            field_required='head_secondary_years')
+
+        self.not_required_if(
+            NO,
+            field='head_higher_education',
+            field_required='head_higher_years')
