@@ -1,7 +1,7 @@
 from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import YES, NO, OTHER
 
-from ..constants import HEADACHE, VISUAL_LOSS
+from ..constants import HEADACHE, VISUAL_LOSS, WORKING
 
 
 class PatientHistoryFormValidator(FormValidator):
@@ -77,3 +77,13 @@ class PatientHistoryFormValidator(FormValidator):
             'focal_neurologic_deficit',
             m2m_field='neurological',
             field_other='focal_neurologic_deficit')
+
+        self.required_if(
+            YES,
+            field='care_before_hospital',
+            field_required='location_care')
+
+        self.required_if(
+            WORKING,
+            field='activities_missed',
+            field_required='time_off_work')

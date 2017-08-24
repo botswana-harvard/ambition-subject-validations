@@ -5,7 +5,7 @@ from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
-from ..constants import HEADACHE, VISUAL_LOSS
+from ..constants import HEADACHE, VISUAL_LOSS, WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
@@ -119,3 +119,24 @@ class TestPatientHistoryFormValidator(TestCase):
 #         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form.validate)
 #         self.assertIn('focal_neurologic_deficit', form._errors)
+
+    def test_care_before_hospital_yes(self):
+        cleaned_data = {'care_before_hospital': YES,
+                        'location_care': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('location_care', form._errors)
+
+    def test_care_before_hospital_no(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'location_care': 'healthcare'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('location_care', form._errors)
+
+    def test_location_care_other(self):
+        cleaned_data = {'location_care': OTHER,
+                        'location_care_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('location_care_other', form._errors)
