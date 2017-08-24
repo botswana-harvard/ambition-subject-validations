@@ -84,6 +84,16 @@ class PatientHistoryFormValidator(FormValidator):
             field_required='location_care')
 
         self.required_if(
+            OTHER,
+            field='location_care',
+            field_required='location_care_other')
+
+        self.required_if(
             WORKING,
             field='activities_missed',
             field_required='time_off_work')
+
+        self.required_if(
+            OTHER,
+            field='activities_missed',
+            field_required='activities_missed_other')

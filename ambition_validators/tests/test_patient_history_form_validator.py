@@ -140,3 +140,17 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care_other', form._errors)
+
+    def test_activities_missed(self):
+        cleaned_data = {'activities_missed': WORKING,
+                        'time_off_work': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('time_off_work', form._errors)
+
+    def test_activities_missed_other(self):
+        cleaned_data = {'activities_missed': OTHER,
+                        'activities_missed_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('activities_missed_other', form._errors)
