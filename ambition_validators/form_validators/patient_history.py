@@ -14,18 +14,6 @@ class PatientHistoryFormValidator(FormValidator):
         self.m2m_other_specify(
             VISUAL_LOSS, m2m_field='symptom', field_other='visual_loss_duration', )
 
-#         condition = any(
-#             [True for opt in ('EFZ', 'NVP', 'DTG')
-#              if opt in self.cleaned_data.get('arv_regimen')])
-#         self.required_if_true(
-#             condition=condition,
-#             field_required='first_line_choice')
-
-        self.m2m_other_specify(
-            'focal_neurologic_deficit',
-            m2m_field='neurological',
-            field_other='focal_neurologic_deficit')
-
         self.applicable_if(
             YES,
             field='tb_history',
@@ -64,20 +52,15 @@ class PatientHistoryFormValidator(FormValidator):
         self.applicable_if(
             YES,
             field='taking_arv',
-            field_applicable='arv_regimen')
-
-        self.validate_other_specify(field='arv_regimen')
-
-        self.applicable_if(
-            YES,
-            field='taking_arv',
             field_applicable='first_arv_regimen')
 
         self.validate_other_specify(field='first_arv_regimen')
 
+        self.validate_other_specify(field='second_arv_regimen')
+
         self.applicable_if(
             YES,
-            field='taking_arv',
+            field='first_arv_regimen',
             field_applicable='first_line_choice')
 
         self.required_if(
@@ -89,3 +72,8 @@ class PatientHistoryFormValidator(FormValidator):
             NO,
             field='patient_adherence',
             field_required='last_dose')
+
+        self.m2m_other_specify(
+            'focal_neurologic_deficit',
+            m2m_field='neurological',
+            field_other='focal_neurologic_deficit')
