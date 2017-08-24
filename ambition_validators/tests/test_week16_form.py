@@ -13,14 +13,14 @@ class TestWeek16Form(TestCase):
         cleaned_data = {'patient_alive': NO,
                         'death_datetime': None}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week16.clean)
+        self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': NO,
                         'death_datetime': get_utcnow()}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week16.clean()
+            week16.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -30,7 +30,7 @@ class TestWeek16Form(TestCase):
                         'ranking_score': 1,
                         'activities_help': None}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week16.clean)
+        self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
                         'illness_problems': NO,
@@ -39,7 +39,7 @@ class TestWeek16Form(TestCase):
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week16.clean()
+            week16.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -49,7 +49,7 @@ class TestWeek16Form(TestCase):
                         'activities_help': YES,
                         'illness_problems': None}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week16.clean)
+        self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
                         'ranking_score': 1,
@@ -58,7 +58,7 @@ class TestWeek16Form(TestCase):
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week16.clean()
+            week16.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
@@ -68,7 +68,7 @@ class TestWeek16Form(TestCase):
                         'illness_problems': YES,
                         'ranking_score': None}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, week16.clean)
+        self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
                         'activities_help': YES,
@@ -77,6 +77,6 @@ class TestWeek16Form(TestCase):
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
-            week16.clean()
+            week16.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
