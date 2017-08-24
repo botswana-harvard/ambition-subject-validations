@@ -78,20 +78,21 @@ class PatientHistoryFormValidator(FormValidator):
             m2m_field='neurological',
             field_other='focal_neurologic_deficit')
 
-        self.required_if(
-            OTHER,
-            field='care_before_hospital',
-            field_required='care_before_hospital_other')
+        self.validate_other_specify(field='care_before_hospital')
 
         self.required_if(
             YES,
             field='care_before_hospital',
             field_required='location_care')
 
+        self.validate_other_specify(field='location_care')
+
+        self.validate_other_specify(field='care_provider')
+
         self.required_if(
-            OTHER,
-            field='location_care',
-            field_required='location_care_other')
+            YES,
+            field='paid_treatment',
+            field_required='paid_treatment_amount')
 
         self.required_if(
             WORKING,
@@ -113,7 +114,7 @@ class PatientHistoryFormValidator(FormValidator):
             'education_years',
             'education_certificate',
             'elementary_school',
-            'attendance_in_years',
+            'elementary_attendance_years',
             'secondary_school',
             'secondary_attendance_years',
             'higher_education',
