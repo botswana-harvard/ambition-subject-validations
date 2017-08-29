@@ -9,7 +9,7 @@ from ..form_validators import SubjectScreeningFormValidator
 
 
 class TestSubjectScreeningFormValidator(TestCase):
-    @tag('666')
+
     def test_gender(self):
         options = {
             'gender': MALE,
@@ -24,7 +24,6 @@ class TestSubjectScreeningFormValidator(TestCase):
                       form_validator._errors)
         self.assertIn(NOT_REQUIRED_ERROR, form_validator._error_codes)
 
-    @tag('666')
     def test_preg_test_date_yes(self):
         options = {
             'pregnancy': YES,
@@ -39,7 +38,6 @@ class TestSubjectScreeningFormValidator(TestCase):
                       form_validator._errors)
         self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
 
-    @tag('666')
     def test_preg_test_date_no(self):
         options = {
             'pregnancy': NO,
@@ -54,7 +52,6 @@ class TestSubjectScreeningFormValidator(TestCase):
                       form_validator._errors)
         self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
 
-    @tag('666')
     def test_preg_test_date_NA(self):
         options = {
             'pregnancy': NOT_APPLICABLE,
