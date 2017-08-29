@@ -73,7 +73,7 @@ class TestWeek16Form(TestCase):
         cleaned_data = {'patient_alive': YES,
                         'activities_help': YES,
                         'illness_problems': YES,
-                        'ranking_score': 2}
+                        'ranking_score': '0'}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
