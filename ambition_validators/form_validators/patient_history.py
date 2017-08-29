@@ -39,10 +39,10 @@ class PatientHistoryFormValidator(FormValidator):
             field='previous_non_tb_oi',
             field_required='previous_non_tb_oi_date')
 
-        self.applicable_if(
-            YES,
-            field='new_hiv_diagnosis',
-            field_applicable='taking_arv')
+#         self.applicable_if(
+#             NO,
+#             field='new_hiv_diagnosis',
+#             field_applicable='taking_arv')
 
         self.required_if(
             YES,
@@ -71,16 +71,6 @@ class PatientHistoryFormValidator(FormValidator):
                 field_required=arv_not_req_field,
             )
 
-        self.applicable_if(
-            YES,
-            field='first_arv_regimen',
-            field_applicable='first_line_choice')
-
-        self.required_if(
-            NO,
-            field='taking_arv',
-            field_required='patient_adherence')
-
         self.required_if(
             NO,
             field='patient_adherence',
@@ -93,10 +83,10 @@ class PatientHistoryFormValidator(FormValidator):
 
         self.validate_other_specify(field='care_before_hospital')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='care_before_hospital',
-            field_required='location_care')
+            field_applicable='location_care')
 
         self.validate_other_specify(field='location_care')
 
@@ -106,6 +96,11 @@ class PatientHistoryFormValidator(FormValidator):
             YES,
             field='paid_treatment',
             field_required='paid_treatment_amount')
+
+        self.required_if(
+            YES,
+            field='other_place_visited',
+            field_required='duration_present_condition')
 
         self.required_if(
             WORKING,
@@ -122,50 +117,80 @@ class PatientHistoryFormValidator(FormValidator):
             field='loss_of_earnings',
             field_required='earnings_lost_amount')
 
-        not_req_fields = [
+        req_fields = [
             'profession',
             'education_years',
             'education_certificate',
+        ]
+        for req_field in req_fields:
+            self.required_if(
+                YES,
+                field='household_head',
+                field_required=req_field,
+            )
+
+        req_fields = [
             'elementary_school',
-            'elementary_attendance_years',
             'secondary_school',
-            'secondary_attendance_years',
             'higher_education',
-            'higher_attendance_years'
+        ]
+        for req_field in req_fields:
+            self.applicable_if(
+                YES,
+                field='household_head',
+                field_applicable=req_field,
+            )
+
+        self.required_if(
+            YES,
+            field='elementary_school',
+            field_required='elementary_attendance_years')
+
+        self.required_if(
+            YES,
+            field='secondary_school',
+            field_required='secondary_attendance_years')
+
+        self.required_if(
+            YES,
+            field='higher_education',
+            field_required='higher_attendance_years')
+
+        not_req_fields = [
+            'head_profession',
+            'head_education_years',
+            'head_education_certificate',
         ]
         for not_req_field in not_req_fields:
-            self.not_required_if(
+            self.required_if(
                 NO,
                 field='household_head',
                 field_required=not_req_field,
             )
 
-        self.not_required_if(
-            NO,
-            field='elementary_school',
-            field_required='elementary_attendance_years')
+        req_fields = [
+            'head_elementary',
+            'head_secondary',
+            'head_higher_education',
+        ]
+        for req_field in req_fields:
+            self.applicable_if(
+                NO,
+                field='household_head',
+                field_applicable=req_field,
+            )
 
-        self.not_required_if(
-            NO,
-            field='secondary_school',
-            field_required='secondary_attendance_years')
-
-        self.not_required_if(
-            NO,
-            field='higher_education',
-            field_required='higher_attendance_years')
-
-        self.not_required_if(
-            NO,
+        self.required_if(
+            YES,
             field='head_elementary',
             field_required='head_attendance_years')
 
-        self.not_required_if(
-            NO,
+        self.required_if(
+            YES,
             field='head_secondary',
             field_required='head_secondary_years')
 
-        self.not_required_if(
-            NO,
+        self.required_if(
+            YES,
             field='head_higher_education',
             field_required='head_higher_years')

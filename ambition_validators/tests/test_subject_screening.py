@@ -3,7 +3,7 @@ from django.test import TestCase, tag
 
 from edc_base.utils import get_utcnow
 from edc_constants.constants import MALE, YES, NOT_APPLICABLE, NO
-from edc_base.modelform_validators import NOT_REQUIRED_ERROR, REQUIRED_ERROR
+from edc_base.modelform_validators import NOT_REQUIRED_ERROR, REQUIRED_ERROR, NOT_APPLICABLE_ERROR
 
 from ..form_validators import SubjectScreeningFormValidator
 
@@ -22,7 +22,7 @@ class TestSubjectScreeningFormValidator(TestCase):
             pass
         self.assertIn('pregnancy',
                       form_validator._errors)
-        self.assertIn(NOT_REQUIRED_ERROR, form_validator._error_codes)
+        self.assertIn(NOT_APPLICABLE_ERROR, form_validator._error_codes)
 
     def test_preg_test_date_yes(self):
         options = {

@@ -54,13 +54,6 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('previous_non_tb_oi_date', form._errors)
 
-    def test_new_hiv_diagnosis_taking_arv_none_invalid(self):
-        cleaned_data = {'new_hiv_diagnosis': YES,
-                        'taking_arv': NOT_APPLICABLE}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('taking_arv', form._errors)
-
     def test_taking_arv_arv_date_none_invalid(self):
         cleaned_data = {'taking_arv': YES,
                         'arv_date': None}
@@ -125,19 +118,12 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('second_arv_regimen_other', form._errors)
 
-    def test_first_arv_regimen_first_line_choice_none_invalid(self):
-        cleaned_data = {'first_arv_regimen': YES,
-                        'first_line_choice': NOT_APPLICABLE}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('first_line_choice', form._errors)
-
-    def test_taking_arv_patient_adherence_none_invalid(self):
-        cleaned_data = {'taking_arv': NO,
-                        'patient_adherence': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('patient_adherence', form._errors)
+#     def test_taking_arv_patient_adherence_none_invalid(self):
+#         cleaned_data = {'taking_arv': NO,
+#                         'patient_adherence': None}
+#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+#         self.assertRaises(ValidationError, form.validate)
+#         self.assertIn('patient_adherence', form._errors)
 
     def test_patient_adherence_last_dose_none_invalid(self):
         cleaned_data = {'patient_adherence': NO,
@@ -155,7 +141,7 @@ class TestPatientHistoryFormValidator(TestCase):
 
     def test_care_before_hospital_yes(self):
         cleaned_data = {'care_before_hospital': YES,
-                        'location_care': None}
+                        'location_care': NOT_APPLICABLE}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care', form._errors)
@@ -248,7 +234,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'profession': None,
                         'education_years': None,
                         'education_certificate': None,
-                        'elementary_school': None,
+                        'elementary_school': NOT_APPLICABLE,
                         'elementary_attendance_years': 10}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
@@ -259,7 +245,7 @@ class TestPatientHistoryFormValidator(TestCase):
                         'profession': None,
                         'education_years': None,
                         'education_certificate': None,
-                        'elementary_school': None,
+                        'elementary_school': NOT_APPLICABLE,
                         'elementary_attendance_years': None,
                         'secondary_school': YES}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
@@ -271,9 +257,9 @@ class TestPatientHistoryFormValidator(TestCase):
                         'profession': None,
                         'education_years': None,
                         'education_certificate': None,
-                        'elementary_school': None,
+                        'elementary_school': NOT_APPLICABLE,
                         'elementary_attendance_years': None,
-                        'secondary_school': None,
+                        'secondary_school': NOT_APPLICABLE,
                         'secondary_attendance_years': 11}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
@@ -284,9 +270,9 @@ class TestPatientHistoryFormValidator(TestCase):
                         'profession': None,
                         'education_years': None,
                         'education_certificate': None,
-                        'elementary_school': None,
+                        'elementary_school': NOT_APPLICABLE,
                         'elementary_attendance_years': None,
-                        'secondary_school': None,
+                        'secondary_school': NOT_APPLICABLE,
                         'secondary_attendance_years': None,
                         'higher_education': YES}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
@@ -298,11 +284,11 @@ class TestPatientHistoryFormValidator(TestCase):
                         'profession': None,
                         'education_years': None,
                         'education_certificate': None,
-                        'elementary_school': None,
+                        'elementary_school': NOT_APPLICABLE,
                         'elementary_attendance_years': None,
-                        'secondary_school': None,
+                        'secondary_school': NOT_APPLICABLE,
                         'secondary_attendance_years': None,
-                        'higher_education': None,
+                        'higher_education': NOT_APPLICABLE,
                         'higher_attendance_years': 11}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)

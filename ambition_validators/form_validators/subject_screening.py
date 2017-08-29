@@ -5,10 +5,10 @@ from edc_constants.constants import MALE, NOT_APPLICABLE, YES, NO
 class SubjectScreeningFormValidator(FormValidator):
 
     def clean(self):
-        self.not_required_if(
+        self.not_applicable(
             MALE,
             field='gender',
-            field_required='pregnancy')
+            field_applicable='pregnancy')
 
         self.required_if_true(
             condition=(self.cleaned_data.get(

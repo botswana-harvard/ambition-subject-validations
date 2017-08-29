@@ -14,4 +14,7 @@ class SubjectScreening(BaseUuidModel):
     report_datetime = models.DateTimeField(
         default=get_utcnow)
 
+    mental_status = models.CharField(
+        max_length=10)
+
     age_in_years = models.IntegerField()
