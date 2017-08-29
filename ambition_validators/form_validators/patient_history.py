@@ -58,6 +58,19 @@ class PatientHistoryFormValidator(FormValidator):
 
         self.validate_other_specify(field='second_arv_regimen')
 
+        arv_not_req_fields = [
+            'first_arv_regimen',
+            'second_arv_regimen',
+            'first_line_choice',
+            'patient_adherence',
+        ]
+        for arv_not_req_field in arv_not_req_fields:
+            self.not_required_if(
+                NO,
+                field='taking_arv',
+                field_required=arv_not_req_field,
+            )
+
         self.applicable_if(
             YES,
             field='first_arv_regimen',

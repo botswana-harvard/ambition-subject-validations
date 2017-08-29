@@ -1,11 +1,9 @@
-from dateutil.relativedelta import relativedelta
-from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
-from ..constants import HEADACHE, VISUAL_LOSS, WORKING
+from ..constants import WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
@@ -77,6 +75,41 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('first_arv_regimen', form._errors)
+
+    def test_taking_arv_first_arv_regimen_no(self):
+        cleaned_data = {'taking_arv': NO,
+                        'first_arv_regimen': 'Other'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('first_arv_regimen', form._errors)
+
+    def test_taking_arv_second_arv_regimen_no(self):
+        cleaned_data = {'taking_arv': NO,
+                        'first_arv_regimen': NOT_APPLICABLE,
+                        'second_arv_regimen': 'AZT+3-TC+ either ATZ/r '
+                        'or Lopinavir/r'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('second_arv_regimen', form._errors)
+
+    def test_taking_arv_first_line_choice_no(self):
+        cleaned_data = {'taking_arv': NO,
+                        'first_arv_regimen': NOT_APPLICABLE,
+                        'second_arv_regimen': NOT_APPLICABLE,
+                        'first_line_choice': 'EFV'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('first_line_choice', form._errors)
+
+    def test_taking_arv_patient_adherence_no(self):
+        cleaned_data = {'taking_arv': NO,
+                        'first_arv_regimen': NOT_APPLICABLE,
+                        'second_arv_regimen': NOT_APPLICABLE,
+                        'first_line_choice': NOT_APPLICABLE,
+                        'patient_adherence': YES}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('patient_adherence', form._errors)
 
     def test_first_arv_regimen_other_none_invalid(self):
         cleaned_data = {'first_arv_regimen': OTHER,
