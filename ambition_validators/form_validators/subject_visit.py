@@ -1,4 +1,4 @@
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import OTHER
 from edc_visit_tracking.constants import MISSED_VISIT, UNSCHEDULED
 from edc_visit_tracking.form_validators import VisitFormValidator
 

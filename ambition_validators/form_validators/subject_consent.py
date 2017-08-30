@@ -1,8 +1,9 @@
 from dateutil.relativedelta import relativedelta
 from django import forms
 from django.apps import apps as django_apps
-from edc_base.modelform_validators import FormValidator
 from django.core.exceptions import ObjectDoesNotExist
+from edc_base.modelform_validators import FormValidator
+from edc_constants.constants import ABNORMAL
 
 
 class SubjectConsentFormValidator(FormValidator):
@@ -13,6 +14,7 @@ class SubjectConsentFormValidator(FormValidator):
         super().__init__(**kwargs)
         self.dob = self.cleaned_data.get('dob')
         self.consent_datetime = self.cleaned_data.get('consent_datetime')
+        self.guardian_name = self.cleaned_data.get('guardian_name')
         self.screening_identifier = self.cleaned_data.get(
             'screening_identifier')
 
@@ -41,3 +43,9 @@ class SubjectConsentFormValidator(FormValidator):
                  'The date of birth entered does not match the age at '
                  f'screening. Expected {subject_screening.age_in_years}. '
                  f'Got {screening_age_in_years}.'})
+
+        if subject_screening.mental_status == ABNORMAL and not self.guardian_name:
+            raise forms.ValidationError(
+                {'guardian_name':
+                 'Patient mental status at screening is '
+                 f'{subject_screening.mental_status}, guardian name is required.'})
