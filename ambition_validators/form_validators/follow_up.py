@@ -20,25 +20,31 @@ class FollowUpFormValidator(FormValidator):
             field='rifampicin_started',
             field_required='rifampicin_start_date')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(field='care_before_hospital')
+
+        self.applicable_if(
+            YES,
             field='care_before_hospital',
-            field_required='care_before_hospital_other')
+            field_applicable='location_care')
+
+        self.validate_other_specify(field='location_care')
+
+        self.validate_other_specify(field='care_provider')
 
         self.required_if(
             YES,
-            field='care_before_hospital',
-            field_required='location_care')
+            field='paid_treatment',
+            field_required='paid_treatment_amount')
 
-        self.required_if(
-            OTHER,
-            field='location_care',
-            field_required='location_care_other')
-
-        self.required_if(
-            YES,
+        self.not_required_if(
+            NO,
             field='medication_bought',
             field_required='medication_payment')
+
+        self.required_if(
+            YES,
+            field='other_place_visited',
+            field_required='duration_present_condition')
 
         self.required_if(
             WORKING,

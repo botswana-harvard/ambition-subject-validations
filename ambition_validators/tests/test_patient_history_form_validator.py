@@ -167,6 +167,20 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care_other', form._errors)
 
+    def test_med_bought_no(self):
+        cleaned_data = {'medication_bought': NO,
+                        'medication_payment': 100}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('medication_payment', form._errors)
+
+    def test_med_bought_yes(self):
+        cleaned_data = {'medication_bought': YES,
+                        'medication_payment': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('medication_payment', form._errors)
+
     def test_activities_missed(self):
         cleaned_data = {'activities_missed': WORKING,
                         'time_off_work': None}

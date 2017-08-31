@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
 from ..constants import WORKING
 from ..form_validators import FollowUpFormValidator
@@ -102,7 +102,7 @@ class TestFollowUpFormValidator(TestCase):
 
     def test_care_before_hospital_yes(self):
         cleaned_data = {'care_before_hospital': YES,
-                        'location_care': None}
+                        'location_care': NOT_APPLICABLE}
         form = FollowUpFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care', form._errors)
@@ -128,7 +128,14 @@ class TestFollowUpFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care_other', form._errors)
 
-    def test_medication_bought(self):
+    def test_med_bought_no(self):
+        cleaned_data = {'medication_bought': NO,
+                        'medication_payment': 100}
+        form = FollowUpFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('medication_payment', form._errors)
+
+    def test_med_bought_yes(self):
         cleaned_data = {'medication_bought': YES,
                         'medication_payment': None}
         form = FollowUpFormValidator(cleaned_data=cleaned_data)

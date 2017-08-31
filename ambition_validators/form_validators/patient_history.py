@@ -97,6 +97,11 @@ class PatientHistoryFormValidator(FormValidator):
             field='paid_treatment',
             field_required='paid_treatment_amount')
 
+        self.not_required_if(
+            NO,
+            field='medication_bought',
+            field_required='medication_payment')
+
         self.required_if(
             YES,
             field='other_place_visited',
