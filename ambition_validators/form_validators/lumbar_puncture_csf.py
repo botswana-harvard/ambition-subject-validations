@@ -29,12 +29,12 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
         self.only_required_if(
-            0, field='csf_wbc_cell_count',
+            field='csf_wbc_cell_count',
             field_required='differential_lymphocyte_count',
             cleaned_data=self.cleaned_data)
 
         self.only_required_if(
-            0, field='csf_wbc_cell_count',
+            field='csf_wbc_cell_count',
             field_required='differential_neutrophil_count',
             cleaned_data=self.cleaned_data)
 
@@ -50,7 +50,7 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             'not_done', field='csf_cr_ag',
             field_required='csf_cr_ag_lfa')
 
-    def only_required_if(self, *responses, field=None, field_required=None,
+    def only_required_if(self, field=None, field_required=None,
                          cleaned_data=None):
 
         if (cleaned_data.get(field) == 0
@@ -63,8 +63,8 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def percentage_limit_validation(self, field=None, unit=None, cleaned_data=None):
-        if (self.cleaned_data.get(unit) == '%'
-                and self.cleaned_data.get(field) > 100):
+        if self.cleaned_data.get(field) and (self.cleaned_data.get(unit) == '%' and
+                                             self.cleaned_data.get(field) > 100):
 
             raise forms.ValidationError({
                 field: 'Percent cannot be greater than 100'})

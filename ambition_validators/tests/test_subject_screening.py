@@ -1,52 +1,43 @@
 from django import forms
-from django.test import TestCase
+from django.test import TestCase, tag
+from django.core.exceptions import ValidationError
 
-from edc_constants.constants import YES, FEMALE, NOT_APPLICABLE, NO
-from edc_base.modelform_validators import APPLICABLE_ERROR, REQUIRED_ERROR
+from edc_base.utils import get_utcnow
+from edc_constants.constants import MALE, YES, NOT_APPLICABLE, NO
 
 from ..form_validators import SubjectScreeningFormValidator
 
 
 class TestSubjectScreeningFormValidator(TestCase):
 
-    def test_female_pregnancy_not_applicable_invalid(self):
+    def test_gender(self):
         options = {
-            'gender': FEMALE,
-            'pregnancy': NOT_APPLICABLE}
-        form_validator = SubjectScreeningFormValidator(
-            cleaned_data=options)
-        try:
-            form_validator.validate()
-        except forms.ValidationError:
-            pass
-        self.assertIn('pregnancy',
-                      form_validator._errors)
-        self.assertIn(APPLICABLE_ERROR, form_validator._error_codes)
+            'gender': MALE,
+            'pregnancy': YES}
+        form_validator = SubjectScreeningFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('pregnancy', form_validator._errors)
 
-    def test_pregnancy_no_preg_test_date_invalid(self):
+    def test_preg_test_date_yes(self):
+        options = {
+            'pregnancy': YES,
+            'preg_test_date': None}
+        form_validator = SubjectScreeningFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('preg_test_date', form_validator._errors)
+
+    def test_preg_test_date_no(self):
         options = {
             'pregnancy': NO,
             'preg_test_date': None}
-        form_validator = SubjectScreeningFormValidator(
-            cleaned_data=options)
-        try:
-            form_validator.validate()
-        except forms.ValidationError:
-            pass
-        self.assertIn('preg_test_date',
-                      form_validator._errors)
-        self.assertIn(REQUIRED_ERROR, form_validator._error_codes)
+        form_validator = SubjectScreeningFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('preg_test_date', form_validator._errors)
 
-    def test_female_breast_feeding_not_applicable_invalid(self):
+    def test_preg_test_date_NA(self):
         options = {
-            'gender': FEMALE,
-            'breast_feeding': NOT_APPLICABLE}
-        form_validator = SubjectScreeningFormValidator(
-            cleaned_data=options)
-        try:
-            form_validator.validate()
-        except forms.ValidationError:
-            pass
-        self.assertIn('breast_feeding',
-                      form_validator._errors)
-        self.assertIn(APPLICABLE_ERROR, form_validator._error_codes)
+            'pregnancy': NOT_APPLICABLE,
+            'preg_test_date': get_utcnow}
+        form_validator = SubjectScreeningFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('preg_test_date', form_validator._errors)
