@@ -54,6 +54,13 @@ class TestPatientHistoryFormValidator(TestCase):
 #         self.assertRaises(ValidationError, form.validate)
 #         self.assertIn('previous_non_tb_oi_date', form._errors)
 
+    def test_not_new_hiv_diagnosis_taking_arv_none_invalid(self):
+        cleaned_data = {'new_hiv_diagnosis': NO,
+                        'taking_arv': NOT_APPLICABLE}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('taking_arv', form._errors)
+
     def test_taking_arv_arv_date_none_invalid(self):
         cleaned_data = {'taking_arv': YES,
                         'arv_date': None}
@@ -118,12 +125,12 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('second_arv_regimen_other', form._errors)
 
-#     def test_taking_arv_patient_adherence_none_invalid(self):
-#         cleaned_data = {'taking_arv': NO,
-#                         'patient_adherence': None}
-#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, form.validate)
-#         self.assertIn('patient_adherence', form._errors)
+    def test_taking_arv_patient_adherence_none_invalid(self):
+        cleaned_data = {'taking_arv': NO,
+                        'patient_adherence': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('patient_adherence', form._errors)
 
     def test_patient_adherence_last_dose_none_invalid(self):
         cleaned_data = {'patient_adherence': NO,

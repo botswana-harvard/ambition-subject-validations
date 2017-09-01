@@ -46,11 +46,11 @@ class PatientHistoryFormValidator(FormValidator):
         #             field='previous_non_tb_oi',
         #             field_required='previous_non_tb_oi_date')
 
-        #         self.applicable_if(
-        #             NO,
-        #             field='new_hiv_diagnosis',
-        #             field_applicable='taking_arv')
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        self.applicable_if(
+            NO,
+            field='new_hiv_diagnosis',
+            field_applicable='taking_arv')
+
         self.required_if(
             YES,
             field='taking_arv',
