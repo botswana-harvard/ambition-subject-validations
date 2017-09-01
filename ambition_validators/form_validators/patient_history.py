@@ -62,7 +62,6 @@ class PatientHistoryFormValidator(FormValidator):
 
         arv_req_fields = [
             'first_arv_regimen',
-            'second_arv_regimen',
             'first_line_choice',
             'patient_adherence',
         ]
@@ -78,7 +77,6 @@ class PatientHistoryFormValidator(FormValidator):
             field='patient_adherence',
             field_required='last_dose')
 
-#         condition = self.cleaned_data.get('last_viral_load') > 0
         self.not_required_if(
             None,
             field='last_viral_load',

@@ -83,19 +83,9 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('first_arv_regimen', form._errors)
 
-    def test_taking_arv_second_arv_regimen_no(self):
-        cleaned_data = {'taking_arv': NO,
-                        'first_arv_regimen': NOT_APPLICABLE,
-                        'second_arv_regimen': 'AZT+3-TC+ either ATZ/r '
-                        'or Lopinavir/r'}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('second_arv_regimen', form._errors)
-
     def test_taking_arv_first_line_choice_no(self):
         cleaned_data = {'taking_arv': NO,
                         'first_arv_regimen': NOT_APPLICABLE,
-                        'second_arv_regimen': NOT_APPLICABLE,
                         'first_line_choice': 'EFV'}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
@@ -104,7 +94,6 @@ class TestPatientHistoryFormValidator(TestCase):
     def test_taking_arv_patient_adherence_no(self):
         cleaned_data = {'taking_arv': NO,
                         'first_arv_regimen': NOT_APPLICABLE,
-                        'second_arv_regimen': NOT_APPLICABLE,
                         'first_line_choice': NOT_APPLICABLE,
                         'patient_adherence': YES}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
