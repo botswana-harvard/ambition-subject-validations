@@ -29,7 +29,15 @@ class PatientHistoryFormValidator(FormValidator):
             field='taking_rifampicin',
             field_required='rifampicin_started_date')
 
-        self.validate_other_specify(field='previous_non_tb_oi')
+        self.m2m_other_specify(
+            OTHER,
+            m2m_field='previous_non_tb_oi',
+            field_other='previous_non_tb_oi_other')
+
+        self.m2m_single_selection_if(
+            'None',
+            m2m_field='previous_non_tb_oi'
+        )
 
 #         self.required_if(
 #             YES,
@@ -77,6 +85,11 @@ class PatientHistoryFormValidator(FormValidator):
             'focal_neurologic_deficit',
             m2m_field='neurological',
             field_other='focal_neurologic_deficit')
+
+        self.m2m_other_specify(
+            OTHER,
+            m2m_field='neurological',
+            field_other='neurological_other')
 
         self.validate_other_specify(field='care_before_hospital')
 
