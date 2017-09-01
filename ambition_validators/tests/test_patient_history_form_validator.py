@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
@@ -7,7 +7,6 @@ from ..constants import WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
-@tag('ph')
 class TestPatientHistoryFormValidator(TestCase):
 
     #     def test_headache_requires_headache_duration(self):
@@ -40,12 +39,12 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('rifampicin_started_date', form._errors)
 
-    def test_previous_non_tb_oi_name_none_invalid(self):
-        cleaned_data = {'previous_non_tb_oi': OTHER,
-                        'previous_non_tb_oi_other': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('previous_non_tb_oi_other', form._errors)
+#     def test_previous_non_tb_oi_name_none_invalid(self):
+#         cleaned_data = {'previous_non_tb_oi': OTHER,
+#                         'previous_non_tb_oi_other': None}
+#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+#         self.assertRaises(ValidationError, form.validate)
+#         self.assertIn('previous_non_tb_oi_other', form._errors)
 
 #     def test_previous_non_tb_oi_date_none_invalid(self):
 #         cleaned_data = {'previous_non_tb_oi': YES,
@@ -146,6 +145,20 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('vl_date_estimated', form._errors)
+
+    def test_no_last_cd4_date_invalid(self):
+        cleaned_data = {'last_cd4': None,
+                        'cd4_date': get_utcnow()}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('cd4_date', form._errors)
+
+    def test_no_cd4_date_estimated_invalid(self):
+        cleaned_data = {'cd4_date': None,
+                        'cd4_date_estimated': 'blah'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('cd4_date_estimated', form._errors)
 
 #     def test_patient_adherence_last_dose_none_invalid(self):
 #         cleaned_data = {'neurological': 'focal_neurologic_deficit',

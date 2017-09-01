@@ -40,17 +40,17 @@ class PatientHistoryFormValidator(FormValidator):
             NONE,
             m2m_field='previous_non_tb_oi'
         )
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        #         self.required_if(
+        #             YES,
+        #             field='previous_non_tb_oi',
+        #             field_required='previous_non_tb_oi_date')
 
-#         self.required_if(
-#             YES,
-#             field='previous_non_tb_oi',
-#             field_required='previous_non_tb_oi_date')
-
-#         self.applicable_if(
-#             NO,
-#             field='new_hiv_diagnosis',
-#             field_applicable='taking_arv')
-
+        #         self.applicable_if(
+        #             NO,
+        #             field='new_hiv_diagnosis',
+        #             field_applicable='taking_arv')
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         self.required_if(
             YES,
             field='taking_arv',
@@ -78,26 +78,27 @@ class PatientHistoryFormValidator(FormValidator):
             field='patient_adherence',
             field_required='last_dose')
 
-        self.only_required_if(
-            'last_viral_load',
-            'viral_load_date',
-            cleaned_data=self.cleaned_data)
+#         condition = self.cleaned_data.get('last_viral_load') > 0
+        self.not_required_if(
+            None,
+            field='last_viral_load',
+            field_required='viral_load_date')
 
-        self.only_required_if(
-            'last_viral_load',
-            'vl_date_estimated',
-            cleaned_data=self.cleaned_data)
+        self.not_required_if(
+            None,
+            field='viral_load_date',
+            field_required='vl_date_estimated')
 
-        self.only_required_if(
-            'last_cd4',
-            'cd4_date',
-            cleaned_data=self.cleaned_data)
+        self.not_required_if(
+            None,
+            field='last_cd4',
+            field_required='cd4_date')
 
-        self.only_required_if(
-            'last_cd4',
-            'cd4_date_estimated',
-            cleaned_data=self.cleaned_data)
-
+        self.not_required_if(
+            None,
+            field='cd4_date',
+            field_required='cd4_date_estimated')
+#
         self.m2m_other_specify(
             'focal_neurologic_deficit',
             m2m_field='neurological',
@@ -226,19 +227,3 @@ class PatientHistoryFormValidator(FormValidator):
             YES,
             field='head_higher_education',
             field_required='head_higher_years')
-
-    def only_required_if(self, field=None, field_required=None, cleaned_data=None):
-
-        if (cleaned_data.get(field) and not cleaned_data.get(field_required)):
-            message = {
-                field_required: 'This field is required.'}
-            self._errors.update(message)
-            self._error_codes.append(NOT_REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
-        else:
-            if (not cleaned_data.get(field) and cleaned_data.get(field_required)):
-                message = {
-                    field_required: 'This field is not required.'}
-                self._errors.update(message)
-                self._error_codes.append(NOT_REQUIRED_ERROR)
-                raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
