@@ -40,7 +40,7 @@ class PatientHistoryFormValidator(FormValidator):
             NONE,
             m2m_field='previous_non_tb_oi'
         )
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         #         self.required_if(
         #             YES,
         #             field='previous_non_tb_oi',
@@ -112,12 +112,32 @@ class PatientHistoryFormValidator(FormValidator):
             m2m_field='specify_medications',
             field_other='specify_medications_other')
 
-        self.validate_other_specify(field='care_before_hospital')
+        dependencies = [
+            'location_care', 'transport_form',
+            'care_provider', 'paid_treatment',
+            'medication_bought', 'other_place_visited']
 
-        self.applicable_if(
-            YES,
-            field='care_before_hospital',
-            field_applicable='location_care')
+        not_required_dependencies = [
+            'transport_cost', 'transport_duration',
+            'paid_treatment_amount', 'medication_payment'
+        ]
+
+        for dependency in dependencies:
+            self.not_applicable_if(
+                NO,
+                field='care_before_hospital',
+                field_applicable=dependency,
+            )
+
+        for dependency in not_required_dependencies:
+            self.only_not_required_if(
+                NO,
+                field='care_before_hospital',
+                field_required=dependency,
+                cleaned_data=self.cleaned_data
+            )
+
+        self.validate_other_specify(field='care_before_hospital')
 
         self.validate_other_specify(field='location_care')
 
@@ -230,3 +250,14 @@ class PatientHistoryFormValidator(FormValidator):
             YES,
             field='head_higher_education',
             field_required='head_higher_years')
+
+    def only_not_required_if(self, *responses, field=None, field_required=None, cleaned_data=None):
+
+        if (cleaned_data.get(field) in responses
+            and ((cleaned_data.get(field_required)
+                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
+            message = {
+                field_required: 'This field is not required.'}
+            self._errors.update(message)
+            self._error_codes.append(NOT_REQUIRED_ERROR)
+            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)

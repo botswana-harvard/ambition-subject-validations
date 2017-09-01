@@ -156,19 +156,82 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('cd4_date_estimated', form._errors)
 
-#     def test_patient_adherence_last_dose_none_invalid(self):
-#         cleaned_data = {'neurological': 'focal_neurologic_deficit',
-#                         'focal_neurologic_deficit': None}
-#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, form.validate)
-#         self.assertIn('focal_neurologic_deficit', form._errors)
-
     def test_care_before_hospital_yes(self):
         cleaned_data = {'care_before_hospital': YES,
                         'location_care': NOT_APPLICABLE}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care', form._errors)
+
+    def test_no_care_before_hospital_transport_form_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'transport_form': 'bus'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('transport_form', form._errors)
+
+    def test_no_care_before_hospital_care_provider_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'care_provider': 'doctor'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('care_provider', form._errors)
+
+    def test_no_care_before_hospital_paid_treatment_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'paid_treatment': YES}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('paid_treatment', form._errors)
+
+    def test_no_care_before_hospital_medication_bought_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'medication_bought': YES}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('medication_bought', form._errors)
+
+    def test_no_care_before_hospital_other_place_visited_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'other_place_visited': NO}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('other_place_visited', form._errors)
+
+    def test_no_care_before_hospital_transport_cost_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'transport_cost': 3.50}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('transport_cost', form._errors)
+
+    def test_no_care_before_hospital_transport_duration_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'transport_duration': 'blah'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('transport_duration', form._errors)
+
+    def test_no_care_before_hospital_paid_treatment_amount_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'paid_treatment_amount': NO}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('paid_treatment_amount', form._errors)
+
+    def test_no_care_before_hospital_medication_payment_invalid(self):
+        cleaned_data = {'care_before_hospital': NO,
+                        'medication_payment': 150.0}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('medication_payment', form._errors)
+
+#     def test_patient_adherence_last_dose_none_invalid(self):
+#         cleaned_data = {'neurological': 'focal_neurologic_deficit',
+#                         'focal_neurologic_deficit': None}
+#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+#         self.assertRaises(ValidationError, form.validate)
+#         self.assertIn('focal_neurologic_deficit', form._errors)
 
     def test_care_before_hospital_no(self):
         cleaned_data = {'care_before_hospital': NO,
