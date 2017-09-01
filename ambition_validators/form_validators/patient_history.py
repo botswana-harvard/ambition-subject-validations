@@ -107,6 +107,11 @@ class PatientHistoryFormValidator(FormValidator):
             m2m_field='neurological',
             field_other='neurological_other')
 
+        self.m2m_other_specify(
+            OTHER,
+            m2m_field='specify_medications',
+            field_other='specify_medications_other')
+
         self.validate_other_specify(field='care_before_hospital')
 
         self.applicable_if(
