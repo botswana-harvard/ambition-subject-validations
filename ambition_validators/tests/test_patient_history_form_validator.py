@@ -7,6 +7,7 @@ from ..constants import WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
+@tag('ph')
 class TestPatientHistoryFormValidator(TestCase):
 
     #     def test_headache_requires_headache_duration(self):
@@ -40,19 +41,19 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertIn('rifampicin_started_date', form._errors)
 
     def test_previous_non_tb_oi_name_none_invalid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_name': None}
+        cleaned_data = {'previous_non_tb_oi': OTHER,
+                        'previous_non_tb_oi_other': None}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('previous_non_tb_oi_name', form._errors)
+        self.assertIn('previous_non_tb_oi_other', form._errors)
 
-    def test_previous_non_tb_oi_date_none_invalid(self):
-        cleaned_data = {'previous_non_tb_oi': YES,
-                        'previous_non_tb_oi_name': 'blah',
-                        'previous_non_tb_oi_date': None}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('previous_non_tb_oi_date', form._errors)
+#     def test_previous_non_tb_oi_date_none_invalid(self):
+#         cleaned_data = {'previous_non_tb_oi': YES,
+#                         'previous_non_tb_oi_name': 'blah',
+#                         'previous_non_tb_oi_date': None}
+#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+#         self.assertRaises(ValidationError, form.validate)
+#         self.assertIn('previous_non_tb_oi_date', form._errors)
 
     def test_taking_arv_arv_date_none_invalid(self):
         cleaned_data = {'taking_arv': YES,

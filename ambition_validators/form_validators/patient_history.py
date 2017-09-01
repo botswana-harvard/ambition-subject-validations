@@ -29,15 +29,12 @@ class PatientHistoryFormValidator(FormValidator):
             field='taking_rifampicin',
             field_required='rifampicin_started_date')
 
-        self.required_if(
-            YES,
-            field='previous_non_tb_oi',
-            field_required='previous_non_tb_oi_name')
+        self.validate_other_specify(field='previous_non_tb_oi')
 
-        self.required_if(
-            YES,
-            field='previous_non_tb_oi',
-            field_required='previous_non_tb_oi_date')
+#         self.required_if(
+#             YES,
+#             field='previous_non_tb_oi',
+#             field_required='previous_non_tb_oi_date')
 
 #         self.applicable_if(
 #             NO,
