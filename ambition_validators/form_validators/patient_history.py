@@ -1,7 +1,9 @@
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
 from ..constants import HEADACHE, VISUAL_LOSS, WORKING
+from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
+from django.forms import forms
 
 
 class PatientHistoryFormValidator(FormValidator):
@@ -72,6 +74,26 @@ class PatientHistoryFormValidator(FormValidator):
             NO,
             field='patient_adherence',
             field_required='last_dose')
+
+        self.only_required_if(
+            'last_viral_load',
+            'viral_load_date',
+            cleaned_data=self.cleaned_data)
+
+        self.only_required_if(
+            'last_viral_load',
+            'vl_date_estimated',
+            cleaned_data=self.cleaned_data)
+
+        self.only_required_if(
+            'last_cd4',
+            'cd4_date',
+            cleaned_data=self.cleaned_data)
+
+        self.only_required_if(
+            'last_cd4',
+            'cd4_date_estimated',
+            cleaned_data=self.cleaned_data)
 
         self.m2m_other_specify(
             'focal_neurologic_deficit',
@@ -196,3 +218,19 @@ class PatientHistoryFormValidator(FormValidator):
             YES,
             field='head_higher_education',
             field_required='head_higher_years')
+
+    def only_required_if(self, field=None, field_required=None, cleaned_data=None):
+
+        if (cleaned_data.get(field) and not cleaned_data.get(field_required)):
+            message = {
+                field_required: 'This field is required.'}
+            self._errors.update(message)
+            self._error_codes.append(NOT_REQUIRED_ERROR)
+            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+        else:
+            if (not cleaned_data.get(field) and cleaned_data.get(field_required)):
+                message = {
+                    field_required: 'This field is not required.'}
+                self._errors.update(message)
+                self._error_codes.append(NOT_REQUIRED_ERROR)
+                raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
