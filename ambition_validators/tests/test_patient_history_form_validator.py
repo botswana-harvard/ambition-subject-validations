@@ -133,6 +133,20 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('last_dose', form._errors)
 
+    def test_no_last_viral_load_date_invalid(self):
+        cleaned_data = {'last_viral_load': None,
+                        'viral_load_date': get_utcnow()}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('viral_load_date', form._errors)
+
+    def test_no_viral_load_date_estimated_invalid(self):
+        cleaned_data = {'viral_load_date': None,
+                        'vl_date_estimated': 'blah'}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('vl_date_estimated', form._errors)
+
 #     def test_patient_adherence_last_dose_none_invalid(self):
 #         cleaned_data = {'neurological': 'focal_neurologic_deficit',
 #                         'focal_neurologic_deficit': None}

@@ -1,5 +1,5 @@
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
+from edc_constants.constants import YES, NO, NONE, OTHER, NOT_APPLICABLE
 
 from ..constants import HEADACHE, VISUAL_LOSS, WORKING
 from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
@@ -37,7 +37,7 @@ class PatientHistoryFormValidator(FormValidator):
             field_other='previous_non_tb_oi_other')
 
         self.m2m_single_selection_if(
-            'None',
+            NONE,
             m2m_field='previous_non_tb_oi'
         )
 
@@ -56,26 +56,21 @@ class PatientHistoryFormValidator(FormValidator):
             field='taking_arv',
             field_required='arv_date')
 
-        self.applicable_if(
-            YES,
-            field='taking_arv',
-            field_applicable='first_arv_regimen')
-
         self.validate_other_specify(field='first_arv_regimen')
 
         self.validate_other_specify(field='second_arv_regimen')
 
-        arv_not_req_fields = [
+        arv_req_fields = [
             'first_arv_regimen',
             'second_arv_regimen',
             'first_line_choice',
             'patient_adherence',
         ]
-        for arv_not_req_field in arv_not_req_fields:
-            self.not_required_if(
-                NO,
+        for arv_req_field in arv_req_fields:
+            self.applicable_if(
+                YES,
                 field='taking_arv',
-                field_required=arv_not_req_field,
+                field_applicable=arv_req_field,
             )
 
         self.required_if(
