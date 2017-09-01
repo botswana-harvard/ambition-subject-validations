@@ -77,6 +77,11 @@ class PatientHistoryFormValidator(FormValidator):
             field='patient_adherence',
             field_required='last_dose')
 
+        self.required_if(
+            NO,
+            field='patient_adherence',
+            field_required='days_missed')
+
         self.not_required_if(
             None,
             field='last_viral_load',
