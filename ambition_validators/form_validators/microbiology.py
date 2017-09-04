@@ -68,6 +68,11 @@ class MicrobiologyFormValidator(FormValidator):
         self.required_if(
             POS,
             field='tissue_biopsy_results',
+            field_required='day_biopsy_taken')
+
+        self.required_if(
+            POS,
+            field='tissue_biopsy_results',
             field_required='tissue_biopsy_organism')
 
         self.required_if(

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
@@ -263,9 +263,18 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
+    def test_pos_tissue_biopsy_results_with_day_biopsy_taken(self):
+        cleaned_data = {'tissue_biopsy_results': POS,
+                        'date_biopsy_taken': get_utcnow(),
+                        'day_biopsy_taken': None}
+        form = MicrobiologyFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('day_biopsy_taken', form._errors)
+
     def test_pos_tissue_biopsy_results_with_date_biopsy_taken(self):
         cleaned_data = {'tissue_biopsy_results': POS,
                         'date_biopsy_taken': get_utcnow(),
+                        'day_biopsy_taken': 3,
                         'tissue_biopsy_organism': 'mycobacterium_tuberculosis'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:
