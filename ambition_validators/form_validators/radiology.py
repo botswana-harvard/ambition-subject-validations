@@ -5,57 +5,58 @@ from edc_constants.constants import OTHER, YES
 class RadiologyFormValidator(FormValidator):
 
     def clean(self):
-        self.required_if(
-            YES,
-            field='is_cxr_done',
-            field_required='cxr_type')
 
         self.required_if(
             YES,
-            field='is_cxr_done',
+            field='cxr_done',
             field_required='cxr_date')
 
-        self.required_if(
+        self.applicable_if(
+            YES,
+            field='cxr_done',
+            field_applicable='cxr_type')
+
+        self.applicable_if(
             'infiltrates',
             field='cxr_type',
-            field_required='infiltrate_location')
+            field_applicable='infiltrate_location')
 
         self.required_if(
             YES,
-            field='is_ct_performed',
-            field_required='is_scanned_with_contrast')
+            field='ct_performed',
+            field_required='ct_performed_date')
 
-        self.required_if(
+        self.applicable_if(
             YES,
-            field='is_ct_performed',
-            field_required='date_ct_performed')
+            field='ct_performed',
+            field_applicable='scanned_with_contrast')
 
-        self.required_if(
+        self.applicable_if(
             YES,
-            field='is_ct_performed',
-            field_required='brain_imaging_reason')
+            field='ct_performed',
+            field_applicable='brain_imaging_reason')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(
             field='brain_imaging_reason',
-            field_required='brain_imaging_reason_other')
+            other_specify_field='brain_imaging_reason_other',
+            other_stored_value=OTHER)
 
         self.required_if(
             YES,
-            field='is_ct_performed',
+            field='ct_performed',
             field_required='are_results_abnormal')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='are_results_abnormal',
-            field_required='abnormal_results_reason')
+            field_applicable='abnormal_results_reason')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(
             field='abnormal_results_reason',
-            field_required='abnormal_results_reason_other')
+            other_specify_field='abnormal_results_reason_other',
+            other_stored_value=OTHER)
 
         self.required_if(
             'infarcts',
             field='abnormal_results_reason',
-            field_required='if_infarcts_location')
+            field_required='infarcts_location')

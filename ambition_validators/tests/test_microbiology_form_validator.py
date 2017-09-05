@@ -169,14 +169,14 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    def test_blood_organism_is_bacteria_with_bacteria_identified(self):
-        cleaned_data = {'blood_culture_organism': 'bacteria',
-                        'bacteria_identified': 'staphylococus_aureus'}
-        form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+#     def test_blood_organism_is_bacteria_with_bacteria_identified(self):
+#         cleaned_data = {'blood_culture_organism': 'bacteria',
+#                         'bacteria_identified': 'staphylococus_aureus'}
+#         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
+#         try:
+#             form_validator.validate()
+#         except forms.ValidationError as e:
+#             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_other_bacteria_identified_require_bacteria_identified_other(self):
         cleaned_data = {'bacteria_identified': OTHER,

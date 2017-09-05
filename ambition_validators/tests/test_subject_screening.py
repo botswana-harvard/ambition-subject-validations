@@ -3,7 +3,7 @@ from django.test import TestCase, tag
 from django.core.exceptions import ValidationError
 
 from edc_base.utils import get_utcnow
-from edc_constants.constants import MALE, YES, NOT_APPLICABLE, NO
+from edc_constants.constants import MALE, YES, NOT_APPLICABLE, NO, FEMALE
 
 from ..form_validators import SubjectScreeningFormValidator
 
@@ -20,6 +20,7 @@ class TestSubjectScreeningFormValidator(TestCase):
 
     def test_preg_test_date_yes(self):
         options = {
+            'gender': FEMALE,
             'pregnancy': YES,
             'preg_test_date': None}
         form_validator = SubjectScreeningFormValidator(cleaned_data=options)
@@ -28,6 +29,7 @@ class TestSubjectScreeningFormValidator(TestCase):
 
     def test_preg_test_date_no(self):
         options = {
+            'gender': FEMALE,
             'pregnancy': NO,
             'preg_test_date': None}
         form_validator = SubjectScreeningFormValidator(cleaned_data=options)
