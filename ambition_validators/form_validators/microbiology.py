@@ -56,6 +56,11 @@ class MicrobiologyFormValidator(FormValidator):
                 'blood_culture_organism') == 'bacteria',
             field_applicable='bacteria_identified')
 
+        self.applicable_if_true(
+            condition=self.cleaned_data.get(
+                'blood_culture_organism') == 'bacteria_and_cryptococcus',
+            field_applicable='bacteria_identified')
+
         self.validate_other_specify(
             field='bacteria_identified',
             other_specify_field='bacteria_identified_other',
