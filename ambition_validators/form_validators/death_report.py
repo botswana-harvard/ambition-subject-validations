@@ -7,10 +7,11 @@ from ..constants import TUBERCULOSIS
 class DeathReportFormValidator(FormValidator):
 
     def clean(self):
-        self.required_if(
-            OTHER,
+
+        self.validate_other_specify(
             field='cause_of_death',
-            field_required='cause_of_death_other')
+            other_specify_field='cause_of_death_other',
+            other_stored_value=OTHER)
 
         self.required_if(
             TUBERCULOSIS,
