@@ -40,65 +40,12 @@ class TestFollowUpFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_fluconazole_dose_yes_require_other_fluconazole_dose_reason(self):
-        cleaned_data = {'fluconazole_dose': YES,
-                        'other_fluconazole_dose_reason': None}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-        cleaned_data = {'fluconazole_dose': YES,
-                        'other_fluconazole_dose_reason': 'reason'}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('other_fluconazole_dose_reason', form_validator._errors)
-
     def test_fluconazole_dosed_no_require_rifampicin_start_datee(self):
         cleaned_data = {'fluconazole_dose': NO,
-                        'other_fluconazole_dose_reason': 'reason'}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-        cleaned_data = {'fluconazole_dose': NO,
-                        'other_fluconazole_dose_reason': None}
+                        'fluconazole_dose_other': 'reason'}
         form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('other_fluconazole_dose_reason', form_validator._errors)
-
-    def test_other_fluconazole_dose_yes_require_other_fluconazole_dose_reason(self):
-        cleaned_data = {'other_fluconazole_dose': YES,
-                        'other_fluconazole_dose_reason': None}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('other_fluconazole_dose_reason', form_validator._errors)
-
-        cleaned_data = {'other_fluconazole_dose': YES,
-                        'other_fluconazole_dose_reason': 'reason'}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_other_fluconazole_dose_no_require_rifampicin_start_datee(self):
-        cleaned_data = {'other_fluconazole_dose': NO,
-                        'other_fluconazole_dose_reason': 'reason'}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('other_fluconazole_dose_reason', form_validator._errors)
-
-        cleaned_data = {'other_fluconazole_dose': NO,
-                        'other_fluconazole_dose_reason': None}
-        form_validator = FollowUpFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+        self.assertIn('fluconazole_dose_other', form_validator._errors)
 
     def test_care_before_hospital_yes(self):
         cleaned_data = {'care_before_hospital': YES,

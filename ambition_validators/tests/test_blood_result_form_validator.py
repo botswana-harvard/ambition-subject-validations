@@ -10,6 +10,16 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_abnormal_results_no_ae_range_invalid(self):
         options = {
+            'platelets': 41,
+            'haemoglobin': 7,
+            'absolute_neutrophil': 0.7,
+            'sodium': 130,
+            'potassium': 3,
+            'alt': 360,
+            'magnesium': 0.4,
+            'magnesium_unit': 'mmol/L',
+            'creatinine': 5.0,
+            'creatinine_unit': 'mg/dL',
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': NOT_APPLICABLE}
         form_validator = BloodResultFormValidator(cleaned_data=options)
@@ -18,6 +28,16 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_abnormal_results_wiht_ae_range_valid(self):
         options = {
+            'platelets': 41,
+            'haemoglobin': 7,
+            'absolute_neutrophil': 0.7,
+            'sodium': 130,
+            'potassium': 3,
+            'alt': 360,
+            'magnesium': 0.4,
+            'magnesium_unit': 'mmol/L',
+            'creatinine': 5.0,
+            'creatinine_unit': 'mg/dL',
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': NO}
         form_validator = BloodResultFormValidator(cleaned_data=options)
