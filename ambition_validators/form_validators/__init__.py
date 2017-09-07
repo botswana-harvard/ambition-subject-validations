@@ -18,3 +18,4 @@ from .subject_screening import SubjectScreeningFormValidator
 from .subject_visit import SubjectVisitFormValidator
 from .week16 import Week16FormValidator
 from .week2 import Week2FormValidator
+from .week4 import Week4FormValidator

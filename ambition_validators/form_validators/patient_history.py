@@ -168,10 +168,10 @@ class PatientHistoryFormValidator(FormValidator):
             field='activities_missed',
             field_required='time_off_work')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(
             field='activities_missed',
-            field_required='activities_missed_other')
+            other_specify_field='activities_missed_other',
+            other_stored_value=OTHER)
 
         self.not_required_if(
             NO,

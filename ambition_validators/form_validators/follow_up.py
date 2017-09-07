@@ -1,5 +1,7 @@
+from django.forms import forms
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, NO, OTHER
+from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
+from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
 
 from ..constants import WORKING
 
@@ -7,25 +9,43 @@ from ..constants import WORKING
 class FollowUpFormValidator(FormValidator):
 
     def clean(self):
-        self.required_if(
-            NO,
+
+        self.validate_other_specify(
             field='fluconazole_dose',
-            field_required='other_fluconazole_dose_reason')
-        self.required_if(
-            YES,
-            field='other_fluconazole_dose',
-            field_required='other_fluconazole_dose_reason')
+            other_specify_field='fluconazole_dose_other',
+            other_stored_value=OTHER)
+
         self.required_if(
             YES,
             field='rifampicin_started',
             field_required='rifampicin_start_date')
 
-        self.validate_other_specify(field='care_before_hospital')
+        dependencies = [
+            'location_care', 'transport_form',
+            'care_provider', 'paid_treatment',
+            'medication_bought', 'other_place_visited']
 
-        self.applicable_if(
-            YES,
-            field='care_before_hospital',
-            field_applicable='location_care')
+        not_required_dependencies = [
+            'transport_cost', 'transport_duration',
+            'paid_treatment_amount', 'medication_payment'
+        ]
+
+        for dependency in dependencies:
+            self.not_applicable_if(
+                NO,
+                field='care_before_hospital',
+                field_applicable=dependency,
+            )
+
+        for dependency in not_required_dependencies:
+            self.only_not_required_if(
+                NO,
+                field='care_before_hospital',
+                field_required=dependency,
+                cleaned_data=self.cleaned_data
+            )
+
+        self.validate_other_specify(field='care_before_hospital')
 
         self.validate_other_specify(field='location_care')
 
@@ -51,12 +71,23 @@ class FollowUpFormValidator(FormValidator):
             field='activities_missed',
             field_required='time_off_work')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(
             field='activities_missed',
-            field_required='activities_missed_other')
+            other_specify_field='activities_missed_other',
+            other_stored_value=OTHER)
 
         self.not_required_if(
             NO,
             field='loss_of_earnings',
             field_required='earnings_lost_amount')
+
+    def only_not_required_if(self, *responses, field=None, field_required=None, cleaned_data=None):
+
+        if (cleaned_data.get(field) in responses
+            and ((cleaned_data.get(field_required)
+                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
+            message = {
+                field_required: 'This field is not required.'}
+            self._errors.update(message)
+            self._error_codes.append(NOT_REQUIRED_ERROR)
+            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)

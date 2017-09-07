@@ -18,3 +18,4 @@ from .form_validators import SubjectScreeningFormValidator
 from .form_validators import SubjectVisitFormValidator
 from .form_validators import Week16FormValidator
 from .form_validators import Week2FormValidator
+from .form_validators import Week4FormValidator
