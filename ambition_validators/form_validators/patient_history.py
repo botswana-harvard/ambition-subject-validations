@@ -256,7 +256,8 @@ class PatientHistoryFormValidator(FormValidator):
             field='head_higher_education',
             field_required='head_higher_years')
 
-    def only_not_required_if(self, *responses, field=None, field_required=None, cleaned_data=None):
+    def only_not_required_if(self, *responses, field=None, field_required=None,
+                             cleaned_data=None):
 
         if (cleaned_data.get(field) in responses
             and ((cleaned_data.get(field_required)

@@ -81,7 +81,8 @@ class FollowUpFormValidator(FormValidator):
             field='loss_of_earnings',
             field_required='earnings_lost_amount')
 
-    def only_not_required_if(self, *responses, field=None, field_required=None, cleaned_data=None):
+    def only_not_required_if(self, *responses, field=None, field_required=None,
+                             cleaned_data=None):
 
         if (cleaned_data.get(field) in responses
             and ((cleaned_data.get(field_required)
