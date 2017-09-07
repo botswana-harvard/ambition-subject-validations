@@ -49,7 +49,8 @@ class BloodResultFormValidator(FormValidator):
         if (self.cleaned_data.get(field) < value and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
@@ -58,7 +59,8 @@ class BloodResultFormValidator(FormValidator):
         if (self.cleaned_data.get(field) <= value and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
@@ -67,7 +69,8 @@ class BloodResultFormValidator(FormValidator):
         if (self.cleaned_data.get(field) > value and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
@@ -76,7 +79,8 @@ class BloodResultFormValidator(FormValidator):
         if (self.cleaned_data.get(field) >= value and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
@@ -86,7 +90,8 @@ class BloodResultFormValidator(FormValidator):
                 self.cleaned_data.get(units_field) == units and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)} {units}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)} {units}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
@@ -96,7 +101,8 @@ class BloodResultFormValidator(FormValidator):
                 self.cleaned_data.get(units_field) == units and
                 self.cleaned_data.get('are_results_normal') not in NO):
             message = {
-                'are_results_normal': f'{field} is abnormal, got {self.cleaned_data.get(field)} {units}. This field should be No.'}
+                'are_results_normal': f'{field} is abnormal, got '
+                f'{self.cleaned_data.get(field)} {units}. This field should be No.'}
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
