@@ -153,8 +153,8 @@ class PatientHistoryFormValidator(FormValidator):
             field='paid_treatment',
             field_required='paid_treatment_amount')
 
-        self.not_required_if(
-            NO,
+        self.required_if(
+            YES,
             field='medication_bought',
             field_required='medication_payment')
 
@@ -190,22 +190,26 @@ class PatientHistoryFormValidator(FormValidator):
                 field_required=req_field,
             )
 
-        req_fields = [
-            'elementary_school',
-            'secondary_school',
-            'higher_education',
-        ]
-        for req_field in req_fields:
-            self.applicable_if(
-                YES,
-                field='household_head',
-                field_applicable=req_field,
-            )
+        self.required_if(
+            YES,
+            field='household_head',
+            field_required='elementary_school')
 
         self.required_if(
             YES,
             field='elementary_school',
             field_required='elementary_attendance_years')
+
+        self.required_if(
+            YES,
+            field='household_head',
+            field_required='higher_education',
+        )
+
+        self.required_if(
+            YES,
+            field='household_head',
+            field_required='secondary_school')
 
         self.required_if(
             YES,
@@ -229,17 +233,10 @@ class PatientHistoryFormValidator(FormValidator):
                 field_required=not_req_field,
             )
 
-        req_fields = [
-            'head_elementary',
-            'head_secondary',
-            'head_higher_education',
-        ]
-        for req_field in req_fields:
-            self.applicable_if(
-                NO,
-                field='household_head',
-                field_applicable=req_field,
-            )
+        self.required_if(
+            NO,
+            field='household_head',
+            field_required='head_elementary')
 
         self.required_if(
             YES,
@@ -247,9 +244,19 @@ class PatientHistoryFormValidator(FormValidator):
             field_required='head_attendance_years')
 
         self.required_if(
+            NO,
+            field='household_head',
+            field_required='head_secondary')
+
+        self.required_if(
             YES,
             field='head_secondary',
             field_required='head_secondary_years')
+
+        self.required_if(
+            NO,
+            field='household_head',
+            field_required='head_higher_education')
 
         self.required_if(
             YES,
