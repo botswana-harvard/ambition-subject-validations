@@ -34,7 +34,7 @@ class BloodResultFormValidator(FormValidator):
         self.value_less_than_with_units(
             field='magnesium', value=0.3, units_field='magnesium_unit', units='mmol/L')
 
-        self.value_greater_than_with_units(
+        self.value_less_than_with_units(
             field='creatinine', value=4.55, units_field='creatinine_unit', units='mg/dL')
 
         self.value_greater_than_with_units(
@@ -46,8 +46,8 @@ class BloodResultFormValidator(FormValidator):
             field_applicable='abnormal_results_in_ae_range')
 
     def value_less_than(self, field, value):
-        if (self.cleaned_data.get(field) < value and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) < value)
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -56,8 +56,8 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def value_less_than_equal(self, field, value):
-        if (self.cleaned_data.get(field) <= value and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) <= value)
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -66,8 +66,8 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def value_greater_than(self, field, value):
-        if (self.cleaned_data.get(field) > value and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) > value)
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -76,8 +76,8 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def value_greater_than_equal(self, field, value):
-        if (self.cleaned_data.get(field) >= value and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) >= value)
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -86,9 +86,9 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def value_less_than_with_units(self, field, value, units_field, units):
-        if (self.cleaned_data.get(field) < value and
-                self.cleaned_data.get(units_field) == units and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) < value)
+                and self.cleaned_data.get(units_field) == units
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)} {units}. This field should be No.'}
@@ -97,9 +97,9 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def value_greater_than_with_units(self, field, value, units_field, units):
-        if (self.cleaned_data.get(field) > value and
-                self.cleaned_data.get(units_field) == units and
-                self.cleaned_data.get('are_results_normal') not in NO):
+        if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) > value)
+                and self.cleaned_data.get(units_field) == units
+                and self.cleaned_data.get('are_results_normal') not in NO):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)} {units}. This field should be No.'}
