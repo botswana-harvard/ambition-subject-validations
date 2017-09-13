@@ -1,5 +1,5 @@
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, OTHER
+from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
 
 
 class StudyTerminationConclusionFormValidator(FormValidator):
@@ -9,22 +9,27 @@ class StudyTerminationConclusionFormValidator(FormValidator):
         self.required_if(
             YES,
             field='discharged_after_initial_admission',
-            field_required='date_initial_discharge')
+            field_required='initial_discharge_date')
 
         self.required_if(
             YES,
             field='readmission_after_initial_discharge',
-            field_required='date_readmission')
+            field_required='readmission_date')
+
+        self.required_if(
+            'died',
+            field='termination_reason',
+            field_required='death_date')
 
         self.required_if(
             'withdrawal_of_subject_consent',
             field='termination_reason',
             field_required='consent_withdrawal_reason')
 
-        self.required_if(
+        self.applicable_if(
             'withdrawal_of_subject_consent',
             field='termination_reason',
-            field_required='willing_to_complete_10W_FU')
+            field_applicable='willing_to_complete_10w')
 
         self.required_if(
             'care_transferred_to_another_institution',
@@ -34,34 +39,44 @@ class StudyTerminationConclusionFormValidator(FormValidator):
         self.required_if(
             'included_in_error',
             field='termination_reason',
-            field_required='included_in_error_date')
+            field_required='included_in_error')
 
         self.required_if(
             'included_in_error',
             field='termination_reason',
-            field_required='included_in_error')
+            field_required='included_in_error_date')
 
         self.required_if(
             YES,
-            field='willing_to_complete_10W_FU',
-            field_required='date_willing_to_complete')
+            field='willing_to_complete_10w',
+            field_required='willing_to_complete_date')
 
         self.required_if(
             YES,
             field='willing_to_complete_centre',
-            field_required='date_willing_to_complete')
+            field_required='willing_to_complete_date')
 
-        self.required_if(
-            OTHER,
-            field='first_line_regimen_patients',
-            field_required='first_line_regimen_patients_other')
+        self.validate_other_specify(
+            field='first_line_regimen',
+            other_specify_field='first_line_regimen_other',
+            other_stored_value=OTHER)
 
-        self.required_if(
-            OTHER,
-            field='second_line_regimen_patients',
-            field_required='second_line_regimen_patients_other')
+        self.validate_other_specify(
+            field='second_line_regimen',
+            other_specify_field='second_line_regimen_other',
+            other_stored_value=OTHER)
+
+        self.applicable_if_true(
+            condition=self.cleaned_data.get(
+                'first_line_regimen') not in [NOT_APPLICABLE],
+            field_applicable='first_line_env')
+
+        self.not_applicable_if(
+            NOT_APPLICABLE,
+            field='first_line_regimen',
+            field_applicable='first_line_env')
 
         self.required_if(
             None,
-            field='date_arvs_started_or_switched',
+            field='arvs_started_switch_date',
             field_required='arvs_delay_reason')
