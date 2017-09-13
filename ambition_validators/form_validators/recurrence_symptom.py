@@ -11,15 +11,15 @@ class RecurrenceSymptomFormValidator(FormValidator):
             m2m_field='meningitis_symptom',
             field_other='meningitis_symptom_other')
 
-        self.required_if(
-            YES,
-            field='neurological',
-            field_required='focal_neurologic_deficit')
+        self.m2m_other_specify(
+            'focal_neurologic_deficit',
+            m2m_field='neurological',
+            field_other='focal_neurologic_deficit')
 
         self.m2m_other_specify(
             OTHER,
             m2m_field='neurological',
-            field_other='other_cn_palsy_chosen')
+            field_other='cn_palsy_chosen_other')
 
         self.required_if(
             YES,
@@ -36,10 +36,10 @@ class RecurrenceSymptomFormValidator(FormValidator):
             field='steroids_administered',
             field_required='steroids_choices')
 
-        self.required_if(
-            OTHER,
+        self.validate_other_specify(
             field='steroids_choices',
-            field_required='steroids_choices_other')
+            other_specify_field='steroids_choices_other',
+            other_stored_value=OTHER)
 
         self.m2m_other_specify(
             OTHER,

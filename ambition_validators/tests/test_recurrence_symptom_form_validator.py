@@ -28,8 +28,10 @@ class TestRecurrenceSymptomFormValidator(TestCase):
     #             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_neurological_focal_neurologic_deficit_none(self):
+        ListModel.objects.create(
+            name='focal_neurologic_deficit', short_name='focal_neurologic_deficit')
         options = {
-            'neurological': YES,
+            'neurological': ListModel.objects.all(),
             'focal_neurologic_deficit': None}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
@@ -116,7 +118,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
         ListModel.objects.create(name=OTHER, short_name=OTHER)
         options = [
             ('meningitis_symptom', 'meningitis_symptom_other'),
-            ('neurological', 'other_cn_palsy_chosen'),
+            ('neurological', 'cn_palsy_chosen_other'),
             ('antibiotic_treatment', 'antibiotic_treatment_other')]
         for field, field_other in options:
             with self.subTest(field=field):
