@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
@@ -7,6 +7,7 @@ from ..constants import WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
+@tag('ph')
 class TestPatientHistoryFormValidator(TestCase):
 
     #     def test_headache_requires_headache_duration(self):
