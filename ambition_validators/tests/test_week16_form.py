@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NO
+from edc_constants.constants import YES, NO, NOT_APPLICABLE
 
 from ..form_validators import Week16FormValidator
 
@@ -28,7 +28,7 @@ class TestWeek16Form(TestCase):
         cleaned_data = {'patient_alive': YES,
                         'illness_problems': NO,
                         'ranking_score': 1,
-                        'activities_help': None}
+                        'activities_help': NOT_APPLICABLE}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
@@ -47,7 +47,7 @@ class TestWeek16Form(TestCase):
         cleaned_data = {'patient_alive': YES,
                         'ranking_score': 1,
                         'activities_help': YES,
-                        'illness_problems': None}
+                        'illness_problems': NOT_APPLICABLE}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
