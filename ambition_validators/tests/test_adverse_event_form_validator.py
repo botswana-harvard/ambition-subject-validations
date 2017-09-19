@@ -58,7 +58,7 @@ class TestAdverseEventFormValidator(TestCase):
 
     def test_ambisome_relation_NA_regimen_1(self):
         options = {
-            'regimen': 'regimen_1',
+            'regimen': 'Single Dose',
             'ae_study_relation_possibility': YES,
             'ambisome_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -68,7 +68,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_ambisome_relation_regimen_1_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'regimen': 'regimen_1',
+            'regimen': 'Single Dose',
             'flucytosine_relation': 'possibly_related',
             'ambisome_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -80,7 +80,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_fluconazole_relation_NA_regimen_1(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'regimen': 'regimen_1',
+            'regimen': 'Single Dose',
             'flucytosine_relation': 'possibly_related',
             'fluconazole_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -90,7 +90,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_fluconazole_relation_regimen_1_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'regimen': 'regimen_1',
+            'regimen': 'Single Dose',
             'flucytosine_relation': 'possibly_related',
             'fluconazole_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -102,7 +102,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_amphotericin_b_relation_NA_regimen_2(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'regimen': 'regimen_2',
+            'regimen': 'Control',
             'flucytosine_relation': 'possibly_related',
             'amphotericin_b_relation': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -112,7 +112,7 @@ class TestAdverseEventFormValidator(TestCase):
     def test_amphotericin_b_relation_regimen_2_valid(self):
         options = {
             'ae_study_relation_possibility': YES,
-            'regimen': 'regimen_2',
+            'regimen': 'Control',
             'flucytosine_relation': 'possibly_related',
             'amphotericin_b_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -138,3 +138,19 @@ class TestAdverseEventFormValidator(TestCase):
             form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_sae_possibility_not_applicable(self):
+        options = {
+            'sa_event': YES,
+            'sae_possibility': NOT_APPLICABLE}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('sae_possibility', form_validator._errors)
+
+    def test_susar_reported_not_applicable(self):
+        options = {
+            'susar_possility': YES,
+            'susar_reported': NOT_APPLICABLE}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('susar_reported', form_validator._errors)
