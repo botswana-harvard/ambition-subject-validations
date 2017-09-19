@@ -44,7 +44,7 @@ class TestDeviationViolationFormValidator(TestCase):
             form_validator = ProtocolDeviationViolationFormValidator(
                 cleaned_data=cleaned_data)
             self.assertFalse(form_validator._errors)
-            
+
     def test_violation(self):
         """ date_violation_datetime is not required if it's
         a protocol deviation
@@ -61,8 +61,7 @@ class TestDeviationViolationFormValidator(TestCase):
             form_validator = ProtocolDeviationViolationFormValidator(
                 cleaned_data=cleaned_data)
             self.assertFalse(form_validator._errors)
-            
-            
+
     def test_violation1(self):
         """ date_violation_datetime is not required if it's
         a protocol deviation
@@ -80,7 +79,7 @@ class TestDeviationViolationFormValidator(TestCase):
                 cleaned_data=cleaned_data)
             self.assertRaises(ValidationError, form_validator.validate)
             self.assertIn(field, form_validator._errors)
- 
+
     def test_yes_participant_safety_impact_none_details(self):
         """ Asserts participant_safety_impact has valid
             participant_safety_impact_details provided.
@@ -105,7 +104,7 @@ class TestDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
- 
+
     def test_no_participant_safety_impact_none_details(self):
         """ Asserts participant_safety_impact has valid
             participant_safety_impact_details provided.
@@ -130,7 +129,7 @@ class TestDeviationViolationFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn(
             'participant_safety_impact_details', form_validator._errors)
- 
+
     def test_study_outcomes_impact_with_details(self):
         """ Asserts study_outcomes_impact has valid
             participant_safety_impact_details provided.
@@ -155,7 +154,7 @@ class TestDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
- 
+
     def test_no_study_outcomes_impact_none_details(self):
         cleaned_data = {'study_outcomes_impact': NO,
                         'study_outcomes_impact_details': None}
@@ -165,7 +164,7 @@ class TestDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
- 
+
     def test_no_study_outcomes_impact_with_details(self):
         cleaned_data = {'study_outcomes_impact': NO,
                         'study_outcomes_impact_details': 'details'}
@@ -174,7 +173,7 @@ class TestDeviationViolationFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn(
             'study_outcomes_impact_details', form_validator._errors)
- 
+
     def test_other_protocol_violation_none_other_protocol_violation(self):
         cleaned_data = {'protocol_violation_type': OTHER,
                         'protocol_violation_type_other': None}
@@ -183,7 +182,7 @@ class TestDeviationViolationFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn(
             'protocol_violation_type_other', form_validator._errors)
- 
+
     def test_other_protocol_violation_other_protocol_violation(self):
         cleaned_data = {'protocol_violation_type': OTHER,
                         'protocol_violation_type_other': 'some_violation'}
