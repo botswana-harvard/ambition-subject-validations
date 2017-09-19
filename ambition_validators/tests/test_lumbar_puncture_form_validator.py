@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_constants.constants import YES, NO
 
 from ..form_validators import LumbarPunctureCSFFormValidator

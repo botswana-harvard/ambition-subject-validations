@@ -10,14 +10,10 @@ class LumbarPunctureCSFFormValidator(FormValidator):
 
     def clean(self):
 
-        if self.cleaned_data.get('opening_pressure') and self.cleaned_data.get(
-                'closing_pressure'):
-            if self.cleaned_data.get('closing_pressure') >= self.cleaned_data.get(
-                    'opening_pressure'):
-                raise forms.ValidationError({
-                    'closing_pressure':
-                    'Closing pressure should be lower than opening pressure'
-                })
+        self.opening_closing_pressure(
+            opening_pressure='opening_pressure',
+            closing_pressure='closing_pressure',
+            cleaned_data=self.cleaned_data)
 
         self.required_if(
             YES,
@@ -118,3 +114,18 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             if (self.cleaned_data.get(unit) == '%' and self.cleaned_data.get(field) > 100):
                 raise forms.ValidationError({
                     field: 'Percent cannot be greater than 100'})
+
+    def opening_closing_pressure(self,
+                                 opening_pressure=None,
+                                 closing_pressure=None,
+                                 cleaned_data=None):
+        if self.cleaned_data.get(opening_pressure) and self.cleaned_data.get(
+                closing_pressure):
+            if self.cleaned_data.get(opening_pressure) <= self.cleaned_data.get(
+                    closing_pressure):
+                raise forms.ValidationError({
+                    closing_pressure:
+                    'Closing pressure should be lower than opening pressure'
+                })
+
+        print(self.cleaned_data)
