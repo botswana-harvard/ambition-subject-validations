@@ -40,11 +40,6 @@ class PatientHistoryFormValidator(FormValidator):
             NONE,
             m2m_field='previous_non_tb_oi'
         )
-        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        #         self.required_if(
-        #             YES,
-        #             field='previous_non_tb_oi',
-        #             field_required='previous_non_tb_oi_date')
 
         self.applicable_if(
             NO,
@@ -127,6 +122,12 @@ class PatientHistoryFormValidator(FormValidator):
             'paid_treatment_amount', 'medication_payment'
         ]
 
+        self.validate_other_specify(field='care_before_hospital')
+
+        self.validate_other_specify(field='location_care')
+
+        self.validate_other_specify(field='care_provider')
+
         for dependency in dependencies:
             self.not_applicable_if(
                 NO,
@@ -141,12 +142,6 @@ class PatientHistoryFormValidator(FormValidator):
                 field_required=dependency,
                 cleaned_data=self.cleaned_data
             )
-
-        self.validate_other_specify(field='care_before_hospital')
-
-        self.validate_other_specify(field='location_care')
-
-        self.validate_other_specify(field='care_provider')
 
         self.required_if(
             YES,
@@ -173,8 +168,8 @@ class PatientHistoryFormValidator(FormValidator):
             other_specify_field='activities_missed_other',
             other_stored_value=OTHER)
 
-        self.not_required_if(
-            NO,
+        self.required_if(
+            YES,
             field='loss_of_earnings',
             field_required='earnings_lost_amount')
 
@@ -250,6 +245,9 @@ class PatientHistoryFormValidator(FormValidator):
             YES,
             field='head_higher_education',
             field_required='head_higher_years')
+
+# if self.cleaned_data.get('time_off_work') and
+# self.cleaned_data.get('time_off_work')
 
     def only_not_required_if(self, *responses, field=None, field_required=None,
                              cleaned_data=None):
