@@ -1,5 +1,5 @@
 from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import OTHER, YES
+from edc_constants.constants import NO, OTHER, YES
 
 
 class RecurrenceSymptomFormValidator(FormValidator):
@@ -31,10 +31,10 @@ class RecurrenceSymptomFormValidator(FormValidator):
             field='steroids_administered',
             field_required='steroids_duration')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='steroids_administered',
-            field_required='steroids_choices')
+            field_applicable='steroids_choices')
 
         self.validate_other_specify(
             field='steroids_choices',
@@ -50,3 +50,10 @@ class RecurrenceSymptomFormValidator(FormValidator):
             YES,
             field='on_arvs',
             field_required='arv_date')
+
+        self.not_applicable_if(
+            NO,
+            field='on_arvs',
+            field_applicable='arvs_stopped')
+
+        self.validate_other_specify(field='dr_opinion')

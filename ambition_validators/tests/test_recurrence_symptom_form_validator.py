@@ -2,12 +2,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
-from edc_constants.constants import OTHER, YES
+from edc_constants.constants import NO, NOT_APPLICABLE, OTHER, YES
 
 from ..form_validators import RecurrenceSymptomFormValidator
 from .models import ListModel
 
 
+@tag('rs')
 class TestRecurrenceSymptomFormValidator(TestCase):
 
     #     def test_meningitis_symptom_other_none(self):
@@ -57,7 +58,7 @@ class TestRecurrenceSymptomFormValidator(TestCase):
     def test_steroids_administered_no_choices_invalid(self):
         options = {
             'steroids_administered': YES,
-            'steroids_choices': None,
+            'steroids_choices': NOT_APPLICABLE,
             'steroids_duration': 5}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
@@ -134,17 +135,34 @@ class TestRecurrenceSymptomFormValidator(TestCase):
                 self.assertRaises(ValidationError, form_validator.validate)
                 self.assertIn(field_other, form_validator._errors)
 
-    def test_on_arvs_no_date_invalid(self):
+    def test_not_on_arvs_stopped_invalid(self):
         options = {
-            'on_arvs': YES,
-            'arv_date': None}
+            'on_arvs': NO,
+            'arvs_stopped': NO}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    def test_on_arvs_with_date_valid(self):
+    def test_on_arvs_stopped_valid(self):
         options = {
-            'on_arvs': YES,
-            'arv_date': get_utcnow()}
+            'on_arvs': NO,
+            'arvs_stopped': NOT_APPLICABLE}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        try:
+            form_validator.validate()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_dr_opinion_other_invalid(self):
+        options = {
+            'dr_opinion': OTHER,
+            'dr_opinion_other': None}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+
+    def testdr_opinion_other_valid(self):
+        options = {
+            'dr_opinion': OTHER,
+            'dr_opinion_other': 'blah'}
         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
         try:
             form_validator.validate()
