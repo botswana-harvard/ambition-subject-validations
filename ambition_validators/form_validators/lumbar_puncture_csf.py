@@ -9,8 +9,19 @@ from edc_constants.constants import NOT_APPLICABLE, YES
 class LumbarPunctureCSFFormValidator(FormValidator):
 
     def clean(self):
+
+        if self.cleaned_data.get('opening_pressure') and self.cleaned_data.get(
+                'closing_pressure'):
+            if self.cleaned_data.get('closing_pressure') >= self.cleaned_data.get(
+                    'opening_pressure'):
+                raise forms.ValidationError({
+                    'closing_pressure':
+                    'Closing pressure should be lower than opening pressure'
+                })
+
         self.required_if(
-            YES, field='csf_culture',
+            YES,
+            field='csf_culture',
             field_required='other_csf_culture')
 
         if self.cleaned_data.get('csf_wbc_cell_count'):
