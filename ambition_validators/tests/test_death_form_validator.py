@@ -7,6 +7,7 @@ from ..form_validators import DeathReportFormValidator
 from ..constants import TUBERCULOSIS
 
 
+@tag('Death')
 class TestDeathFormValidations(TestCase):
 
     def test_tb_site_missing(self):
@@ -51,13 +52,15 @@ class TestDeathFormValidations(TestCase):
             'cause_of_death_other': None}
         form_validator = DeathReportFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('cause_of_death_other', form_validator._errors)
 
     def test_cause_of_death_study_doctor_tb_no_site_specified_invalid(self):
         cleaned_data = {
-            'cause_of_death': 'TB',
+            'cause_of_death': TUBERCULOSIS,
             'tb_site': None}
         form_validator = DeathReportFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('tb_site', form_validator._errors)
 
     def test_cause_of_death_study_doc_opinion_no(self):
         cleaned_data = {
@@ -75,6 +78,7 @@ class TestDeathFormValidations(TestCase):
             'tb_site': None}
         form_validator = DeathReportFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('tb_site', form_validator._errors)
 
     def test_cause_of_death_study_tmg1_tb_site_specified_valid(self):
         cleaned_data = {
@@ -92,6 +96,7 @@ class TestDeathFormValidations(TestCase):
             'tb_site': None}
         form_validator = DeathReportFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('tb_site', form_validator._errors)
 
     def test_cause_of_death_study_tmg2_tb_site_specified_valid(self):
         cleaned_data = {

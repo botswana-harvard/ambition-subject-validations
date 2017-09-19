@@ -30,12 +30,12 @@ class ProtocolDeviationViolationFormValidator(FormValidator):
             YES,
             field='participant_safety_impact',
             field_required='participant_safety_impact_details')
-
+ 
         self.required_if(
             YES,
             field='study_outcomes_impact',
             field_required='study_outcomes_impact_details')
-
+ 
         if (self.cleaned_data.get('corrective_action_datetime') and not
                 self.cleaned_data.get('corrective_action')):
             message = {
@@ -43,7 +43,7 @@ class ProtocolDeviationViolationFormValidator(FormValidator):
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
-
+ 
         if (self.cleaned_data.get('preventative_action_datetime') and not
                 self.cleaned_data.get('preventative_action')):
             message = {

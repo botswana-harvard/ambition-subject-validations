@@ -10,15 +10,15 @@ class Week16FormValidator(FormValidator):
             field='patient_alive',
             field_required='death_datetime')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='patient_alive',
-            field_required='activities_help')
+            field_applicable='activities_help')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='patient_alive',
-            field_required='illness_problems')
+            field_applicable='illness_problems')
 
         self.required_if(
             YES,

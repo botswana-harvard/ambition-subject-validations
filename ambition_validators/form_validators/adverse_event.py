@@ -16,7 +16,7 @@ class AdverseEventFormValidator(FormValidator):
             field_required='possiblity_detail')
 
         regimen_1_condition = (
-            self.cleaned_data.get('regimen') == 'regimen_1' and
+            self.cleaned_data.get('regimen') == 'Single Dose' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
 
         self.applicable_if_true(
@@ -28,7 +28,7 @@ class AdverseEventFormValidator(FormValidator):
             field_applicable='fluconazole_relation')
 
         regimen_2_condition = (
-            self.cleaned_data.get('regimen') == 'regimen_2' and
+            self.cleaned_data.get('regimen') == 'Control' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
 
         self.applicable_if_true(
@@ -39,3 +39,13 @@ class AdverseEventFormValidator(FormValidator):
             YES,
             field='ae_study_relation_possibility',
             field_applicable='flucytosine_relation')
+
+        self.applicable_if(
+            YES,
+            field='sa_event',
+            field_applicable='sae_possibility')
+
+        self.applicable_if(
+            YES,
+            field='susar_possility',
+            field_applicable='susar_reported')
