@@ -2,103 +2,96 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NO, NOT_APPLICABLE, OTHER
+from edc_constants.constants import YES, NO, OTHER
 
-from ..constants import DEVIATION, VIOLATION
+from ..constants import DEVIATION, VIOLATION, MEDICATION_NONCOMPLIANCE
 from ..form_validators import ProtocolDeviationViolationFormValidator
 
 
-class TestProtocolDeviationViolationFormValidator(TestCase):
+@tag('deviation')
+class TestDeviationViolationFormValidator(TestCase):
 
-    def test_date_violation_datetime_deviation(self):
+    def test_deviation_or_violation(self):
         """ date_violation_datetime is not required if it's
         a protocol deviation
          """
-        cleaned_data = {'deviation_or_violation': DEVIATION,
-                        'date_violation_datetime': get_utcnow()}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
+        field_required_list = [
+            ('date_violation_datetime', get_utcnow()),
+            ('protocol_violation_type', MEDICATION_NONCOMPLIANCE),
+            ('violation_description', "test description"),
+            ('violation_reason', "test violation reason")]
+        for field_item in field_required_list:
+            field, value = field_item
+            cleaned_data = {
+                'deviation_or_violation': DEVIATION, field: value}
+            form_validator = ProtocolDeviationViolationFormValidator(
+                cleaned_data=cleaned_data)
+            self.assertRaises(ValidationError, form_validator.validate)
+            self.assertIn(field, form_validator._errors)
 
-    def test_date_violation_datetime_deviation_violation(self):
-        """ date_violation_datetime is required if it's
-        a protocol violation
+    def test_deviation_or_violation1(self):
+        """ deviation_or_violation is DEVIATION then
+        (date_violation_datetime, protocol_violation_type, etc) should be None.
          """
-        cleaned_data = {'deviation_or_violation': VIOLATION,
-                        'date_violation_datetime': None}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_protocol_violation_type_deviation(self):
-        """ protocol_violation_type is not required if it's
+        field_required_list = [
+            ('date_violation_datetime', None),
+            ('protocol_violation_type', None),
+            ('violation_description', None),
+            ('violation_reason', None)]
+        for field_item in field_required_list:
+            field, value = field_item
+            cleaned_data = {'deviation_or_violation': DEVIATION, field: value}
+            form_validator = ProtocolDeviationViolationFormValidator(
+                cleaned_data=cleaned_data)
+            self.assertFalse(form_validator._errors)
+            
+    def test_violation(self):
+        """ date_violation_datetime is not required if it's
         a protocol deviation
          """
-        cleaned_data = {'deviation_or_violation': DEVIATION,
-                        'protocol_violation_type': 'type'}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_protocol_violation_type_violation(self):
-        """ protocol_violation_type is required if it's
-        a protocol violation
-         """
-        cleaned_data = {'deviation_or_violation': VIOLATION,
-                        'protocol_violation_type': None}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_violation_description_deviation(self):
-        """ violation_description is not required if it's
+        field_required_list = [
+            ('date_violation_datetime', get_utcnow()),
+            ('protocol_violation_type', MEDICATION_NONCOMPLIANCE),
+            ('violation_description', "test description"),
+            ('violation_reason', "test violation reason")]
+        for field_item in field_required_list:
+            field, value = field_item
+            cleaned_data = {
+                'deviation_or_violation': VIOLATION, field: value}
+            form_validator = ProtocolDeviationViolationFormValidator(
+                cleaned_data=cleaned_data)
+            self.assertFalse(form_validator._errors)
+            
+            
+    def test_violation1(self):
+        """ date_violation_datetime is not required if it's
         a protocol deviation
          """
-        cleaned_data = {'deviation_or_violation': DEVIATION,
-                        'violation_description': 'description'}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_violation_description_violation(self):
-        """ violation_description is required if it's
-        a protocol violation
-         """
-        cleaned_data = {'deviation_or_violation': VIOLATION,
-                        'violation_description': None}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_violation_reason_deviation(self):
-        """ violation_reason is not required if it's
-        a protocol deviation
-         """
-        cleaned_data = {'deviation_or_violation': DEVIATION,
-                        'violation_reason': 'reason'}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_violation_reason_deviation_violation(self):
-        """ violation_reason is required if it's
-        a protocol violation
-         """
-        cleaned_data = {'deviation_or_violation': VIOLATION,
-                        'violation_reason': None}
-        form_validator = ProtocolDeviationViolationFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
+        field_required_list = [
+            ('date_violation_datetime', None),
+            ('protocol_violation_type', None),
+            ('violation_description', None),
+            ('violation_reason', None)]
+        for field_item in field_required_list:
+            field, value = field_item
+            cleaned_data = {
+                'deviation_or_violation': VIOLATION, field: value}
+            form_validator = ProtocolDeviationViolationFormValidator(
+                cleaned_data=cleaned_data)
+            self.assertRaises(ValidationError, form_validator.validate)
+            self.assertIn(field, form_validator._errors)
+ 
     def test_yes_participant_safety_impact_none_details(self):
         """ Asserts participant_safety_impact has valid
             participant_safety_impact_details provided.
          """
         cleaned_data = {'participant_safety_impact': YES,
                         'participant_safety_impact_details': None}
-        protocol_dev = ProtocolDeviationViolationFormValidator(
+        form_validator = ProtocolDeviationViolationFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, protocol_dev.validate)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'participant_safety_impact_details', form_validator._errors)
 
     def test_yes_participant_safety_impact_with_details(self):
         """ Asserts participant_safety_impact has valid
@@ -112,7 +105,7 @@ class TestProtocolDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
+ 
     def test_no_participant_safety_impact_none_details(self):
         """ Asserts participant_safety_impact has valid
             participant_safety_impact_details provided.
@@ -132,19 +125,23 @@ class TestProtocolDeviationViolationFormValidator(TestCase):
          """
         cleaned_data = {'participant_safety_impact': NO,
                         'participant_safety_impact_details': 'details'}
-        protocol_dev = ProtocolDeviationViolationFormValidator(
+        form_validator = ProtocolDeviationViolationFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, protocol_dev.validate)
-
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'participant_safety_impact_details', form_validator._errors)
+ 
     def test_study_outcomes_impact_with_details(self):
         """ Asserts study_outcomes_impact has valid
             participant_safety_impact_details provided.
          """
         cleaned_data = {'study_outcomes_impact': YES,
                         'study_outcomes_impact_details': None}
-        protocol_dev = ProtocolDeviationViolationFormValidator(
+        form_validator = ProtocolDeviationViolationFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, protocol_dev.validate)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'study_outcomes_impact_details', form_validator._errors)
 
     def test_yes_study_outcomes_impact_with_details(self):
         """ Asserts study_outcomes_impact has valid
@@ -158,7 +155,7 @@ class TestProtocolDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
+ 
     def test_no_study_outcomes_impact_none_details(self):
         cleaned_data = {'study_outcomes_impact': NO,
                         'study_outcomes_impact_details': None}
@@ -168,28 +165,25 @@ class TestProtocolDeviationViolationFormValidator(TestCase):
             protocol_dev.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
+ 
     def test_no_study_outcomes_impact_with_details(self):
         cleaned_data = {'study_outcomes_impact': NO,
                         'study_outcomes_impact_details': 'details'}
-        protocol_dev = ProtocolDeviationViolationFormValidator(
+        form_validator = ProtocolDeviationViolationFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, protocol_dev.validate)
-
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'study_outcomes_impact_details', form_validator._errors)
+ 
     def test_other_protocol_violation_none_other_protocol_violation(self):
         cleaned_data = {'protocol_violation_type': OTHER,
                         'protocol_violation_type_other': None}
-        protocol_dev = ProtocolDeviationViolationFormValidator(
+        form_validator = ProtocolDeviationViolationFormValidator(
             cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, protocol_dev.validate)
-
-#     def test_other_protocol_violation_na_other_protocol_violation(self):
-#         cleaned_data = {'protocol_violation_type': OTHER,
-#                         'protocol_violation_type_other': NOT_APPLICABLE}
-#         protocol_dev = ProtocolDeviationViolationFormValidator(
-#             cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, protocol_dev.validate)
-
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'protocol_violation_type_other', form_validator._errors)
+ 
     def test_other_protocol_violation_other_protocol_violation(self):
         cleaned_data = {'protocol_violation_type': OTHER,
                         'protocol_violation_type_other': 'some_violation'}
