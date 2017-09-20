@@ -27,3 +27,12 @@ class TestPkPdCrfFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('reason_fluconazole_dose_missed', form_validator._errors)
+
+        # assertRaises reason_day_one_missed is required
+    def test_any_day_one_sample_missed_yes(self):
+        cleaned_data = {'any_day_one_sample_missed': YES,
+                        'reason_day_one_missed': None}
+        form_validator = PkPdCrfFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('reason_day_one_missed', form_validator._errors)
