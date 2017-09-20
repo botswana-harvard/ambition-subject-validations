@@ -9,6 +9,7 @@ from .form_validators import LumbarPunctureCSFFormValidator
 from .form_validators import MicrobiologyFormValidator
 from .form_validators import PatientHistoryFormValidator
 from .form_validators import ProtocolDeviationViolationFormValidator
+from .form_validators import PreviousOpportunisticInfectionFormValidator
 from .form_validators import RadiologyFormValidator
 from .form_validators import RecurrenceSymptomFormValidator
 from .form_validators import SignificantDiagnosesFormValidator
