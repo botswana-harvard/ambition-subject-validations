@@ -32,8 +32,8 @@ class MicrobiologyFormValidator(FormValidator):
             field_applicable='blood_culture_results')
 
         self.required_if(
-            POS,
-            field='blood_culture_results',
+            YES,
+            field='blood_culture_performed',
             field_required='blood_taken_date')
 
         self.required_if(
@@ -53,6 +53,12 @@ class MicrobiologyFormValidator(FormValidator):
 
         self.required_if(
             'bacteria',
+            field='blood_culture_organism',
+            field_required='bacteria_identified'
+        )
+
+        self.required_if(
+            'bacteria_and_cryptococcus',
             field='blood_culture_organism',
             field_required='bacteria_identified'
         )
@@ -108,13 +114,13 @@ class MicrobiologyFormValidator(FormValidator):
             field_applicable='tissue_biopsy_results')
 
         self.required_if(
-            POS,
-            field='tissue_biopsy_results',
+            YES,
+            field='tissue_biopsy_taken',
             field_required='biopsy_date')
 
         self.required_if(
-            YES,
-            field='tissue_biopsy_taken',
+            POS,
+            field='tissue_biopsy_results',
             field_required='day_biopsy_taken')
 
         self.applicable_if(
