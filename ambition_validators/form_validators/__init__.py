@@ -9,6 +9,7 @@ from .lumbar_puncture_csf import LumbarPunctureCSFFormValidator
 from .microbiology import MicrobiologyFormValidator
 from .patient_history import PatientHistoryFormValidator
 from .previous_opportunistic_infection import PreviousOpportunisticInfectionFormValidator
+from .pk_pd_crf import PkPdCrfFormValidator
 from .protocol_deviation_violation import ProtocolDeviationViolationFormValidator
 from .radiology import RadiologyFormValidator
 from .recurrence_symptom import RecurrenceSymptomFormValidator

@@ -47,7 +47,9 @@ class BloodResultFormValidator(FormValidator):
 
     def value_less_than(self, field, value):
         if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) < value)
-                and self.cleaned_data.get('are_results_normal') not in NO):
+                and (self.cleaned_data.get('are_results_normal')
+                     and self.cleaned_data.get('are_results_normal')
+                     not in NO)):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -57,7 +59,9 @@ class BloodResultFormValidator(FormValidator):
 
     def value_less_than_equal(self, field, value):
         if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) <= value)
-                and self.cleaned_data.get('are_results_normal') not in NO):
+                and (self.cleaned_data.get('are_results_normal')
+                     and self.cleaned_data.get('are_results_normal')
+                     not in NO)):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)}. This field should be No.'}
@@ -88,7 +92,9 @@ class BloodResultFormValidator(FormValidator):
     def value_less_than_with_units(self, field, value, units_field, units):
         if ((self.cleaned_data.get(field) and self.cleaned_data.get(field) < value)
                 and self.cleaned_data.get(units_field) == units
-                and self.cleaned_data.get('are_results_normal') not in NO):
+                and (self.cleaned_data.get('are_results_normal')
+                     and self.cleaned_data.get('are_results_normal')
+                     not in NO)):
             message = {
                 'are_results_normal': f'{field} is abnormal, got '
                 f'{self.cleaned_data.get(field)} {units}. This field should be No.'}

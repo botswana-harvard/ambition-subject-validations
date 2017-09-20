@@ -127,5 +127,3 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                     closing_pressure:
                     'Closing pressure should be lower than opening pressure'
                 })
-
-        print(self.cleaned_data)
