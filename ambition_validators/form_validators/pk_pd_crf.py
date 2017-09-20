@@ -29,3 +29,8 @@ class PkPdCrfFormValidator(FormValidator):
             YES,
             field='any_day_one_sample_missed',
             field_required='reason_day_one_missed')
+
+        self.required_if(
+            YES,
+            field='any_day_seven_sample_missed',
+            field_required='reason_day_seven_missed')
