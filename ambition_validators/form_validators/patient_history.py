@@ -128,6 +128,13 @@ class PatientHistoryFormValidator(FormValidator):
 
         self.validate_other_specify(field='care_provider')
 
+        self.total_money_spent(
+            he_spend='personal_he_spend',
+            proxy_spend='proxy_he_spend',
+            total_spend='he_spend_last_4weeks',
+            cleaned_data=self.cleaned_data
+        )
+
         for dependency in dependencies:
             self.not_applicable_if(
                 NO,
@@ -260,3 +267,16 @@ class PatientHistoryFormValidator(FormValidator):
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+
+    def total_money_spent(self, he_spend=None, proxy_spend=None,
+                          total_spend=None, cleaned_data=None):
+        if (cleaned_data.get(he_spend) and
+                cleaned_data.get(proxy_spend)):
+            if (self.cleaned_data.get(he_spend) + self.cleaned_data.get(
+                    proxy_spend)) != self.cleaned_data.get(total_spend):
+                raise forms.ValidationError({
+                    total_spend:
+                    'The amount you spent and the amount someone else'
+                    ' spent should equal the total amount spent on your'
+                    ' healthcare'
+                })
