@@ -6,6 +6,7 @@ from .form_validators import FluconazoleMissedDosesFormValidator
 from .form_validators import FlucytosineMissedDosesFormValidator
 from .form_validators import FollowUpFormValidator
 from .form_validators import LumbarPunctureCSFFormValidator
+from .form_validators import MedicalExpensesFormValidator
 from .form_validators import MicrobiologyFormValidator
 from .form_validators import PatientHistoryFormValidator
 from .form_validators import ProtocolDeviationViolationFormValidator
