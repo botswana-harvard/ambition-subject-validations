@@ -1,9 +1,8 @@
-from edc_base.modelform_validators import FormValidator
-from edc_constants.constants import YES, NO, NONE, OTHER, NOT_APPLICABLE
-
 from ..constants import HEADACHE, VISUAL_LOSS, WORKING
-from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
 from django.forms import forms
+from edc_base.modelform_validators import FormValidator
+from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
+from edc_constants.constants import YES, NO, NONE, OTHER, NOT_APPLICABLE
 
 
 class PatientHistoryFormValidator(FormValidator):
@@ -112,51 +111,11 @@ class PatientHistoryFormValidator(FormValidator):
             m2m_field='specify_medications',
             field_other='specify_medications_other')
 
-        dependencies = [
-            'location_care', 'transport_form',
-            'care_provider', 'paid_treatment',
-            'medication_bought', 'other_place_visited']
 
-        not_required_dependencies = [
-            'transport_cost', 'transport_duration',
-            'paid_treatment_amount', 'medication_payment'
-        ]
-
-        self.validate_other_specify(field='care_before_hospital')
-
-        self.validate_other_specify(field='location_care')
-
-        self.validate_other_specify(field='care_provider')
-
-        for dependency in dependencies:
-            self.not_applicable_if(
-                NO,
-                field='care_before_hospital',
-                field_applicable=dependency,
-            )
-
-        for dependency in not_required_dependencies:
-            self.only_not_required_if(
-                NO,
-                field='care_before_hospital',
-                field_required=dependency,
-                cleaned_data=self.cleaned_data
-            )
-
-        self.required_if(
-            YES,
-            field='paid_treatment',
-            field_required='paid_treatment_amount')
-
-        self.required_if(
-            YES,
-            field='medication_bought',
-            field_required='medication_payment')
-
-        self.required_if(
-            YES,
-            field='other_place_visited',
-            field_required='duration_present_condition')
+#         self.required_if(
+#             YES,
+#             field='other_place_visited',
+#             field_required='duration_present_condition')
 
         self.required_if(
             WORKING,

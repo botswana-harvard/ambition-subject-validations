@@ -6,6 +6,7 @@ from .fluconazole_missed_doses import FluconazoleMissedDosesFormValidator
 from .flucytosine_missed_doses import FlucytosineMissedDosesFormValidator
 from .follow_up import FollowUpFormValidator
 from .lumbar_puncture_csf import LumbarPunctureCSFFormValidator
+from .medical_expenses import MedicalExpensesFormValidator
 from .microbiology import MicrobiologyFormValidator
 from .patient_history import PatientHistoryFormValidator
 from .previous_opportunistic_infection import PreviousOpportunisticInfectionFormValidator
