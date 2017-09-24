@@ -111,7 +111,6 @@ class PatientHistoryFormValidator(FormValidator):
             m2m_field='specify_medications',
             field_other='specify_medications_other')
 
-
 #         self.required_if(
 #             YES,
 #             field='other_place_visited',
@@ -219,3 +218,16 @@ class PatientHistoryFormValidator(FormValidator):
             self._errors.update(message)
             self._error_codes.append(NOT_REQUIRED_ERROR)
             raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+
+    def total_money_spent(self, he_spend=None, proxy_spend=None,
+                          total_spend=None, cleaned_data=None):
+        if (cleaned_data.get(he_spend) and
+                cleaned_data.get(proxy_spend)):
+            if (self.cleaned_data.get(he_spend) + self.cleaned_data.get(
+                    proxy_spend)) != self.cleaned_data.get(total_spend):
+                raise forms.ValidationError({
+                    total_spend:
+                    'The amount you spent and the amount someone else'
+                    ' spent should equal the total amount spent on your'
+                    ' healthcare'
+                })
