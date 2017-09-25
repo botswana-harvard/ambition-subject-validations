@@ -7,6 +7,10 @@ from edc_constants.constants import YES, NO, NOT_APPLICABLE
 class MedicalExpensesFormValidator(FormValidator):
 
     def clean(self):
+        condition = self.cleaned_data.get(
+            'patient_history') and self.cleaned_data.get(
+                'patient_history').care_before_hospital == YES
+
         dependencies = [
             'location_care', 'transport_form',
             'care_provider', 'paid_treatment',
@@ -17,16 +21,13 @@ class MedicalExpensesFormValidator(FormValidator):
             'paid_treatment_amount', 'medication_payment'
         ]
 
-        self.validate_other_specify(field='care_before_hospital')
-
         self.validate_other_specify(field='location_care')
 
         self.validate_other_specify(field='care_provider')
 
         for dependency in dependencies:
-            self.not_applicable_if(
-                NO,
-                field='care_before_hospital',
+            self.applicable_if_true(
+                condition,
                 field_applicable=dependency,
             )
 
@@ -51,9 +52,10 @@ class MedicalExpensesFormValidator(FormValidator):
     def only_not_required_if(self, *responses, field=None, field_required=None,
                              cleaned_data=None):
 
-        if (cleaned_data.get(field) in responses
-            and ((cleaned_data.get(field_required)
-                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
+        if (self.cleaned_data.get('patient_history') and getattr(
+                self.cleaned_data.get('patient_history'), field) in responses
+                and (cleaned_data.get(field_required)
+                     and cleaned_data.get(field_required) != NOT_APPLICABLE)):
             message = {
                 field_required: 'This field is not required.'}
             self._errors.update(message)
