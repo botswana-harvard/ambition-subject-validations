@@ -140,6 +140,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
+    def test_yes_willing_to_complete_willing_to_complete_date(self):
+        cleaned_data = {'willing_to_complete_10w': YES,
+                        'willing_to_complete_date': None}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('willing_to_complete_date', form_validator._errors)
+
     def test_non_consent_termination_reason(self):
         cleaned_data = {'termination_reason': '10_weeks_completed_followUp',
                         'consent_withdrawal_reason': 'reason is given'}
@@ -194,6 +202,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+
+    def test_yes_protocol_exclusion_criterion_none_rifampicin_started(self):
+        cleaned_data = {'protocol_exclusion_criterion': YES,
+                        'rifampicin_started': None}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('rifampicin_started', form_validator._errors)
 
     def test_other_late_protocol_exclusion_none_date_to_complete(self):
         cleaned_data = {

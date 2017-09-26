@@ -37,9 +37,24 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='willing_to_complete_centre')
 
         self.required_if(
+            YES,
+            field='willing_to_complete_10w',
+            field_required='willing_to_complete_date')
+
+        self.applicable_if(
+            'late_exclusion_criterion',
+            field='termination_reason',
+            field_applicable='protocol_exclusion_criterion')
+
+        self.required_if(
             'included_in_error',
             field='termination_reason',
             field_required='included_in_error')
+
+        self.required_if(
+            YES,
+            field='protocol_exclusion_criterion',
+            field_required='rifampicin_started')
 
         self.required_if(
             'included_in_error',

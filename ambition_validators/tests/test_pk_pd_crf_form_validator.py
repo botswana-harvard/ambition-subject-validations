@@ -45,3 +45,12 @@ class TestPkPdCrfFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('reason_day_seven_missed', form_validator._errors)
+
+        # assertRaises post_dose_lp is required
+    def test_post_dose_lp(self):
+        cleaned_data = {'pre_dose_lp': NO,
+                        'post_dose_lp': None}
+        form_validator = PkPdCrfFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('post_dose_lp', form_validator._errors)

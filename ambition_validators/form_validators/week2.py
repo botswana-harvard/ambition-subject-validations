@@ -14,12 +14,12 @@ class Week2FormValidator(FormValidator):
         self.required_if(
             YES,
             field='died',
-            field_required='death_date')
+            field_required='death_date_time')
 
         self.m2m_other_specify(
             OTHER,
-            m2m_field='drug_interventions',
-            field_other='drug_interventions_other')
+            m2m_field='drug_intervention',
+            field_other='drug_intervention_other')
 
         self.m2m_other_specify(
             OTHER,
@@ -30,3 +30,8 @@ class Week2FormValidator(FormValidator):
             YES,
             field='blood_received',
             field_required='units')
+
+        self.m2m_other_specify(
+            OTHER,
+            m2m_field='medicines',
+            field_other='medicine_other')

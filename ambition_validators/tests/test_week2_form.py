@@ -27,12 +27,12 @@ class TestWeek2Form(TestCase):
 
     def test_died_yes_require_date_of_death(self):
         cleaned_data = {'died': YES,
-                        'death_date': None}
+                        'death_date_time': None}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week2.validate)
 
         cleaned_data = {'died': YES,
-                        'death_date': get_utcnow()}
+                        'death_date_time': get_utcnow()}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
 
         try:
