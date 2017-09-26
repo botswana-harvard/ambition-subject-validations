@@ -11,12 +11,14 @@ class TestWeek16Form(TestCase):
 
     def test_patient_dead_death_datetime(self):
         cleaned_data = {'patient_alive': NO,
-                        'death_datetime': None}
+                        'death_datetime': None,
+                        'week16_narrative': 'blah blah'}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': NO,
-                        'death_datetime': get_utcnow()}
+                        'death_datetime': get_utcnow(),
+                        'week16_narrative': 'blah blah'}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
@@ -74,6 +76,23 @@ class TestWeek16Form(TestCase):
                         'activities_help': YES,
                         'illness_problems': YES,
                         'ranking_score': '0'}
+        week16 = Week16FormValidator(cleaned_data=cleaned_data)
+
+        try:
+            week16.validate()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_patient_dead_no_narrative_invalid(self):
+        cleaned_data = {'patient_alive': NO,
+                        'death_datetime': get_utcnow(),
+                        'week16_narrative': None}
+        week16 = Week16FormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, week16.validate)
+
+        cleaned_data = {'patient_alive': NO,
+                        'death_datetime': get_utcnow(),
+                        'week16_narrative': 'blah blah'}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:
