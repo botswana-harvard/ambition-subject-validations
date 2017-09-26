@@ -14,7 +14,7 @@ class Week2FormValidator(FormValidator):
         self.required_if(
             YES,
             field='died',
-            field_required='death_date')
+            field_required='death_date_time')
 
         self.m2m_other_specify(
             OTHER,

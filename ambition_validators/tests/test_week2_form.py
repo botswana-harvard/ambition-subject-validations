@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, OTHER
 
@@ -8,6 +8,7 @@ from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValida
 from ..form_validators import FluconazoleMissedDosesFormValidator
 
 
+@tag('w2')
 class TestWeek2Form(TestCase):
 
     def test_discharged_yes_require_discharged_date(self):
@@ -27,12 +28,12 @@ class TestWeek2Form(TestCase):
 
     def test_died_yes_require_date_of_death(self):
         cleaned_data = {'died': YES,
-                        'death_date': None}
+                        'death_date_time': None}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week2.validate)
 
         cleaned_data = {'died': YES,
-                        'death_date': get_utcnow()}
+                        'death_date_time': get_utcnow()}
         week2 = Week2FormValidator(cleaned_data=cleaned_data)
 
         try:
