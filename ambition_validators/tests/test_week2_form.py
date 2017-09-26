@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, OTHER
 
@@ -8,7 +8,6 @@ from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValida
 from ..form_validators import FluconazoleMissedDosesFormValidator
 
 
-@tag('w2')
 class TestWeek2Form(TestCase):
 
     def test_discharged_yes_require_discharged_date(self):
