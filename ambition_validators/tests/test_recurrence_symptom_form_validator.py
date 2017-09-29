@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import NO, NOT_APPLICABLE, OTHER, YES
 
@@ -8,7 +8,6 @@ from ..form_validators import RecurrenceSymptomFormValidator
 from .models import ListModel
 
 
-@tag('rs')
 class TestRecurrenceSymptomFormValidator(TestCase):
 
     #     def test_meningitis_symptom_other_none(self):
