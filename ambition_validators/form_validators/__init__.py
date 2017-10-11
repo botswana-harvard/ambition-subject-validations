@@ -5,6 +5,7 @@ from .death_report import DeathReportFormValidator
 from .fluconazole_missed_doses import FluconazoleMissedDosesFormValidator
 from .flucytosine_missed_doses import FlucytosineMissedDosesFormValidator
 from .follow_up import FollowUpFormValidator
+from .health_economics_questionnaire import HealthEconomicsQuestionnaireFormValidator
 from .lumbar_puncture_csf import LumbarPunctureCSFFormValidator
 from .medical_expenses import MedicalExpensesFormValidator
 from .microbiology import MicrobiologyFormValidator
