@@ -9,11 +9,6 @@ class HealthEconomicsQuestionnaireFormValidator(FormValidator):
 
     def clean(self):
 
-        #         self.required_if(
-        #             YES,
-        #             field='other_place_visited',
-        #             field_required='duration_present_condition')
-
         self.total_money_spent(cleaned_data=self.cleaned_data)
 
         self.validate_other_specify(field='care_before_hospital')
