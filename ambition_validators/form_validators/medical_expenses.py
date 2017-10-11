@@ -8,8 +8,8 @@ class MedicalExpensesFormValidator(FormValidator):
 
     def clean(self):
         condition = self.cleaned_data.get(
-            'patient_history') and self.cleaned_data.get(
-                'patient_history').care_before_hospital == YES
+            'health_economics_questionnaire') and self.cleaned_data.get(
+                'health_economics_questionnaire').care_before_hospital == YES
 
         dependencies = [
             'location_care', 'transport_form',
@@ -52,8 +52,8 @@ class MedicalExpensesFormValidator(FormValidator):
     def only_not_required_if(self, *responses, field=None, field_required=None,
                              cleaned_data=None):
 
-        if (self.cleaned_data.get('patient_history') and getattr(
-                self.cleaned_data.get('patient_history'), field) in responses
+        if (self.cleaned_data.get('health_economics_questionnaire') and getattr(
+                self.cleaned_data.get('health_economics_questionnaire'), field) in responses
                 and (cleaned_data.get(field_required)
                      and cleaned_data.get(field_required) != NOT_APPLICABLE)):
             message = {
