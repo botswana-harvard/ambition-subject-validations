@@ -1,11 +1,25 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_constants.constants import YES, NO
 
 from ..form_validators import BloodResultFormValidator
 
 
+@tag('br')
 class TestBloodResultFormValidator(TestCase):
+
+    def test_no_creatinine_mg_invalid(self):
+        cleaned_data = {
+            'creatinine': 0.3,
+            'creatinine_unit': None,
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_creatinine_mg_invalid(self):
         cleaned_data = {

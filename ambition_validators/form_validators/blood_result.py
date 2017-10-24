@@ -28,13 +28,12 @@ class BloodResultFormValidator(FormValidator):
 
     def creatinine(self, field=None, cleaned_data=None):
         if (self.cleaned_data.get('creatinine_unit')
-            and (self.cleaned_data.get('creatinine_unit') in 'mg/dL'
-                 and (self.cleaned_data.get(field) < 0.6
-                      or self.cleaned_data.get(field) > 1.3))
-            or (self.cleaned_data.get('creatinine_unit')
-                and self.cleaned_data.get('creatinine_unit') in
-                'umol/L' and (self.cleaned_data.get(field) < 53
-                              or self.cleaned_data.get(field) > 115))):
+            and ((self.cleaned_data.get('creatinine_unit') in 'mg/dL'
+                  and (self.cleaned_data.get(field) < 0.6
+                       or self.cleaned_data.get(field) > 1.3)) or
+                 (self.cleaned_data.get('creatinine_unit') in
+                  'umol/L' and (self.cleaned_data.get(field) < 53
+                                or self.cleaned_data.get(field) > 115)))):
             if self.cleaned_data.get('are_results_normal') not in NO:
                 message = {
                     'are_results_normal': f'{field} is abnormal, got '
