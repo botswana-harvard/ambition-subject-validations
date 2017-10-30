@@ -1,11 +1,10 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_constants.constants import YES, NO
 
 from ..form_validators import BloodResultFormValidator
 
 
-@tag('br')
 class TestBloodResultFormValidator(TestCase):
 
     def test_no_creatinine_mg_invalid(self):

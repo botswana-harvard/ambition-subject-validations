@@ -7,14 +7,7 @@ from edc_constants.choices import YES_NO
 from edc_constants.constants import NO, OTHER, YES
 
 from .. import PreviousOpportunisticInfectionFormValidator
-
-
-class PatientHistory(BaseUuidModel):
-
-    previous_oi = models.CharField(
-        verbose_name='Previous opportunistic infection other than TB?',
-        max_length=5,
-        choices=YES_NO)
+from .models import PatientHistory
 
 
 class TestPreviousOpportunisticInfection(TestCase):
