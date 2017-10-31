@@ -37,7 +37,8 @@ class TestBloodResultFormValidator(TestCase):
         cleaned_data = {
             'creatinine': 1.3,
             'creatinine_unit': 'mg/dL',
-            'are_results_normal': NO
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': YES
         }
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
@@ -63,7 +64,8 @@ class TestBloodResultFormValidator(TestCase):
         cleaned_data = {
             'creatinine': 100,
             'creatinine_unit': 'mg/dL',
-            'are_results_normal': NO
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': YES
         }
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
@@ -87,7 +89,8 @@ class TestBloodResultFormValidator(TestCase):
 
         cleaned_data = {
             'sodium': 135,
-            'are_results_normal': NO
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': YES
         }
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
@@ -111,7 +114,8 @@ class TestBloodResultFormValidator(TestCase):
 
         cleaned_data = {
             'potassium': 5.0,
-            'are_results_normal': NO}
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': YES}
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
         try:
@@ -134,10 +138,23 @@ class TestBloodResultFormValidator(TestCase):
 
         cleaned_data = {
             'magnesium': 1.0,
-            'are_results_normal': NO}
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': YES}
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_abnormal_results_in_ae_range_invalid(self):
+        cleaned_data = {
+            'sodium': 1000,
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': NO
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('abnormal_results_in_ae_range', form_validator._errors)

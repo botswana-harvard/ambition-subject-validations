@@ -21,10 +21,11 @@ class BloodResultFormValidator(FormValidator):
             field='magnesium',
             cleaned_data=self.cleaned_data)
 
-        self.applicable_if(
-            NO,
-            field='are_results_normal',
-            field_applicable='abnormal_results_in_ae_range')
+        if (self.cleaned_data.get('are_results_normal') == NO
+                and self.cleaned_data.get('abnormal_results_in_ae_range') == NO):
+            raise forms.ValidationError({
+                'abnormal_results_in_ae_range': 'If results are abnormal, they '
+                'are considered to be within Grade IV range.'})
 
     def creatinine(self, field=None, cleaned_data=None):
         if (self.cleaned_data.get('creatinine_unit')
