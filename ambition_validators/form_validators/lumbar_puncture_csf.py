@@ -119,10 +119,10 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                                  opening_pressure=None,
                                  closing_pressure=None,
                                  cleaned_data=None):
-        if self.cleaned_data.get(opening_pressure) and self.cleaned_data.get(
-                closing_pressure):
-            if self.cleaned_data.get(opening_pressure) <= self.cleaned_data.get(
-                    closing_pressure):
+        if (self.cleaned_data.get(opening_pressure)
+                and self.cleaned_data.get(closing_pressure)):
+            if (self.cleaned_data.get(opening_pressure)
+                    <= self.cleaned_data.get(closing_pressure)):
                 raise forms.ValidationError({
                     closing_pressure:
                     'Closing pressure should be lower than opening pressure'
