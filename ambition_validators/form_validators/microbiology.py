@@ -159,6 +159,7 @@ class MicrobiologyFormValidator(FormValidator):
                         'day_blood_taken': f'Randomization date is '
                         f'{consent.consent_datetime.date()}, blood sample study day should '
                         f'be {study_days} days or less.'}
-                self._errors.update(message)
-                self._error_codes.append(NOT_REQUIRED_ERROR)
-                raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+                    self._errors.update(message)
+                    self._error_codes.append(NOT_REQUIRED_ERROR)
+                    raise forms.ValidationError(
+                        message, code=NOT_REQUIRED_ERROR)
