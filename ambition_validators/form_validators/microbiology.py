@@ -108,10 +108,10 @@ class MicrobiologyFormValidator(FormValidator):
             field='sputum_genexpert_performed',
             field_required='sputum_genexpert_date')
 
-        self.required_if(
-            POS,
-            field='sputum_genexpert_performed',
-            field_required='sputum_results_positive')
+#         self.required_if(
+#             POS,
+#             field='sputum_genexpert_performed',
+#             field_required='sputum_results_positive')
 
         self.applicable_if(
             YES,

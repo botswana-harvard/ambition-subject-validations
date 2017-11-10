@@ -5,9 +5,14 @@ from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
 from ..form_validators import MicrobiologyFormValidator
+from .models import SubjectVisit
 
 
+@tag('mb')
 class TestMicrobiologyFormValidator(TestCase):
+
+    def setUp(self):
+        self.subject_visit = SubjectVisit()
 
     def test_urine_culture_performed_yes_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': YES,
@@ -49,8 +54,12 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
+    @tag('sv')
     def test_pos_urine_results_with_urine_culture_organism(self):
-        cleaned_data = {'urine_culture_results': POS,
+        self.subject_visit.appointment.subject_identifier = '11111111'
+
+        cleaned_data = {'subject_visit': self.subject_visit,
+                        'urine_culture_results': POS,
                         'urine_culture_organism': 'klebsiella_sp'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:
@@ -80,7 +89,11 @@ class TestMicrobiologyFormValidator(TestCase):
         self.assertIn('blood_culture_results', form_validator._errors)
 
     def test_yes_blood_culture_performed_with_blood_culture_results(self):
-        cleaned_data = {'blood_culture_performed': YES,
+
+        self.subject_visit.appointment.subject_identifier = '11111111'
+
+        cleaned_data = {'subject_visit': self.subject_visit,
+                        'blood_culture_performed': YES,
                         'blood_taken_date': get_utcnow().date(),
                         'blood_culture_results': 'no_growth'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
