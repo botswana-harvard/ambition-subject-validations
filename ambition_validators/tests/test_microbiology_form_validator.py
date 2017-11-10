@@ -53,7 +53,6 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    @tag('sv')
     def test_pos_urine_results_with_urine_culture_organism(self):
         self.subject_visit.appointment.subject_identifier = '11111111'
 
