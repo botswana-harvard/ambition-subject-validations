@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
@@ -8,7 +8,6 @@ from ..form_validators import MicrobiologyFormValidator
 from .models import SubjectVisit
 
 
-@tag('mb')
 class TestMicrobiologyFormValidator(TestCase):
 
     def setUp(self):
