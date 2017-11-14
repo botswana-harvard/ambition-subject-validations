@@ -2,6 +2,7 @@ from .form_validators import AdverseEventFormValidator
 from .form_validators import AmphotericinMissedDosesFormValidator
 from .form_validators import BloodResultFormValidator
 from .form_validators import DeathReportFormValidator
+from .form_validators import EducationalBackgroundFormValidator
 from .form_validators import FluconazoleMissedDosesFormValidator
 from .form_validators import FlucytosineMissedDosesFormValidator
 from .form_validators import FollowUpFormValidator
