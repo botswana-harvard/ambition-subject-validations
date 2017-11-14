@@ -29,10 +29,11 @@ class DeathReportFormValidator(FormValidator):
             field_required='tb_site')
 
     def study_day(self, field):
-        subject_identifier = self.cleaned_data.get(
-            'subject_visit').appointment.subject_identifier
-        consent = self.subject_consent_model_cls.objects.get(
-            subject_identifier=subject_identifier)
+        if self.cleaned_data.get(field):
+            subject_identifier = self.cleaned_data.get(
+                'subject_visit').appointment.subject_identifier
+            consent = self.subject_consent_model_cls.objects.get(
+                subject_identifier=subject_identifier)
 
         if self.cleaned_data.get(field):
             death_date = self.cleaned_data.get(field).date()
