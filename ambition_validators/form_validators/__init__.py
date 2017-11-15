@@ -6,8 +6,8 @@ from .educational_background import EducationalBackgroundFormValidator
 from .fluconazole_missed_doses import FluconazoleMissedDosesFormValidator
 from .flucytosine_missed_doses import FlucytosineMissedDosesFormValidator
 from .follow_up import FollowUpFormValidator
-from .health_economics_questionnaire import HealthEconomicsQuestionnaireFormValidator
 from .lumbar_puncture_csf import LumbarPunctureCSFFormValidator
+from .health_economics_questionnaire2 import HealthEconomicsQuestionnaire2FormValidator
 from .medical_expenses import MedicalExpensesFormValidator
 from .microbiology import MicrobiologyFormValidator
 from .patient_history import PatientHistoryFormValidator

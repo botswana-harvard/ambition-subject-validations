@@ -1,153 +1,77 @@
-from django.db import models
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
-from edc_base.model_mixins import BaseUuidModel
-from edc_constants.choices import YES_NO
-from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
+from django.test import TestCase
+from edc_constants.constants import YES, NO, OTHER
 
+from ..constants import WORKING
 from ..form_validators import MedicalExpensesFormValidator
 
 
-class HealthEconomicsQuestionnaire(BaseUuidModel):
+class TestMedicalExpensesFormValidator(TestCase):
 
-    care_before_hospital = models.CharField(
-        verbose_name='Have you received any treatment or care '
-        'for your present condition, before coming to the hospital?',
-        max_length=5,
-        choices=YES_NO)
+    def test_total_money_spent_error(self):
+        """Assert raises exception if personal money spent and
+        proxy money spent doesn't equal total money spent"""
+        cleaned_data = {
+            'personal_he_spend': 10,
+            'proxy_he_spend': 10,
+            'he_spend_last_4weeks': 10
+        }
+        form_validator = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('he_spend_last_4weeks', form_validator._errors)
 
+    def test_total_money_spent(self):
+        """Assert validate that personal money spent and proxy money
+        spent equal total money spent"""
+        cleaned_data = {
+            'personal_he_spend': 10,
+            'proxy_he_spend': 10,
+            'he_spend_last_4weeks': 20}
+        form_validator = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-@tag('me')
-class TestPatientHistoryFormValidator(TestCase):
-
-    def setUp(self):
-        self.health_economics_questionnaire = HealthEconomicsQuestionnaire()
-
-    def test_care_before_hospital_yes(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'location_care': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
+    def test_care_before_hospital_other(self):
+        cleaned_data = {'care_before_hospital': OTHER,
+                        'care_before_hospital_other': None}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('location_care', form._errors)
+        self.assertIn('care_before_hospital_other', form._errors)
 
-    def test_no_care_before_hospital_transport_form_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'transport_form': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
+    def test_activities_missed(self):
+        cleaned_data = {'activities_missed': WORKING,
+                        'time_off_work': None}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('transport_form', form._errors)
+        self.assertIn('time_off_work', form._errors)
 
-    def test_no_care_before_hospital_care_provider_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'care_provider': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
+    def test_activities_missed_other(self):
+        cleaned_data = {'activities_missed': OTHER,
+                        'activities_missed_other': None}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('care_provider', form._errors)
+        self.assertIn('activities_missed_other', form._errors)
 
-    def test_no_care_before_hospital_paid_treatment_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'paid_treatment': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
+    def test_loss_of_earnings_yes(self):
+        cleaned_data = {'loss_of_earnings': YES,
+                        'earnings_lost_amount': None}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('paid_treatment', form._errors)
+        self.assertIn('earnings_lost_amount', form._errors)
 
-    def test_no_care_before_hospital_medication_bought_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'medication_bought': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
+    def test_loss_of_earnings_no(self):
+        cleaned_data = {'loss_of_earnings': NO,
+                        'earnings_lost_amount': 100}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('medication_bought', form._errors)
-
-    def test_no_care_before_hospital_other_place_visited_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'other_place_visited': NOT_APPLICABLE}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('other_place_visited', form._errors)
-
-    def test_no_care_before_hospital_transport_cost_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = NO
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'transport_cost': 3.50}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('transport_cost', form._errors)
-
-    def test_no_care_before_hospital_transport_duration_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = NO
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'transport_duration': 'blah'}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('transport_duration', form._errors)
-
-    def test_no_care_before_hospital_paid_treatment_amount_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = NO
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'paid_treatment_amount': NO}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('paid_treatment_amount', form._errors)
-
-    def test_no_care_before_hospital_medication_payment_invalid(self):
-        self.health_economics_questionnaire.care_before_hospital = NO
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'medication_payment': 150.0}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('medication_payment', form._errors)
-
-    def test_care_before_hospital_no(self):
-        self.health_economics_questionnaire.care_before_hospital = NO
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'location_care': 'healthcare'}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('location_care', form._errors)
-
-    def test_location_care_other(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'location_care': OTHER,
-                        'location_care_other': None}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('location_care_other', form._errors)
-
-    def test_med_bought_no(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'medication_bought': NO,
-                        'medication_payment': 100}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('medication_payment', form._errors)
-
-    def test_med_bought_yes(self):
-        self.health_economics_questionnaire.care_before_hospital = YES
-
-        cleaned_data = {'health_economics_questionnaire': self.health_economics_questionnaire,
-                        'medication_bought': YES,
-                        'medication_payment': None}
-        form = MedicalExpensesFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('medication_payment', form._errors)
+        self.assertIn('earnings_lost_amount', form._errors)

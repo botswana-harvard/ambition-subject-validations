@@ -1,63 +1,40 @@
+from ..constants import WORKING
 from django.forms import forms
 from edc_base.modelform_validators import FormValidator
-from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
-from edc_constants.constants import YES, NO, NOT_APPLICABLE
+from edc_constants.constants import YES, OTHER
 
 
 class MedicalExpensesFormValidator(FormValidator):
 
     def clean(self):
-        condition = self.cleaned_data.get(
-            'health_economics_questionnaire') and self.cleaned_data.get(
-                'health_economics_questionnaire').care_before_hospital == YES
 
-        dependencies = [
-            'location_care', 'transport_form',
-            'care_provider', 'paid_treatment',
-            'medication_bought', 'other_place_visited']
+        self.total_money_spent(cleaned_data=self.cleaned_data)
 
-        not_required_dependencies = [
-            'transport_cost', 'transport_duration',
-            'paid_treatment_amount', 'medication_payment'
-        ]
+        self.validate_other_specify(field='care_before_hospital')
 
-        self.validate_other_specify(field='location_care')
+        self.required_if(
+            WORKING,
+            field='activities_missed',
+            field_required='time_off_work')
 
-        self.validate_other_specify(field='care_provider')
-
-        for dependency in dependencies:
-            self.applicable_if_true(
-                condition,
-                field_applicable=dependency,
-            )
-
-        for dependency in not_required_dependencies:
-            self.only_not_required_if(
-                NO,
-                field='care_before_hospital',
-                field_required=dependency,
-                cleaned_data=self.cleaned_data
-            )
+        self.validate_other_specify(
+            field='activities_missed',
+            other_specify_field='activities_missed_other',
+            other_stored_value=OTHER)
 
         self.required_if(
             YES,
-            field='paid_treatment',
-            field_required='paid_treatment_amount')
+            field='loss_of_earnings',
+            field_required='earnings_lost_amount')
 
-        self.required_if(
-            YES,
-            field='medication_bought',
-            field_required='medication_payment')
+    def total_money_spent(self, cleaned_data=None):
 
-    def only_not_required_if(self, *responses, field=None, field_required=None,
-                             cleaned_data=None):
-
-        if (self.cleaned_data.get('health_economics_questionnaire') and getattr(
-                self.cleaned_data.get('health_economics_questionnaire'), field) in responses
-                and (cleaned_data.get(field_required)
-                     and cleaned_data.get(field_required) != NOT_APPLICABLE)):
-            message = {
-                field_required: 'This field is not required.'}
-            self._errors.update(message)
-            self._error_codes.append(NOT_REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+        if ((cleaned_data.get('personal_he_spend') or 0)
+                + (cleaned_data.get('personal_he_spend') or 0)
+                != (self.cleaned_data.get('he_spend_last_4weeks') or 0)):
+            raise forms.ValidationError({
+                'he_spend_last_4weeks':
+                'The amount you spent and the amount someone else'
+                ' spent should equal the total amount spent on your'
+                ' healthcare'
+            })
