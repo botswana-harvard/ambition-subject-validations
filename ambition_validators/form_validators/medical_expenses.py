@@ -30,7 +30,7 @@ class MedicalExpensesFormValidator(FormValidator):
     def total_money_spent(self, cleaned_data=None):
 
         if ((cleaned_data.get('personal_he_spend') or 0)
-                + (cleaned_data.get('personal_he_spend') or 0)
+                + (cleaned_data.get('proxy_he_spend') or 0)
                 != (self.cleaned_data.get('he_spend_last_4weeks') or 0)):
             raise forms.ValidationError({
                 'he_spend_last_4weeks':
