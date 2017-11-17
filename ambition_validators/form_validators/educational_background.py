@@ -6,21 +6,6 @@ class EducationalBackgroundFormValidator(FormValidator):
 
     def clean(self):
 
-        #         req_fields = [
-        #             'head_profession',
-        #             'head_education_years',
-        #             'head_education_certificate',
-        #             'head_elementary',
-        #             'head_secondary',
-        #             'head_higher_education'
-        #         ]
-        #         for req_field in req_fields:
-        #             self.required_if(
-        #                 YES,
-        #                 field='household_head',
-        #                 field_required=req_field,
-        #             )
-
         self.required_if(
             YES,
             field='head_elementary',
