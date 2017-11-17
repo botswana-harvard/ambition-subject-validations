@@ -2,16 +2,16 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
 
-from ..form_validators import HealthEconomicsQuestionnaire2FormValidator
+from ..form_validators import MedicalExpensesTwoDetailFormValidator
 
 
-class TestHealthEconomicsQuestionnaire2(TestCase):
+class TestMedicalExpensesTwoDetailFormValidator(TestCase):
 
     def test_location_care_other_invalid(self):
 
         cleaned_data = {'location_care': OTHER,
                         'location_care_other': None}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care_other', form._errors)
@@ -20,7 +20,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'location_care': 'home',
                         'transport_form': 'bus'}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('transport_form', form._errors)
@@ -29,7 +29,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'transport_form': NOT_APPLICABLE,
                         'transport_cost': 2.00}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('transport_cost', form._errors)
@@ -38,7 +38,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'transport_form': NOT_APPLICABLE,
                         'transport_duration': '08:11'}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('transport_duration', form._errors)
@@ -47,7 +47,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'care_provider': OTHER,
                         'care_provider_other': None}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('care_provider_other', form._errors)
@@ -56,7 +56,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'paid_treatment': YES,
                         'paid_treatment_amount': None}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('paid_treatment_amount', form._errors)
@@ -65,7 +65,7 @@ class TestHealthEconomicsQuestionnaire2(TestCase):
 
         cleaned_data = {'medication_bought': YES,
                         'medication_payment': None}
-        form = HealthEconomicsQuestionnaire2FormValidator(
+        form = MedicalExpensesTwoDetailFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('medication_payment', form._errors)

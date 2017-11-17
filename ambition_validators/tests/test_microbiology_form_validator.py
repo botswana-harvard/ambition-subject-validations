@@ -1,17 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
 from ..form_validators import MicrobiologyFormValidator
-from .models import SubjectVisit
 
 
 class TestMicrobiologyFormValidator(TestCase):
-
-    def setUp(self):
-        self.subject_visit = SubjectVisit()
 
     def test_urine_culture_performed_yes_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': YES,
@@ -53,12 +49,11 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
+    @tag('1')
     def test_pos_urine_results_with_urine_culture_organism(self):
-        self.subject_visit.appointment.subject_identifier = '11111111'
-
-        cleaned_data = {'subject_visit': self.subject_visit,
-                        'urine_culture_results': POS,
-                        'urine_culture_organism': 'klebsiella_sp'}
+        cleaned_data = {
+            'urine_culture_results': POS,
+            'urine_culture_organism': 'klebsiella_sp'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:
             form_validator.validate()
@@ -85,20 +80,6 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('blood_culture_results', form_validator._errors)
-
-    def test_yes_blood_culture_performed_with_blood_culture_results(self):
-
-        self.subject_visit.appointment.subject_identifier = '11111111'
-
-        cleaned_data = {'subject_visit': self.subject_visit,
-                        'blood_culture_performed': YES,
-                        'blood_taken_date': get_utcnow().date(),
-                        'blood_culture_results': 'no_growth'}
-        form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_no_blood_culture_performed_none_blood_culture_results(self):
         cleaned_data = {'blood_culture_performed': NO,

@@ -4,7 +4,7 @@ from edc_base.modelform_validators.base_form_validator import NOT_REQUIRED_ERROR
 from edc_constants.constants import YES, NOT_APPLICABLE
 
 
-class HealthEconomicsQuestionnaire2FormValidator(FormValidator):
+class MedicalExpensesTwoDetailFormValidator(FormValidator):
 
     def clean(self):
         self.validate_other_specify(field='location_care')

@@ -1,16 +1,8 @@
-from django.apps import apps as django_apps
-from django.forms import forms
-from edc_base.modelform_validators import FormValidator, NOT_REQUIRED_ERROR
+from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import POS, YES, OTHER
 
 
 class MicrobiologyFormValidator(FormValidator):
-
-    subject_consent_model = 'ambition_subject.subjectconsent'
-
-    @property
-    def subject_consent_model_cls(self):
-        return django_apps.get_model(self.subject_consent_model)
 
     def clean(self):
 
@@ -49,7 +41,7 @@ class MicrobiologyFormValidator(FormValidator):
             field='blood_culture_results',
             field_required='day_blood_taken')
 
-        self.check_sample_study_day('blood_taken_date')
+        # self.check_sample_study_day()
 
         self.applicable_if(
             POS,
@@ -143,23 +135,26 @@ class MicrobiologyFormValidator(FormValidator):
             other_specify_field='tissue_biopsy_organism_other',
             other_stored_value=OTHER)
 
-    def check_sample_study_day(self, field):
-        subject_identifier = self.cleaned_data.get(
-            'subject_visit').appointment.subject_identifier
-        consent = self.subject_consent_model_cls.objects.get(
-            subject_identifier=subject_identifier)
-
-        if self.cleaned_data.get(field):
-            blood_taken_date = self.cleaned_data.get(field)
-            study_days = (
-                blood_taken_date - consent.consent_datetime.date()).days
-            if self.cleaned_data.get('day_blood_taken'):
-                if self.cleaned_data.get('day_blood_taken') > study_days:
-                    message = {
-                        'day_blood_taken': f'Randomization date is '
-                        f'{consent.consent_datetime.date()}, blood sample study day should '
-                        f'be {study_days} days or less.'}
-                    self._errors.update(message)
-                    self._error_codes.append(NOT_REQUIRED_ERROR)
-                    raise forms.ValidationError(
-                        message, code=NOT_REQUIRED_ERROR)
+#     def check_sample_study_day(self):
+#         # TODO: is form date UTC??
+#         """DOCSTRING please.
+#         """
+#         blood_taken_date = self.cleaned_data.get('blood_taken_date')
+#         subject_identifier = self.cleaned_data.get(
+#             'subject_visit').subject_identifier
+#         consent = self.subject_consent_model_cls.objects.get(
+#             subject_identifier=subject_identifier)
+#
+#         if blood_taken_date:
+#             study_days = (
+#                 blood_taken_date - consent.consent_datetime.date()).days
+#             if self.cleaned_data.get('day_blood_taken'):
+#                 if self.cleaned_data.get('day_blood_taken') > study_days:
+#                     message = {
+#                         'day_blood_taken': f'Randomization date is '
+#                         f'{consent.consent_datetime.date()}, blood sample study day should '
+#                         f'be {study_days} days or less.'}
+#                     self._errors.update(message)
+#                     self._error_codes.append(NOT_REQUIRED_ERROR)
+#                     raise forms.ValidationError(
+#                         message, code=NOT_REQUIRED_ERROR)

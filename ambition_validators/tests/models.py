@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.deletion import PROTECT
 from edc_base.model_mixins import ListModelMixin, BaseUuidModel
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO
@@ -15,6 +16,11 @@ class Appointment(BaseUuidModel):
         default=0,
         null=True,
         blank=True)
+
+
+class SubjectVisit(BaseUuidModel):
+
+    appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
 
 
 class PatientHistory(BaseUuidModel):
