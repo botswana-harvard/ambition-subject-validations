@@ -1,3 +1,5 @@
+from django.forms import forms
+
 from edc_base.modelform_validators import FormValidator
 from edc_constants.constants import YES, NO, UNKNOWN
 
@@ -19,12 +21,17 @@ class AdverseEventFormValidator(FormValidator):
             self.cleaned_data.get('regimen') == 'Single Dose' and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
 
+        regimen_1_condition_control = (
+            self.cleaned_data.get('regimen') == 'Control' and
+            self.cleaned_data.get('ae_study_relation_possibility') == YES
+        )
+
         self.applicable_if_true(
             condition=regimen_1_condition,
             field_applicable='ambisome_relation')
 
         self.applicable_if_true(
-            condition=regimen_1_condition,
+            condition=regimen_1_condition or regimen_1_condition_control,
             field_applicable='fluconazole_relation')
 
         regimen_2_condition = (
@@ -39,6 +46,11 @@ class AdverseEventFormValidator(FormValidator):
             YES,
             field='ae_study_relation_possibility',
             field_applicable='flucytosine_relation')
+
+        self.applicable_if(
+            YES,
+            field='ae_study_relation_possibility',
+            field_applicable='fluconazole_relation')
 
         self.applicable_if(
             YES,

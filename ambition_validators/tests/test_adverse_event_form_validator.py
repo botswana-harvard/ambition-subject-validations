@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 
 from edc_constants.constants import YES, NO, UNKNOWN, NOT_APPLICABLE
 from edc_base.modelform_validators import NOT_REQUIRED_ERROR
@@ -91,6 +91,17 @@ class TestAdverseEventFormValidator(TestCase):
         options = {
             'ae_study_relation_possibility': YES,
             'regimen': 'Single Dose',
+            'flucytosine_relation': 'possibly_related'}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        try:
+            form_validator.validate()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_fluconazole_relation_regimen_1_control_valid(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'regimen': 'Control',
             'flucytosine_relation': 'possibly_related',
             'fluconazole_relation': 'possibly_related'}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
@@ -98,6 +109,15 @@ class TestAdverseEventFormValidator(TestCase):
             form_validator.validate()
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_fluconazole_relation_regimen_1_control_na(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'regimen': 'Control',
+            'fluconazole_relation': NOT_APPLICABLE}
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('fluconazole_relation', form_validator._errors)
 
     def test_amphotericin_b_relation_NA_regimen_2(self):
         options = {
