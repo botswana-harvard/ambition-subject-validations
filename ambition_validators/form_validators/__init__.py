@@ -2,7 +2,7 @@ from .adverse_event import AdverseEventFormValidator
 from .amphotericin_missed_doses import AmphotericinMissedDosesFormValidator
 from .blood_result import BloodResultFormValidator
 from .death_report import DeathReportFormValidator
-from .educational_background import EducationalBackgroundFormValidator
+from .education import EducationFormValidator
 from .fluconazole_missed_doses import FluconazoleMissedDosesFormValidator
 from .flucytosine_missed_doses import FlucytosineMissedDosesFormValidator
 from .follow_up import FollowUpFormValidator
