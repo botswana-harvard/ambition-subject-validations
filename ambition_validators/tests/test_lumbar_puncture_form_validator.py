@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from edc_constants.constants import YES, NO
+from ..constants import UNPERFOMED
 
 from ..form_validators import LumbarPunctureCSFFormValidator
 
@@ -40,6 +41,14 @@ class TestLumbarPunctureFormValidator(TestCase):
     def test_csf_culture_no(self):
         cleaned_data = {'csf_culture': NO,
                         'other_csf_culture': 'blah'}
+        form_validator = LumbarPunctureCSFFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('other_csf_culture', form_validator._errors)
+
+    def test_csf_culture_not_perfomed(self):
+        cleaned_data = {'csf_culture': UNPERFOMED,
+                        'other_csf_culture': 'culture'}
         form_validator = LumbarPunctureCSFFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)

@@ -1,6 +1,6 @@
-from django import forms
-
 from edc_base.modelform_validators import FormValidator
+
+from django import forms
 from edc_base.modelform_validators.base_form_validator import (NOT_REQUIRED_ERROR,
                                                                REQUIRED_ERROR)
 from edc_constants.constants import NOT_APPLICABLE, YES
