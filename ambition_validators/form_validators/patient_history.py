@@ -50,6 +50,11 @@ class PatientHistoryFormValidator(FormValidator):
             field='taking_arv',
             field_required='arv_date')
 
+        self.not_applicable(
+            None,
+            field='arv_date',
+            field_applicable='arv_date_estimated')
+
         self.validate_other_specify(field='first_arv_regimen')
 
         self.validate_other_specify(field='second_arv_regimen')
