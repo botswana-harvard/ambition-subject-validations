@@ -69,6 +69,23 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('arv_date', form._errors)
 
+    def test_arv_date_estimated_invalid(self):
+        cleaned_data = {'arv_date': None,
+                        'arv_date_estimated': YES}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('arv_date_estimated', form._errors)
+
+    def test_arv_date_estimated_valid(self):
+        cleaned_data = {'arv_date': None,
+                        'arv_date_estimated': NOT_APPLICABLE}
+        form_validator = PatientHistoryFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
     def test_taking_arv_first_arv_regimen_none_invalid(self):
         cleaned_data = {'taking_arv': YES,
                         'arv_date': get_utcnow(),
