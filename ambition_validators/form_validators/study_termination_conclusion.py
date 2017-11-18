@@ -42,7 +42,7 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='willing_to_complete_date')
 
         self.applicable_if(
-            'late_exclusion_criterion',
+            'late_exclusion_criteria_met',
             field='termination_reason',
             field_applicable='protocol_exclusion_criterion')
 
