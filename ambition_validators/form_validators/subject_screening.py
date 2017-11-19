@@ -1,6 +1,5 @@
 from django.forms import forms
-from edc_base.modelform_validators import FormValidator
-from edc_base.modelform_validators.base_form_validator import REQUIRED_ERROR
+from edc_form_validators import FormValidator, REQUIRED_ERROR
 from edc_constants.constants import FEMALE, YES, NO, MALE, NOT_APPLICABLE
 
 

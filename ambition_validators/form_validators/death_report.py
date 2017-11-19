@@ -1,6 +1,6 @@
 from django.apps import apps as django_apps
 from django.forms import forms
-from edc_base.modelform_validators import FormValidator, NOT_REQUIRED_ERROR
+from edc_form_validators import FormValidator, NOT_REQUIRED_ERROR
 from edc_constants.constants import OTHER
 
 from ..constants import TUBERCULOSIS

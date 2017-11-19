@@ -1,5 +1,5 @@
 from django.forms import ValidationError
-from edc_base.modelform_validators import REQUIRED_ERROR
+from edc_form_validators import REQUIRED_ERROR
 from edc_constants.constants import OTHER
 from edc_visit_tracking.constants import MISSED_VISIT, UNSCHEDULED
 from edc_visit_tracking.form_validators import VisitFormValidator

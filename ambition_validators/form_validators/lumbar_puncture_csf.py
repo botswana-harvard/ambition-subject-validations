@@ -1,19 +1,25 @@
-from edc_base.modelform_validators import FormValidator
-
 from django import forms
-from edc_base.modelform_validators.base_form_validator import (NOT_REQUIRED_ERROR,
-                                                               REQUIRED_ERROR)
+from edc_form_validators import FormValidator
+from edc_form_validators import NOT_REQUIRED_ERROR, REQUIRED_ERROR
 from edc_constants.constants import NOT_APPLICABLE, YES
 
 
 class LumbarPunctureCSFFormValidator(FormValidator):
 
+    # TODO: WHAT IS THIS, why not use "required_if"??
+    def only_required_if(self, field=None, field_required=None, cleaned_data=None):
+        if (cleaned_data.get(field) == 0
+            and ((cleaned_data.get(field_required)
+                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
+            message = {
+                field_required: 'This field is not required.'}
+            self._errors.update(message)
+            self._error_codes.append(NOT_REQUIRED_ERROR)
+            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+
     def clean(self):
 
-        self.opening_closing_pressure(
-            opening_pressure='opening_pressure',
-            closing_pressure='closing_pressure',
-            cleaned_data=self.cleaned_data)
+        self.validate_opening_closing_pressure()
 
         self.required_if(
             YES,
@@ -49,9 +55,9 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                 self._error_codes.append(REQUIRED_ERROR)
                 raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
-        self.percentage_limit_validation(field='differential_lymphocyte_count',
-                                         unit='differential_lymphocyte_unit',
-                                         cleaned_data=self.cleaned_data)
+        self.percentage_limit_validation(
+            field='differential_lymphocyte_count',
+            unit='differential_lymphocyte_unit')
 
         self.only_required_if(
             field='csf_wbc_cell_count',
@@ -75,9 +81,9 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                 self._error_codes.append(REQUIRED_ERROR)
                 raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
-        self.percentage_limit_validation(field='differential_neutrophil_count',
-                                         unit='differential_neutrophil_unit',
-                                         cleaned_data=self.cleaned_data)
+        self.percentage_limit_validation(
+            field='differential_neutrophil_count',
+            unit='differential_neutrophil_unit')
 
         if (self.cleaned_data.get('csf_glucose') and not
                 self.cleaned_data.get('csf_glucose_units')):
@@ -98,32 +104,17 @@ class LumbarPunctureCSFFormValidator(FormValidator):
             'not_done', field='csf_cr_ag',
             field_required='csf_cr_ag_lfa')
 
-    def only_required_if(self, field=None, field_required=None, cleaned_data=None):
-
-        if (cleaned_data.get(field) == 0
-            and ((cleaned_data.get(field_required)
-                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
-            message = {
-                field_required: 'This field is not required.'}
-            self._errors.update(message)
-            self._error_codes.append(NOT_REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
-
-    def percentage_limit_validation(self, field=None, unit=None, cleaned_data=None):
+    def percentage_limit_validation(self, field=None, unit=None):
         if self.cleaned_data.get(field):
             if (self.cleaned_data.get(unit) == '%' and self.cleaned_data.get(field) > 100):
                 raise forms.ValidationError({
                     field: 'Percent cannot be greater than 100'})
 
-    def opening_closing_pressure(self,
-                                 opening_pressure=None,
-                                 closing_pressure=None,
-                                 cleaned_data=None):
-        if (self.cleaned_data.get(opening_pressure)
-                and self.cleaned_data.get(closing_pressure)):
-            if (self.cleaned_data.get(opening_pressure)
-                    <= self.cleaned_data.get(closing_pressure)):
+    def validate_opening_closing_pressure(self):
+        if (self.cleaned_data.get('opening_pressure')
+                and self.cleaned_data.get('closing_pressure')):
+            if (self.cleaned_data.get('opening_pressure')
+                    <= self.cleaned_data.get('closing_pressure')):
                 raise forms.ValidationError({
-                    closing_pressure:
-                    'Closing pressure should be lower than opening pressure'
-                })
+                    'closing_pressure':
+                    'Closing pressure should be lower than opening pressure'})

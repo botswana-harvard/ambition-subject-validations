@@ -2,7 +2,7 @@ from django import forms
 from django.test import TestCase
 
 from edc_constants.constants import OTHER
-from edc_base.modelform_validators import REQUIRED_ERROR
+from edc_form_validators import REQUIRED_ERROR
 from edc_visit_tracking.constants import MISSED_VISIT, UNSCHEDULED, SCHEDULED
 
 from ..form_validators import SubjectVisitFormValidator

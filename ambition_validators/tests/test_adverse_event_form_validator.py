@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 
 from edc_constants.constants import YES, NO, UNKNOWN, NOT_APPLICABLE
-from edc_base.modelform_validators import NOT_REQUIRED_ERROR
+from edc_form_validators import NOT_REQUIRED_ERROR
 
 from ..form_validators import AdverseEventFormValidator
 
