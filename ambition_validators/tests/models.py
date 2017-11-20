@@ -1,8 +1,12 @@
 from django.db import models
+from django.db.models import options
 from django.db.models.deletion import PROTECT
 from edc_base.model_mixins import ListModelMixin, BaseUuidModel
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO
+
+
+options.DEFAULT_NAMES = (options.DEFAULT_NAMES + ('consent_model',))
 
 
 class ListModel(ListModelMixin, BaseUuidModel):
@@ -18,17 +22,36 @@ class Appointment(BaseUuidModel):
         blank=True)
 
 
-class SubjectVisit(BaseUuidModel):
-
-    appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
-
-
 class PatientHistory(BaseUuidModel):
 
     previous_oi = models.CharField(
         verbose_name='Previous opportunistic infection other than TB?',
         max_length=5,
         choices=YES_NO)
+
+
+class RequiresConsentMixin(models.Model):
+
+    class Meta:
+        abstract = True
+        consent_model = None
+
+
+class SubjectConsent(BaseUuidModel):
+
+    subject_identifier = models.CharField(max_length=25)
+
+    gender = models.CharField(max_length=25)
+
+
+class SubjectVisit(RequiresConsentMixin, BaseUuidModel):
+
+    subject_identifier = models.CharField(max_length=25)
+
+    appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
+
+    class Meta(RequiresConsentMixin.Meta):
+        consent_model = SubjectConsent._meta.label_lower
 
 
 class SubjectScreening(BaseUuidModel):

@@ -1,3 +1,4 @@
+from django.apps import apps as django_apps
 from django.forms import forms
 
 from edc_form_validators import FormValidator
@@ -7,6 +8,24 @@ from edc_constants.constants import NO
 class BloodResultFormValidator(FormValidator):
 
     def clean(self):
+        model_cls = django_apps.get_model(self.cleaned_data.get(
+            'subject_visit')._meta.consent_model)
+
+        subject_identifier = self.cleaned_data.get(
+            'subject_visit').subject_identifier
+
+        gender = model_cls.objects.get(
+            subject_identifier=subject_identifier).gender
+
+        if gender == 'M':
+            self.range_gauge(
+                field='haemoglobin', cleaned_data=self.cleaned_data,
+                lower_bound=13.5, upper_bound=17.5)
+        elif gender == 'F':
+            self.range_gauge(
+                field='haemoglobin', cleaned_data=self.cleaned_data,
+                lower_bound=12.0, upper_bound=15.5)
+
         self.creatinine(
             field='creatinine',
             cleaned_data=self.cleaned_data)

@@ -3,9 +3,59 @@ from django.test import TestCase
 from edc_constants.constants import YES, NO
 
 from ..form_validators import BloodResultFormValidator
+from .models import SubjectVisit, SubjectConsent
+import uuid
 
 
 class TestBloodResultFormValidator(TestCase):
+
+    def setUp(self):
+        self.subject_consent = SubjectConsent.objects.create(
+            subject_identifier='11111111',
+            gender='M')
+        self.subject_visit = SubjectVisit.objects.create(
+            subject_identifier='11111111',
+            appointment_id=uuid.uuid4())
+
+    def test_haemoglobin_units_male_invalid(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'haemoglobin': 12.5,
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
+
+    def test_haemoglobin_units_female_invalid(self):
+        self.subject_consent.gender = 'F'
+        self.subject_consent.save()
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'haemoglobin': 16.5,
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
+
+    def test_haemoglobin_units_male_valid(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'haemoglobin': 14,
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_no_creatinine_mg_invalid(self):
         cleaned_data = {
