@@ -59,6 +59,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_no_creatinine_mg_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'creatinine': 0.3,
             'creatinine_unit': None,
             'are_results_normal': YES
@@ -72,6 +73,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_creatinine_mg_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'creatinine': 0.3,
             'creatinine_unit': 'mg/dL',
             'are_results_normal': YES
@@ -85,6 +87,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_creatinine_mg(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'creatinine': 1.3,
             'creatinine_unit': 'mg/dL',
             'are_results_normal': NO,
@@ -99,6 +102,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_creatinine_umol_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'creatinine': 43,
             'creatinine_unit': 'umol/L',
             'are_results_normal': YES
@@ -112,6 +116,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_creatinine_umol(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'creatinine': 100,
             'creatinine_unit': 'mg/dL',
             'are_results_normal': NO,
@@ -126,6 +131,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_magnesium_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'magnesium': 0.01,
             'are_results_normal': YES
         }
@@ -138,6 +144,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_magnesium(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'magnesium': 1.0,
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': YES}
@@ -150,6 +157,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_potassium_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'potassium': 1.0,
             'are_results_normal': YES
         }
@@ -162,6 +170,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_potassium(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'potassium': 5.0,
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': YES}
@@ -174,6 +183,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_sodium_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'sodium': 100,
             'are_results_normal': YES
         }
@@ -186,6 +196,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_sodium(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'sodium': 135,
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': YES
@@ -199,6 +210,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_alt_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'alt': 100,
             'are_results_normal': YES
         }
@@ -211,6 +223,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_alt(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'alt': 10,
             'are_results_normal': YES,
         }
@@ -223,6 +236,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_platelets_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'platelets': 500,
             'are_results_normal': YES
         }
@@ -235,6 +249,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_platelets(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'platelets': 450,
             'are_results_normal': YES,
         }
@@ -247,6 +262,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_absolute_neutrophil_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'absolute_neutrophil': 1,
             'are_results_normal': YES
         }
@@ -259,6 +275,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_absolute_neutrophil(self):
 
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'absolute_neutrophil': 4,
             'are_results_normal': YES,
         }
@@ -271,6 +288,7 @@ class TestBloodResultFormValidator(TestCase):
 
     def test_abnormal_results_in_ae_range_invalid(self):
         cleaned_data = {
+            'subject_visit': self.subject_visit,
             'sodium': 1000,
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': NO
