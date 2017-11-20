@@ -49,7 +49,7 @@ class BloodResultFormValidator(FormValidator):
                  (self.cleaned_data.get('creatinine_unit') in
                   'umol/L' and (self.cleaned_data.get(field) < 53
                                 or self.cleaned_data.get(field) > 115)))):
-            if self.cleaned_data.get('are_results_normal') not in NO:
+            if self.cleaned_data.get('are_results_normal') != NO:
                 message = {
                     'are_results_normal': f'{field} is abnormal, got '
                     f'{self.cleaned_data.get(field)}. '
@@ -61,7 +61,7 @@ class BloodResultFormValidator(FormValidator):
         if (self.cleaned_data.get(field)
                 and (self.cleaned_data.get(field) < lower_bound
                      or self.cleaned_data.get(field) > upper_bound)):
-            if self.cleaned_data.get('are_results_normal') not in NO:
+            if self.cleaned_data.get('are_results_normal') != NO:
                 message = {
                     'are_results_normal': f'{field} is abnormal, got '
                     f'{self.cleaned_data.get(field)}. '
