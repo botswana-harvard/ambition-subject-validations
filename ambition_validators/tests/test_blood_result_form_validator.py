@@ -263,7 +263,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_absolute_neutrophil_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 1,
+            'absolute_neutrophil': 1000,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -276,7 +276,7 @@ class TestBloodResultFormValidator(TestCase):
 
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
+            'absolute_neutrophil': 4000,
             'are_results_normal': YES,
         }
         form_validator = BloodResultFormValidator(
