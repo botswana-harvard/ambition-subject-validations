@@ -52,7 +52,7 @@ class BloodResultFormValidator(FormValidator):
 
         self.range_gauge(
             field='absolute_neutrophil', cleaned_data=self.cleaned_data,
-            lower_bound=2500, upper_bound=7500)
+            lower_bound=2.5, upper_bound=7.5)
 
         if (self.cleaned_data.get('are_results_normal') == NO
                 and self.cleaned_data.get('abnormal_results_in_ae_range') == NO):
