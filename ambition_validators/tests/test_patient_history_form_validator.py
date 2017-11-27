@@ -1,13 +1,11 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
-from ..constants import WORKING
 from ..form_validators import PatientHistoryFormValidator
 
 
-@tag('ph')
 class TestPatientHistoryFormValidator(TestCase):
 
     #     def test_headache_requires_headache_duration(self):
@@ -139,12 +137,13 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('patient_adherence', form._errors)
 
-    def test_patient_adherence_last_dose_none_invalid(self):
+    def test_patient_adherence_last_dose_and_days_missed_invalid(self):
         cleaned_data = {'patient_adherence': NO,
-                        'last_dose': None}
+                        'last_dose': 0,
+                        'days_missed': 0}
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
-        self.assertIn('last_dose', form._errors)
+        self.assertIn('patient_adherence', form._errors)
 
     def test_no_last_viral_load_date_invalid(self):
         cleaned_data = {'last_viral_load': None,

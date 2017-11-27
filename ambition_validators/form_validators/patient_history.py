@@ -1,3 +1,5 @@
+from django.forms import forms
+
 from edc_form_validators import FormValidator
 from edc_constants.constants import YES, NO, NONE, OTHER
 
@@ -70,15 +72,13 @@ class PatientHistoryFormValidator(FormValidator):
                 field_applicable=arv_req_field,
             )
 
-        self.required_if(
-            NO,
-            field='patient_adherence',
-            field_required='last_dose')
-
-        self.required_if(
-            NO,
-            field='patient_adherence',
-            field_required='days_missed')
+        if(self.cleaned_data.get('patient_adherence') == NO
+            and (self.cleaned_data.get('last_dose') == 0
+                 and self.cleaned_data.get('days_missed') == 0)):
+            message = {
+                'patient_adherence': 'Cannot have last dose and days missed '
+                'both as 0 if patient is not adherent.'}
+            raise forms.ValidationError(message)
 
         self.not_required_if(
             None,
