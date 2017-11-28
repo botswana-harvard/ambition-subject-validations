@@ -11,15 +11,16 @@ class RadiologyFormValidator(FormValidator):
             field='cxr_done',
             field_required='cxr_date')
 
-        self.applicable_if(
+        self.required_if(
             YES,
             field='cxr_done',
-            field_applicable='cxr_type')
+            field_required='cxr_type')
 
-        self.applicable_if(
+        self.m2m_other_specify_applicable(
             'infiltrates',
-            field='cxr_type',
-            field_applicable='infiltrate_location')
+            m2m_field='cxr_type',
+            field_other='infiltrate_location'
+        )
 
         self.required_if(
             YES,
@@ -46,17 +47,19 @@ class RadiologyFormValidator(FormValidator):
             field='ct_performed',
             field_required='are_results_abnormal')
 
-        self.applicable_if(
+        self.required_if(
             YES,
             field='are_results_abnormal',
-            field_applicable='abnormal_results_reason')
+            field_required='abnormal_results_reason')
 
-        self.validate_other_specify(
-            field='abnormal_results_reason',
-            other_specify_field='abnormal_results_reason_other',
-            other_stored_value=OTHER)
+        self.m2m_other_specify(
+            OTHER,
+            m2m_field='abnormal_results_reason',
+            field_other='abnormal_results_reason_other'
+        )
 
-        self.required_if(
+        self.m2m_other_specify(
             'infarcts',
-            field='abnormal_results_reason',
-            field_required='infarcts_location')
+            m2m_field='abnormal_results_reason',
+            field_other='infarcts_location'
+        )
