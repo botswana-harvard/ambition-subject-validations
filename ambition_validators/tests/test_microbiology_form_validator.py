@@ -7,6 +7,7 @@ from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 from ..form_validators import MicrobiologyFormValidator
 
 
+@tag('br')
 class TestMicrobiologyFormValidator(TestCase):
 
     def test_urine_culture_performed_yes_require_urine_culture_results(self):
@@ -49,7 +50,6 @@ class TestMicrobiologyFormValidator(TestCase):
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    @tag('1')
     def test_pos_urine_results_with_urine_culture_organism(self):
         cleaned_data = {
             'urine_culture_results': POS,
