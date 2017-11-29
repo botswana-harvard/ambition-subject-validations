@@ -1,6 +1,6 @@
 from django.forms import forms
 from edc_form_validators import FormValidator
-from edc_constants.constants import YES, OTHER
+from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
 
 from ..constants import WORKING
 
@@ -27,6 +27,13 @@ class MedicalExpensesFormValidator(FormValidator):
             YES,
             field='loss_of_earnings',
             field_required='earnings_lost_amount')
+
+        condition = (self.cleaned_data.get('form_of_transport') not in
+                     [NOT_APPLICABLE, 'foot', 'bicycle', 'ambulance'])
+        print('>>>>>>>>', condition)
+        self.required_if_true(
+            condition=condition,
+            field_required='transport_fare')
 
     def total_money_spent(self, cleaned_data=None):
 
