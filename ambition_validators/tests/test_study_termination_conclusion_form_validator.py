@@ -256,7 +256,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_date_arvs_started_or_switched_none_arvs_delay_reason(self):
         cleaned_data = {
-            'arvs_started_switch_date': None,
+            'arvs_switch_date': None,
             'arvs_delay_reason': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
@@ -275,7 +275,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_na_date_arvs_started_or_switched_with_arvs_delay_reason(self):
         cleaned_data = {
-            'arvs_started_switch_date': get_utcnow(),
+            'arvs_switch_date': get_utcnow(),
             'arvs_delay_reason': 'unavailability'}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)

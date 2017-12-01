@@ -93,5 +93,5 @@ class StudyTerminationConclusionFormValidator(FormValidator):
 
         self.required_if(
             None,
-            field='arvs_started_switch_date',
+            field='arvs_switch_date',
             field_required='arvs_delay_reason')
