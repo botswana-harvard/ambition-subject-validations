@@ -52,11 +52,6 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='included_in_error')
 
         self.required_if(
-            YES,
-            field='protocol_exclusion_criterion',
-            field_required='rifampicin_started')
-
-        self.required_if(
             'included_in_error',
             field='termination_reason',
             field_required='included_in_error_date')
