@@ -76,7 +76,7 @@ class TestMedicalExpensesFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('earnings_lost_amount', form._errors)
 
-    def test_transport_fare_invalid_foot(self):
+    def test_transport_fare_invalid_na(self):
         cleaned_data = {
             'form_of_transport': NOT_APPLICABLE,
             'transport_fare': 10.00,
@@ -97,7 +97,7 @@ class TestMedicalExpensesFormValidator(TestCase):
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('transport_fare', form_validator._errors)
-        
+
     def test_transport_fare_invalid_ambulance(self):
         cleaned_data = {
             'form_of_transport': 'ambulance',
@@ -109,8 +109,7 @@ class TestMedicalExpensesFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('transport_fare', form_validator._errors)
 
-    @tag('s')
-    def test_transport_fare_invalid_na(self):
+    def test_transport_fare_invalid_foot(self):
         cleaned_data = {'form_of_transport': 'foot',
                         'transport_fare': 100.00}
         form_validator = MedicalExpensesFormValidator(
@@ -123,6 +122,26 @@ class TestMedicalExpensesFormValidator(TestCase):
         cleaned_data = {
             'form_of_transport': 'private_taxi',
             'transport_fare': 10.00}
+        form_validator = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_travel_time_invalid(self):
+        cleaned_data = {'form_of_transport': NOT_APPLICABLE,
+                        'travel_time': '01:00'}
+        form_validator = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('travel_time', form_validator._errors)
+
+    def test_travel_time_valid(self):
+        cleaned_data = {
+            'form_of_transport': 'private_taxi',
+            'transport_fare': '01:00'}
         form_validator = MedicalExpensesFormValidator(
             cleaned_data=cleaned_data)
         try:

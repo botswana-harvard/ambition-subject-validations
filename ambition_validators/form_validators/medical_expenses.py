@@ -30,10 +30,15 @@ class MedicalExpensesFormValidator(FormValidator):
 
         condition = (self.cleaned_data.get('form_of_transport') not in
                      [NOT_APPLICABLE, 'foot', 'bicycle', 'ambulance'])
-        print('>>>>>>>>', condition)
         self.required_if_true(
             condition=condition,
             field_required='transport_fare')
+
+        self.required_if_true(
+            condition=self.cleaned_data.get(
+                'form_of_transport') != NOT_APPLICABLE,
+            field_required='travel_time'
+        )
 
     def total_money_spent(self, cleaned_data=None):
 
