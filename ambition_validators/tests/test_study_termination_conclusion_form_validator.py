@@ -4,9 +4,7 @@ from django.test import TestCase
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 from edc_base.utils import get_utcnow
 
-
 from ..form_validators import StudyTerminationConclusionFormValidator
-from pprint import pprint
 
 
 class TestStudyTerminationConclusionFormValidator(TestCase):
@@ -203,14 +201,6 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
-    def test_yes_protocol_exclusion_criterion_none_rifampicin_started(self):
-        cleaned_data = {'protocol_exclusion_criterion': YES,
-                        'rifampicin_started': None}
-        form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('rifampicin_started', form_validator._errors)
-
     def test_other_late_protocol_exclusion_none_date_to_complete(self):
         cleaned_data = {
             'first_line_regimen': OTHER,
@@ -256,7 +246,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_date_arvs_started_or_switched_none_arvs_delay_reason(self):
         cleaned_data = {
-            'arvs_started_switch_date': None,
+            'arvs_switch_date': None,
             'arvs_delay_reason': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
@@ -275,7 +265,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_na_date_arvs_started_or_switched_with_arvs_delay_reason(self):
         cleaned_data = {
-            'arvs_started_switch_date': get_utcnow(),
+            'arvs_switch_date': get_utcnow(),
             'arvs_delay_reason': 'unavailability'}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)

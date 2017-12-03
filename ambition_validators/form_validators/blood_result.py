@@ -1,8 +1,9 @@
 from django.apps import apps as django_apps
+from django.conf import settings
 from django.forms import forms
 
 from edc_form_validators import FormValidator
-from edc_constants.constants import NO
+from edc_constants.constants import NO, YES
 
 
 class BloodResultFormValidator(FormValidator):
@@ -59,6 +60,26 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError({
                 'abnormal_results_in_ae_range': 'If results are abnormal, they '
                 'are considered to be within Grade IV range.'})
+
+        # TODO: Use site code to validate not country, Gaborone & Blantyre
+        condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
+        self.applicable_if_true(
+            condition=condition, field_applicable='bios_crag')
+
+        self.required_if(
+            YES,
+            field='bios_crag',
+            field_required='crag_control_result')
+
+        self.required_if(
+            YES,
+            field='bios_crag',
+            field_required='crag_t1_result')
+
+        self.required_if(
+            YES,
+            field='bios_crag',
+            field_required='crag_t2_result')
 
     def creatinine(self, field=None, cleaned_data=None):
         if (self.cleaned_data.get('creatinine_unit')

@@ -113,7 +113,10 @@ STATIC_URL = '/static/'
 
 if 'test' in sys.argv:
 
+    COUNTRY = 'botswana'
+
     class DisableMigrations:
+
         def __contains__(self, item):
             return True
 

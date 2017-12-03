@@ -5,6 +5,10 @@ from edc_constants.constants import POS, YES, OTHER
 class MicrobiologyFormValidator(FormValidator):
 
     def clean(self):
+        condition = (
+            self.cleaned_data.get('blood_culture_organism') == 'bacteria'
+            or self.cleaned_data.get(
+                'blood_culture_organism') == 'bacteria_and_cryptococcus')
 
         self.required_if(
             YES,
@@ -53,16 +57,10 @@ class MicrobiologyFormValidator(FormValidator):
             other_specify_field='blood_culture_organism_other',
             other_stored_value=OTHER)
 
-        self.required_if(
-            'bacteria',
+        self.applicable_if_true(
+            condition=condition,
             field='blood_culture_organism',
-            field_required='bacteria_identified'
-        )
-
-        self.required_if(
-            'bacteria_and_cryptococcus',
-            field='blood_culture_organism',
-            field_required='bacteria_identified'
+            field_applicable='bacteria_identified'
         )
 
         self.validate_other_specify(
@@ -99,11 +97,6 @@ class MicrobiologyFormValidator(FormValidator):
             YES,
             field='sputum_genexpert_performed',
             field_required='sputum_genexpert_date')
-
-#         self.required_if(
-#             POS,
-#             field='sputum_genexpert_performed',
-#             field_required='sputum_results_positive')
 
         self.applicable_if(
             YES,

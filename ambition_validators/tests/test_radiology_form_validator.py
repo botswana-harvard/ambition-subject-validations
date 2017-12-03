@@ -12,16 +12,14 @@ class TestRadiolodyFormValidator(TestCase):
     def test_cxr_type_none(self):
         options = {'cxr_done': YES,
                    'cxr_date': get_utcnow(),
-                   'cxr_type': None,
-                   'infiltrates': NOT_APPLICABLE}
+                   'cxr_type': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('cxr_type', form_validator._errors)
 
     def test_cxr_type_normal(self):
         options = {'cxr_done': NO,
-                   'cxr_type': NORMAL,
-                   'infiltrate_location': NOT_APPLICABLE}
+                   'cxr_type': NORMAL}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('cxr_type', form_validator._errors)
@@ -29,16 +27,14 @@ class TestRadiolodyFormValidator(TestCase):
     def test_cxr_date_none(self):
         options = {'cxr_done': YES,
                    'cxr_type': 'blah',
-                   'cxr_date': None,
-                   'infiltrate_location': NOT_APPLICABLE}
+                   'cxr_date': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('cxr_date', form_validator._errors)
 
     def test_cxr_date_not_none(self):
         options = {'cxr_done': NO,
-                   'cxr_date': get_utcnow().date,
-                   'infiltrate_location': NOT_APPLICABLE}
+                   'cxr_date': get_utcnow().date}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('cxr_date', form_validator._errors)
@@ -50,7 +46,7 @@ class TestRadiolodyFormValidator(TestCase):
             'cxr_done': YES,
             'cxr_date': get_utcnow(),
             'cxr_type': ListModel.objects.all(),
-            'infiltrate_location': NOT_APPLICABLE}
+            'infiltrate_location': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('infiltrate_location', form_validator._errors)
@@ -69,8 +65,7 @@ class TestRadiolodyFormValidator(TestCase):
         options = {
             'ct_performed': YES,
             'ct_performed_date': get_utcnow(),
-            'scanned_with_contrast': NOT_APPLICABLE,
-            'infiltrate_location': NOT_APPLICABLE}
+            'scanned_with_contrast': NOT_APPLICABLE}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('scanned_with_contrast', form_validator._errors)
@@ -78,8 +73,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_is_scanned_with_contrast_no(self):
         options = {
             'ct_performed': NO,
-            'scanned_with_contrast': NO,
-            'infiltrate_location': NOT_APPLICABLE}
+            'scanned_with_contrast': NO}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('scanned_with_contrast', form_validator._errors)
@@ -88,8 +82,7 @@ class TestRadiolodyFormValidator(TestCase):
         options = {
             'ct_performed': YES,
             'scanned_with_contrast': YES,
-            'ct_performed_date': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'ct_performed_date': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('ct_performed_date', form_validator._errors)
@@ -97,8 +90,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_ct_performed_date_not_none(self):
         options = {
             'ct_performed': NO,
-            'ct_performed_date': get_utcnow().date,
-            'infiltrate_location': NOT_APPLICABLE}
+            'ct_performed_date': get_utcnow().date}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('ct_performed_date', form_validator._errors)
@@ -108,8 +100,7 @@ class TestRadiolodyFormValidator(TestCase):
             'ct_performed': YES,
             'scanned_with_contrast': YES,
             'ct_performed_date': get_utcnow(),
-            'brain_imaging_reason': NOT_APPLICABLE,
-            'infiltrate_location': NOT_APPLICABLE}
+            'brain_imaging_reason': NOT_APPLICABLE, }
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('brain_imaging_reason', form_validator._errors)
@@ -117,8 +108,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_brain_imaging_reason_not_none(self):
         options = {
             'ct_performed': NO,
-            'brain_imaging_reason': 'new_neurology',
-            'infiltrate_location': NOT_APPLICABLE}
+            'brain_imaging_reason': 'new_neurology'}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('brain_imaging_reason', form_validator._errors)
@@ -126,8 +116,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_brain_imaging_reason_other_none(self):
         options = {
             'brain_imaging_reason': OTHER,
-            'brain_imaging_reason_other': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'brain_imaging_reason_other': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('brain_imaging_reason_other', form_validator._errors)
@@ -135,8 +124,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_brain_imaging_reason_other_not_none(self):
         options = {
             'brain_imaging_reason': 'new_neurology',
-            'brain_imaging_reason_other': 'tumor',
-            'infiltrate_location': NOT_APPLICABLE}
+            'brain_imaging_reason_other': 'tumor'}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('brain_imaging_reason_other', form_validator._errors)
@@ -147,8 +135,7 @@ class TestRadiolodyFormValidator(TestCase):
             'scanned_with_contrast': YES,
             'ct_performed_date': get_utcnow(),
             'brain_imaging_reason': YES,
-            'are_results_abnormal': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'are_results_abnormal': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_abnormal', form_validator._errors)
@@ -156,8 +143,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_are_results_abnormal_not_none(self):
         options = {
             'ct_performed': NO,
-            'are_results_abnormal': NO,
-            'infiltrate_location': NOT_APPLICABLE}
+            'are_results_abnormal': NO}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_abnormal', form_validator._errors)
@@ -165,8 +151,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_abnormal_results_reason_none(self):
         options = {
             'are_results_abnormal': YES,
-            'abnormal_results_reason': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'abnormal_results_reason': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_reason', form_validator._errors)
@@ -174,8 +159,7 @@ class TestRadiolodyFormValidator(TestCase):
     def test_abnormal_results_reason_not_none(self):
         options = {
             'are_results_abnormal': NO,
-            'abnormal_results_reason': 'tumor',
-            'infiltrate_location': NOT_APPLICABLE}
+            'abnormal_results_reason': 'tumor'}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_reason', form_validator._errors)
@@ -185,8 +169,7 @@ class TestRadiolodyFormValidator(TestCase):
             name=OTHER, short_name=OTHER)
         options = {
             'abnormal_results_reason': ListModel.objects.all(),
-            'abnormal_results_reason_other': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'abnormal_results_reason_other': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_reason_other', form_validator._errors)
@@ -196,8 +179,7 @@ class TestRadiolodyFormValidator(TestCase):
             name='cerebral_oedema', short_name='cerebral_oedema')
         options = {
             'abnormal_results_reason': ListModel.objects.all(),
-            'abnormal_results_reason_other': 'tumor',
-            'infiltrate_location': NOT_APPLICABLE}
+            'abnormal_results_reason_other': 'tumor'}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_reason_other', form_validator._errors)
@@ -207,8 +189,7 @@ class TestRadiolodyFormValidator(TestCase):
             name='infarcts', short_name='infarcts')
         options = {
             'abnormal_results_reason': ListModel.objects.all(),
-            'infarcts_location': None,
-            'infiltrate_location': NOT_APPLICABLE}
+            'infarcts_location': None}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('infarcts_location', form_validator._errors)
@@ -218,8 +199,7 @@ class TestRadiolodyFormValidator(TestCase):
             name='cerebral_oedema', short_name='cerebral_oedema')
         options = {
             'abnormal_results_reason': ListModel.objects.all(),
-            'infarcts_location': 'chest',
-            'infiltrate_location': NOT_APPLICABLE}
+            'infarcts_location': 'chest'}
         form_validator = RadiologyFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('infarcts_location', form_validator._errors)

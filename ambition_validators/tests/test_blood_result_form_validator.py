@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from edc_constants.constants import YES, NO
+from edc_constants.constants import YES, NO, POS
+from django.test.utils import override_settings
 
 from ..form_validators import BloodResultFormValidator
 from .models import SubjectVisit, SubjectConsent
@@ -298,3 +299,59 @@ class TestBloodResultFormValidator(TestCase):
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
+
+    def test_crag_country_botswana_crag_control_result_none(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'absolute_neutrophil': 4,
+            'are_results_normal': YES,
+            'bios_crag': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('crag_control_result', form_validator._errors)
+
+    def test_crag_country_botswana_crag_t1_result_none(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'absolute_neutrophil': 4,
+            'are_results_normal': YES,
+            'bios_crag': YES,
+            'crag_control_result': POS
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('crag_t1_result', form_validator._errors)
+
+    def test_crag_country_botswana_crag_t2_result_none(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'absolute_neutrophil': 4,
+            'are_results_normal': YES,
+            'bios_crag': YES,
+            'crag_control_result': POS,
+            'crag_t1_result': POS
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('crag_t2_result', form_validator._errors)
+
+    @override_settings(COUNTRY='zimbabwe')
+    def test_crag_country_zimbabwe_crag_control_result_yes(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'absolute_neutrophil': 4,
+            'are_results_normal': YES,
+            'bios_crag': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('bios_crag', form_validator._errors)

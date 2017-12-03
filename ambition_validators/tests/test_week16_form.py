@@ -27,14 +27,14 @@ class TestWeek16Form(TestCase):
     def test_patient_alive_activities_help(self):
         cleaned_data = {'patient_alive': YES,
                         'illness_problems': NO,
-                        'ranking_score': 1,
+                        'rankin_score': 1,
                         'activities_help': NOT_APPLICABLE}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
                         'illness_problems': NO,
-                        'ranking_score': 1,
+                        'rankin_score': 1,
                         'activities_help': YES}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
@@ -45,14 +45,14 @@ class TestWeek16Form(TestCase):
 
     def test_patient_alive_illness_problems(self):
         cleaned_data = {'patient_alive': YES,
-                        'ranking_score': 1,
+                        'rankin_score': 1,
                         'activities_help': YES,
                         'illness_problems': NOT_APPLICABLE}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
-                        'ranking_score': 1,
+                        'rankin_score': 1,
                         'activities_help': YES,
                         'illness_problems': YES}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
@@ -62,18 +62,18 @@ class TestWeek16Form(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_patient_alive_ranking_score(self):
+    def test_patient_alive_rankin_score(self):
         cleaned_data = {'patient_alive': YES,
                         'activities_help': YES,
                         'illness_problems': YES,
-                        'ranking_score': None}
+                        'rankin_score': None}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, week16.validate)
 
         cleaned_data = {'patient_alive': YES,
                         'activities_help': YES,
                         'illness_problems': YES,
-                        'ranking_score': '0'}
+                        'rankin_score': '0'}
         week16 = Week16FormValidator(cleaned_data=cleaned_data)
 
         try:

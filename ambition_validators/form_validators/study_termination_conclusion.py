@@ -52,11 +52,6 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='included_in_error')
 
         self.required_if(
-            YES,
-            field='protocol_exclusion_criterion',
-            field_required='rifampicin_started')
-
-        self.required_if(
             'included_in_error',
             field='termination_reason',
             field_required='included_in_error_date')
@@ -93,5 +88,5 @@ class StudyTerminationConclusionFormValidator(FormValidator):
 
         self.required_if(
             None,
-            field='arvs_started_switch_date',
+            field='arvs_switch_date',
             field_required='arvs_delay_reason')

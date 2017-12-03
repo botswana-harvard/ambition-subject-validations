@@ -16,7 +16,7 @@ class RadiologyFormValidator(FormValidator):
             field='cxr_done',
             field_required='cxr_type')
 
-        self.m2m_other_specify_applicable(
+        self.m2m_other_specify(
             'infiltrates',
             m2m_field='cxr_type',
             field_other='infiltrate_location'
