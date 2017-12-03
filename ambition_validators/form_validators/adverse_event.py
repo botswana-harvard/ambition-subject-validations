@@ -52,10 +52,10 @@ class AdverseEventFormValidator(FormValidator):
 
         self.applicable_if(
             YES,
-            field='sa_event',
-            field_applicable='sae_possibility')
+            field='sae',
+            field_applicable='sae_reason')
 
         self.applicable_if(
             YES,
-            field='susar_possility',
+            field='susar',
             field_applicable='susar_reported')

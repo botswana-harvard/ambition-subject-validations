@@ -159,17 +159,17 @@ class TestAdverseEventFormValidator(TestCase):
         except forms.ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_sae_possibility_not_applicable(self):
+    def test_sae_reason_not_applicable(self):
         options = {
-            'sa_event': YES,
-            'sae_possibility': NOT_APPLICABLE}
+            'sae': YES,
+            'sae_reason': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('sae_possibility', form_validator._errors)
+        self.assertIn('sae_reason', form_validator._errors)
 
     def test_susar_reported_not_applicable(self):
         options = {
-            'susar_possility': YES,
+            'susar': YES,
             'susar_reported': NOT_APPLICABLE}
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
