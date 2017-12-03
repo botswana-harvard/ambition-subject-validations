@@ -23,4 +23,4 @@ class Week16FormValidator(FormValidator):
         self.required_if(
             YES,
             field='patient_alive',
-            field_required='ranking_score')
+            field_required='rankin_score')
