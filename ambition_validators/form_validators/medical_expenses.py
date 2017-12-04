@@ -40,6 +40,11 @@ class MedicalExpensesFormValidator(FormValidator):
             field_required='travel_time'
         )
 
+        self.required_if(
+            YES,
+            field='private_healthcare',
+            field_required='healthcare_insurance')
+
     def total_money_spent(self, cleaned_data=None):
 
         if ((cleaned_data.get('personal_he_spend') or 0)

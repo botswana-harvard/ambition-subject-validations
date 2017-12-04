@@ -148,3 +148,22 @@ class TestMedicalExpensesFormValidator(TestCase):
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_healthcare_insurance_no(self):
+        cleaned_data = {'private_healthcare': YES,
+                        'healthcare_insurance': None}
+        form = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('healthcare_insurance', form._errors)
+
+    def test_healthcare_insurance_valid(self):
+        cleaned_data = {
+            'private_healthcare': YES,
+            'healthcare_insurance': YES}
+        form_validator = MedicalExpensesFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
