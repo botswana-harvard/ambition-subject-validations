@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_constants.constants import YES, NO, POS
 from django.test.utils import override_settings
 
@@ -18,24 +18,12 @@ class TestBloodResultFormValidator(TestCase):
             subject_identifier='11111111',
             appointment_id=uuid.uuid4())
 
-    def test_haemoglobin_units_male_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'haemoglobin': 12.5,
-            'are_results_normal': YES
-        }
-        form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
-        )
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('are_results_normal', form_validator._errors)
-
-    def test_haemoglobin_units_female_invalid(self):
+    def test_haemoglobin_units_invalid(self):
         self.subject_consent.gender = 'F'
         self.subject_consent.save()
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'haemoglobin': 16.5,
+            'haemoglobin': 6.4,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -146,7 +134,7 @@ class TestBloodResultFormValidator(TestCase):
 
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'magnesium': 1.0,
+            'magnesium': 0.35,
             'are_results_normal': NO,
             'abnormal_results_in_ae_range': YES}
         form_validator = BloodResultFormValidator(
@@ -168,19 +156,29 @@ class TestBloodResultFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
-    def test_potassium(self):
+    def test_potassium_high(self):
 
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'potassium': 5.0,
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': YES}
+            'potassium': 6.8,
+            'are_results_normal': YES,
+            'abnormal_results_in_ae_range': NO}
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
+
+    def test_potassium_low(self):
+
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'potassium': 2.3,
+            'are_results_normal': YES,
+            'abnormal_results_in_ae_range': NO}
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
 
     def test_sodium_invalid(self):
         cleaned_data = {
@@ -212,7 +210,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_alt_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'alt': 100,
+            'alt': 179,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -238,7 +236,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_platelets_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'platelets': 500,
+            'platelets': 50,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -264,7 +262,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_absolute_neutrophil_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 1,
+            'absolute_neutrophil': 0.4,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
