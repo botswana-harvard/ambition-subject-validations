@@ -21,13 +21,8 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_required='death_date')
 
-        self.required_if(
-            'withdrawal_of_subject_consent',
-            field='termination_reason',
-            field_required='consent_withdrawal_reason')
-
         self.applicable_if(
-            'withdrawal_of_subject_consent',
+            'consent_withdrawn',
             field='termination_reason',
             field_applicable='willing_to_complete_10w')
 
