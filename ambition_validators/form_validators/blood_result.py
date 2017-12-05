@@ -97,12 +97,6 @@ class BloodResultFormValidator(FormValidator):
             field='bios_crag',
             field_required='crag_t2_result')
 
-        if (self.cleaned_data.get('are_results_normal') == NO
-                and self.cleaned_data.get('abnormal_results_in_ae_range') == NO):
-            raise forms.ValidationError({
-                'abnormal_results_in_ae_range': 'Results are abnormal, they are '
-                'considered to be within Grade III or IV range.'})
-
     def creatinine(self, field=None, cleaned_data=None):
         if (self.cleaned_data.get('creatinine_unit')
             and ((self.cleaned_data.get('creatinine_unit') == 'mg/dL'
@@ -156,3 +150,10 @@ class BloodResultFormValidator(FormValidator):
                     f'{self.cleaned_data.get(field)}. '
                     'This field should be No.'}
                 raise forms.ValidationError(message)
+            else:
+                if (self.cleaned_data.get('are_results_normal') == NO
+                        and self.cleaned_data.get('abnormal_results_in_ae_range') != YES):
+                    message = {
+                        'abnormal_results_in_ae_range': 'Results are within Grade III '
+                        'or IV. This field should be Yes.'}
+                    raise forms.ValidationError(message)
