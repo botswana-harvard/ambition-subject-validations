@@ -31,16 +31,16 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_applicable='willing_to_complete_10w')
 
-        self.required_if(
+        self.applicable_if(
             'care_transferred_to_another_institution',
             field='termination_reason',
-            field_required='willing_to_complete_centre')
+            field_applicable='willing_to_complete_centre')
 
-        self.applicable_if_true(
+        self.required_if_true(
             condition=(
                 self.cleaned_data.get('willing_to_complete_10w') == YES
                 or self.cleaned_data.get('willing_to_complete_centre') == YES),
-            field_applicable='willing_to_complete_date')
+            field_required='willing_to_complete_date')
 
         self.applicable_if(
             'late_exclusion_criteria_met',
