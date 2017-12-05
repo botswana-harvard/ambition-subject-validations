@@ -47,12 +47,14 @@ class MedicalExpensesFormValidator(FormValidator):
 
     def total_money_spent(self, cleaned_data=None):
 
-        if ((cleaned_data.get('personal_he_spend') or 0)
-                + (cleaned_data.get('proxy_he_spend') or 0)
+        total_money = ((cleaned_data.get('personal_he_spend') or 0)
+                       + (cleaned_data.get('proxy_he_spend') or 0))
+
+        if (total_money
                 != (self.cleaned_data.get('he_spend_last_4weeks') or 0)):
             raise forms.ValidationError({
                 'he_spend_last_4weeks':
                 'The amount you spent and the amount someone else'
                 ' spent should equal the total amount spent on your'
-                ' healthcare'
+                ' healthcare. Expecting %d' % (total_money)
             })
