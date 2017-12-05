@@ -148,7 +148,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_yes_willing_to_complete_willing_to_complete_date(self):
         cleaned_data = {'willing_to_complete_10w': YES,
-                        'willing_to_complete_date': None}
+                        'willing_to_complete_date': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
@@ -163,7 +163,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_yes_willing_tocomplete_10WFU_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_10w': YES,
-                        'willing_to_complete_date': None}
+                        'willing_to_complete_date': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
@@ -177,14 +177,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_yes_willing_to_complete_centre_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_centre': YES,
-                        'willing_to_complete_date': None}
+                        'willing_to_complete_date': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
     def test_no_willing_to_complete_centre_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_centre': NO,
-                        'willing_to_complete_date': None}
+                        'willing_to_complete_date': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         try:

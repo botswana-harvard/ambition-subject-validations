@@ -36,11 +36,11 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_required='willing_to_complete_centre')
 
-        self.required_if_true(
+        self.applicable_if_true(
             condition=(
                 self.cleaned_data.get('willing_to_complete_10w') == YES
                 or self.cleaned_data.get('willing_to_complete_centre') == YES),
-            field_required='willing_to_complete_date')
+            field_applicable='willing_to_complete_date')
 
         self.applicable_if(
             'late_exclusion_criteria_met',
