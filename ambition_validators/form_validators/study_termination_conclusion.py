@@ -1,5 +1,5 @@
 from edc_form_validators import FormValidator
-from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
+from edc_constants.constants import YES, NOT_APPLICABLE
 
 
 class StudyTerminationConclusionFormValidator(FormValidator):
@@ -36,9 +36,10 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_required='willing_to_complete_centre')
 
-        self.required_if(
-            YES,
-            field='willing_to_complete_10w',
+        self.required_if_true(
+            condition=(
+                self.cleaned_data.get('willing_to_complete_10w') == YES
+                or self.cleaned_data.get('willing_to_complete_centre') == YES),
             field_required='willing_to_complete_date')
 
         self.applicable_if(
@@ -56,35 +57,14 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_required='included_in_error_date')
 
-        self.required_if(
-            YES,
-            field='willing_to_complete_10w',
-            field_required='willing_to_complete_date')
+        self.validate_other_specify(field='first_line_regimen')
 
-        self.required_if(
-            YES,
-            field='willing_to_complete_centre',
-            field_required='willing_to_complete_date')
-
-        self.validate_other_specify(
-            field='first_line_regimen',
-            other_specify_field='first_line_regimen_other',
-            other_stored_value=OTHER)
-
-        self.validate_other_specify(
-            field='second_line_regimen',
-            other_specify_field='second_line_regimen_other',
-            other_stored_value=OTHER)
-
-        self.applicable_if_true(
-            condition=self.cleaned_data.get(
-                'first_line_regimen') not in [NOT_APPLICABLE],
-            field_applicable='first_line_env')
+        self.validate_other_specify(field='second_line_regimen')
 
         self.not_applicable_if(
             NOT_APPLICABLE,
             field='first_line_regimen',
-            field_applicable='first_line_env')
+            field_applicable='first_line_choice')
 
         self.required_if(
             None,

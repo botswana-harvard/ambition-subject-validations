@@ -41,6 +41,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('readmission_date', form_validator._errors)
 
+    def test_died_no_death_date_invalid(self):
+        cleaned_data = {'termination_reason': 'died',
+                        'death_date': None}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('death_date', form_validator._errors)
+
     def test_termination_reason_require_consent_withdrawal_reason(self):
         """ Asserts consent_withdrawal_reason when termination reason
             is withdrawal_of_subject_consent.
@@ -155,20 +163,10 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_yes_willing_tocomplete_10WFU_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_10w': YES,
-                        'date_willing_to_complete': None}
+                        'willing_to_complete_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_no_willing_tocomplete_10WFU_none_date_to_complete(self):
-        cleaned_data = {'willing_to_complete_10w': NO,
-                        'date_willing_to_complete': None}
-        form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_no_willing_tocomplete_10WFU_with_date_to_complete(self):
         cleaned_data = {'willing_to_complete_10w': NO,
@@ -179,14 +177,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_yes_willing_to_complete_centre_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_centre': YES,
-                        'date_willing_to_complete': None}
+                        'willing_to_complete_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
     def test_no_willing_to_complete_centre_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_centre': NO,
-                        'date_willing_to_complete': None}
+                        'willing_to_complete_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         try:
@@ -236,7 +234,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
     def test_other_first_line_regimen_with_second_line_regime_other(self):
         cleaned_data = {
             'second_line_regimen_patients': OTHER,
-            'second_line_regimen_patients_other': 'regime'}
+            'second_line_regimen_patients_other': 'regimen2'}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         try:
