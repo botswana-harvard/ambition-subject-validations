@@ -1,5 +1,5 @@
 from edc_form_validators import FormValidator
-from edc_constants.constants import YES, NO, NONE, OTHER
+from edc_constants.constants import YES, NO, OTHER
 
 from ..constants import HEADACHE, VISUAL_LOSS
 
