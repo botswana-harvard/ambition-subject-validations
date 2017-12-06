@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from edc_base.utils import get_utcnow
 from edc_constants.constants import NO, NOT_APPLICABLE, OTHER, YES
 
 from ..form_validators import RecurrenceSymptomFormValidator
@@ -10,22 +9,26 @@ from .models import ListModel
 
 class TestRecurrenceSymptomFormValidator(TestCase):
 
-    #     def test_meningitis_symptom_other_none(self):
-    #         options = {
-    #             'meningitis_symptom': OTHER,
-    #             'meningitis_symptom_other': None}
-    #         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-    #         self.assertRaises(ValidationError, form_validator.validate)
+    def test_meningitis_symptom_other_none(self):
+        ListModel.objects.create(
+            name=OTHER, short_name=OTHER)
+        options = {
+            'meningitis_symptom': ListModel.objects.all(),
+            'meningitis_symptom_other': None}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
 
-    #     def test_meningitis_symptom_other_valid(self):
-    #         options = {
-    #             'meningitis_symptom': OTHER,
-    #             'meningitis_symptom_other': 'blah'}
-    #         form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
-    #         try:
-    #             form_validator.validate()
-    #         except forms.ValidationError as e:
-    #             self.fail(f'ValidationError unexpectedly raised. Got{e}')
+    def test_meningitis_symptom_other_valid(self):
+        ListModel.objects.create(
+            name=OTHER, short_name=OTHER)
+        options = {
+            'meningitis_symptom': ListModel.objects.all(),
+            'meningitis_symptom_other': 'blah'}
+        form_validator = RecurrenceSymptomFormValidator(cleaned_data=options)
+        try:
+            form_validator.validate()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_neurological_focal_neurologic_deficit_none(self):
         ListModel.objects.create(
