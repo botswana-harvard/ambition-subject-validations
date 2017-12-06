@@ -29,16 +29,6 @@ class PatientHistoryFormValidator(FormValidator):
             field='taking_rifampicin',
             field_required='rifampicin_started_date')
 
-        self.m2m_other_specify(
-            OTHER,
-            m2m_field='previous_non_tb_oi',
-            field_other='previous_non_tb_oi_other')
-
-        self.m2m_single_selection_if(
-            NONE,
-            m2m_field='previous_non_tb_oi'
-        )
-
         self.applicable_if(
             NO,
             field='new_hiv_diagnosis',

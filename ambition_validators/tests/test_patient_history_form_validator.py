@@ -3,19 +3,34 @@ from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 
+from ..constants import HEADACHE, VISUAL_LOSS
 from ..form_validators import PatientHistoryFormValidator
+from .models import ListModel
 
 
 class TestPatientHistoryFormValidator(TestCase):
 
-    #     def test_headache_requires_headache_duration(self):
-    #         """Assert that headache selection requires duration
-    #         """
-    #         cleaned_data = {'symptom': HEADACHE,
-    #                         'headache_duration': None}
-    #         form_validator = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-    #         self.assertRaises(ValidationError, form_validator.validate)
-    #         self.assertIn('headache_duration', form_validator._errors)
+    def test_headache_requires_headache_duration(self):
+        """Assert that headache selection requires duration
+        """
+        ListModel.objects.create(name=HEADACHE, short_name=HEADACHE)
+
+        cleaned_data = {'symptom': ListModel.objects.all(),
+                        'headache_duration': None}
+        form_validator = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('headache_duration', form_validator._errors)
+
+    def test_visual_loss_requires_duration(self):
+        """Assert that visual_loss selection requires duration
+        """
+        ListModel.objects.create(name=VISUAL_LOSS, short_name=VISUAL_LOSS)
+
+        cleaned_data = {'symptom': ListModel.objects.all(),
+                        'visual_loss_duration': None}
+        form_validator = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('visual_loss_duration', form_validator._errors)
 
     def test_tb_history_yes_tb_site_none_invalid(self):
         cleaned_data = {'tb_history': YES,
@@ -37,21 +52,6 @@ class TestPatientHistoryFormValidator(TestCase):
         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('rifampicin_started_date', form._errors)
-
-#     def test_previous_non_tb_oi_name_none_invalid(self):
-#         cleaned_data = {'previous_non_tb_oi': OTHER,
-#                         'previous_non_tb_oi_other': None}
-#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, form.validate)
-#         self.assertIn('previous_non_tb_oi_other', form._errors)
-
-#     def test_previous_non_tb_oi_date_none_invalid(self):
-#         cleaned_data = {'previous_non_tb_oi': YES,
-#                         'previous_non_tb_oi_name': 'blah',
-#                         'previous_non_tb_oi_date': None}
-#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, form.validate)
-#         self.assertIn('previous_non_tb_oi_date', form._errors)
 
     def test_not_new_hiv_diagnosis_taking_arv_none_invalid(self):
         cleaned_data = {'new_hiv_diagnosis': NO,
@@ -173,9 +173,32 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('cd4_date_estimated', form._errors)
 
-#     def test_patient_adherence_last_dose_none_invalid(self):
-#         cleaned_data = {'neurological': 'focal_neurologic_deficit',
-#                         'focal_neurologic_deficit': None}
-#         form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-#         self.assertRaises(ValidationError, form.validate)
-#         self.assertIn('focal_neurologic_deficit', form._errors)
+    def test_neurological_focal_neurologic_deficit_none_invalid(self):
+        ListModel.objects.create(name='focal_neurologic_deficit',
+                                 short_name='focal_neurologic_deficit')
+
+        cleaned_data = {'neurological': ListModel.objects.all(),
+                        'focal_neurologic_deficit': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('focal_neurologic_deficit', form._errors)
+
+    def test_neurological_neurological_other_none_invalid(self):
+        ListModel.objects.create(name=OTHER,
+                                 short_name=OTHER)
+
+        cleaned_data = {'neurological': ListModel.objects.all(),
+                        'neurological_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('neurological_other', form._errors)
+
+    def test_specify_medications_NO_other_none_invalid(self):
+        ListModel.objects.create(name=OTHER,
+                                 short_name=OTHER)
+
+        cleaned_data = {'specify_medications': ListModel.objects.all(),
+                        'specify_medications_other': None}
+        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form.validate)
+        self.assertIn('specify_medications_other', form._errors)
