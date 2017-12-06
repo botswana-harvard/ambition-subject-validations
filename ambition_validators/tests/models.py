@@ -24,10 +24,16 @@ class Appointment(BaseUuidModel):
 
 class PatientHistory(BaseUuidModel):
 
+    subject_identifier = models.CharField(max_length=25)
+
     previous_oi = models.CharField(
         verbose_name='Previous opportunistic infection other than TB?',
         max_length=5,
         choices=YES_NO)
+
+    first_arv_regimen = models.CharField(
+        verbose_name='Drug used in first line arv regimen',
+        max_length=50)
 
 
 class RequiresConsentMixin(models.Model):

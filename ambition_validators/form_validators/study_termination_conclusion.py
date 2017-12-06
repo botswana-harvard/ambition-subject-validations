@@ -1,8 +1,13 @@
-from edc_form_validators import FormValidator
+from django.core.exceptions import ObjectDoesNotExist
 from edc_constants.constants import YES, NOT_APPLICABLE
+from edc_form_validators import FormValidator
 
 
 class StudyTerminationConclusionFormValidator(FormValidator):
+
+    def __init__(self, patient_history_cls=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.patient_history_cls = patient_history_cls
 
     def clean(self):
 
@@ -61,7 +66,19 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='first_line_regimen',
             field_applicable='first_line_choice')
 
-        self.required_if(
-            None,
-            field='arvs_switch_date',
+        self.required_if_true(
+            condition=(
+                self.patient_history_obj().first_arv_regimen == NOT_APPLICABLE
+                and self.cleaned_data.get('first_line_regimen') == NOT_APPLICABLE),
             field_required='arvs_delay_reason')
+
+    def patient_history_obj(self):
+        subject_identifier = self.cleaned_data.get(
+            'subject_identifier')
+
+        try:
+            patient_history = self.patient_history_cls.objects.get(
+                subject_visit__subject_identifier=subject_identifier)
+        except ObjectDoesNotExist:
+            patient_history = None
+        return patient_history

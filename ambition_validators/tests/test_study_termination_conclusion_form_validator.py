@@ -5,9 +5,15 @@ from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 from edc_base.utils import get_utcnow
 
 from ..form_validators import StudyTerminationConclusionFormValidator
+from .models import PatientHistory
 
 
 class TestStudyTerminationConclusionFormValidator(TestCase):
+
+    def setUp(self):
+        PatientHistory.objects.create(
+            subject_identifier='11111111',
+            first_arv_regimen=NOT_APPLICABLE)
 
     def test_yes_discharged_after_initial_admission_none_date_discharged(self):
         cleaned_data = {'discharged_after_initial_admission': YES,
@@ -189,28 +195,23 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             'second_line_regimen_other', form_validator._errors)
 
     def test_date_arvs_started_or_switched_none_arvs_delay_reason(self):
+
         cleaned_data = {
-            'arvs_switch_date': None,
+            'subject_identifier': '11111111',
+            'first_line_regimen': NOT_APPLICABLE,
             'arvs_delay_reason': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
-
-    def test_date_arvs_started_or_switched_with_arvs_delay_reason(self):
-        cleaned_data = {
-            'date_arvs_started_or_switched': None,
-            'arvs_delay_reason': 'unavailability'}
-        form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        try:
-            form_validator.validate()
-        except forms.ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_na_date_arvs_started_or_switched_with_arvs_delay_reason(self):
         cleaned_data = {
-            'arvs_switch_date': get_utcnow(),
-            'arvs_delay_reason': 'unavailability'}
+            'subject_identifier': '11111111',
+            'first_line_regimen': NOT_APPLICABLE,
+            'arvs_delay_reason': 'bahblah'}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
