@@ -1,3 +1,4 @@
+import uuid
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -5,14 +6,18 @@ from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 from edc_base.utils import get_utcnow
 
 from ..form_validators import StudyTerminationConclusionFormValidator
-from .models import PatientHistory
+from .models import PatientHistory, SubjectVisit
 
 
 class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def setUp(self):
-        PatientHistory.objects.create(
+        self.subject_visit = SubjectVisit.objects.create(
             subject_identifier='11111111',
+            appointment_id=uuid.uuid4())
+
+        PatientHistory.objects.create(
+            subject_visit=self.subject_visit,
             first_arv_regimen=NOT_APPLICABLE)
 
     def test_yes_discharged_after_initial_admission_none_date_discharged(self):
@@ -64,23 +69,27 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn(
-            'willing_to_complete_10w', form_validator._errors)
+        self.assertIn('willing_to_complete_10w', form_validator._errors)
 
     def test_centre_care_transfer_willing_to_complete_in_centre_given(self):
         """ Asserts willing_to_complete_centre when termination reason
             is care_transferred_to_another_institution.
         """
-        cleaned_data = {'termination_reason': 'care_transferred_to_another_institution',
-                        'willing_to_complete_centre': NOT_APPLICABLE}
+        cleaned_data = {
+            'subject_identifier': '11111111',
+            'termination_reason': 'care_transferred_to_another_institution',
+            'willing_to_complete_centre': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('willing_to_complete_centre', form_validator._errors)
 
-        cleaned_data = {'termination_reason': 'care_transferred_to_another_institution',
-                        'willing_to_complete_centre': NO}
+        cleaned_data = {
+            'subject_identifier': '11111111',
+            'termination_reason': 'care_transferred_to_another_institution',
+            'willing_to_complete_centre': NO}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         try:
             form_validator.validate()
         except forms.ValidationError as e:
@@ -94,19 +103,13 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('willing_to_complete_date', form_validator._errors)
 
-    def test_yes_willing_tocomplete_10WFU_none_date_to_complete(self):
-        cleaned_data = {'willing_to_complete_10w': YES,
-                        'willing_to_complete_date': None}
-        form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-
     def test_no_willing_tocomplete_10WFU_with_date_to_complete(self):
         cleaned_data = {'willing_to_complete_10w': NO,
                         'willing_to_complete_date': get_utcnow()}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('willing_to_complete_date', form_validator._errors)
 
     def test_yes_willing_to_complete_centre_none_date_to_complete(self):
         cleaned_data = {'willing_to_complete_centre': YES,
@@ -114,12 +117,14 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('willing_to_complete_date', form_validator._errors)
 
     def test_no_willing_to_complete_centre_none_date_to_complete(self):
-        cleaned_data = {'willing_to_complete_centre': NO,
+        cleaned_data = {'subject_identifier': '11111111',
+                        'willing_to_complete_centre': NO,
                         'willing_to_complete_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         try:
             form_validator.validate()
         except forms.ValidationError as e:
@@ -131,23 +136,27 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('willing_to_complete_date', form_validator._errors)
 
     def test_included_in_error_reason_date_provided(self):
         """ Asserts included_in_error_date when termination reason
             is error_description.
         """
-        cleaned_data = {'termination_reason': 'included_in_error',
+        cleaned_data = {'subject_identifier': '11111111',
+                        'termination_reason': 'included_in_error',
                         'included_in_error': 'blah blah blah blah',
                         'included_in_error_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('included_in_error_date', form_validator._errors)
 
-        cleaned_data = {'termination_reason': 'included_in_error',
+        cleaned_data = {'subject_identifier': '11111111',
+                        'termination_reason': 'included_in_error',
                         'included_in_error': 'blah blah blah blah',
                         'included_in_error_date': get_utcnow()}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         try:
             form_validator.validate()
         except forms.ValidationError as e:
@@ -157,18 +166,21 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         """ Asserts included_in_error_date when termination reason
             is included_in_error.
         """
-        cleaned_data = {'termination_reason': 'included_in_error',
+        cleaned_data = {'subject_identifier': '11111111',
+                        'termination_reason': 'included_in_error',
                         'included_in_error_date': get_utcnow(),
                         'included_in_error': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('included_in_error', form_validator._errors)
 
-        cleaned_data = {'termination_reason': 'included_in_error',
+        cleaned_data = {'subject_identifier': '11111111',
+                        'termination_reason': 'included_in_error',
                         'included_in_error_date': get_utcnow(),
                         'included_in_error': 'blah blah blah blah'}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         try:
             form_validator.validate()
         except forms.ValidationError as e:
@@ -181,8 +193,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn(
-            'first_line_regimen_other', form_validator._errors)
+        self.assertIn('first_line_regimen_other', form_validator._errors)
 
     def test_other_second_line_regimen_none_second_line_regime_other(self):
         cleaned_data = {
@@ -191,8 +202,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn(
-            'second_line_regimen_other', form_validator._errors)
+        self.assertIn('second_line_regimen_other', form_validator._errors)
 
     def test_date_arvs_started_or_switched_none_arvs_delay_reason(self):
 
@@ -203,6 +213,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('arvs_delay_reason', form_validator._errors)
 
     def test_na_date_arvs_started_or_switched_with_arvs_delay_reason(self):
         cleaned_data = {
