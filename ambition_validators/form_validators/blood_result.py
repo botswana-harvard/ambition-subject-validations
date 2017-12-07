@@ -25,9 +25,18 @@ class BloodResultFormValidator(FormValidator):
             ae_grade_3_lower=6.5, ae_grade_3_upper=7.5,
             grade_4_high=False)
 
-        self.creatinine(
-            field='creatinine',
-            cleaned_data=self.cleaned_data)
+        if self.cleaned_data.get('creatinine_unit') == 'mg/dL':
+            self.range_gauge(
+                field='creatinine', cleaned_data=self.cleaned_data,
+                lower_bound=0.6, upper_bound=1.3,
+                ae_grade_3_lower=2.47, ae_grade_3_upper=4.42,
+                grade_4_high=True)
+        if self.cleaned_data.get('creatinine_unit') == 'umol/L':
+            self.range_gauge(
+                field='creatinine', cleaned_data=self.cleaned_data,
+                lower_bound=53, upper_bound=115,
+                ae_grade_3_lower=216, ae_grade_3_upper=400,
+                grade_4_high=True)
 
         self.range_gauge(
             field='magnesium', cleaned_data=self.cleaned_data,
@@ -96,21 +105,6 @@ class BloodResultFormValidator(FormValidator):
             YES,
             field='bios_crag',
             field_required='crag_t2_result')
-
-    def creatinine(self, field=None, cleaned_data=None):
-        if (self.cleaned_data.get('creatinine_unit')
-            and ((self.cleaned_data.get('creatinine_unit') == 'mg/dL'
-                  and (self.cleaned_data.get(field) < 0.6
-                       or self.cleaned_data.get(field) > 1.3)) or
-                 (self.cleaned_data.get('creatinine_unit') ==
-                  'umol/L' and (self.cleaned_data.get(field) < 53
-                                or self.cleaned_data.get(field) > 115)))):
-            if self.cleaned_data.get('are_results_normal') != NO:
-                message = {
-                    'are_results_normal': f'{field} is abnormal, got '
-                    f'{self.cleaned_data.get(field)}. '
-                    'This field should be No.'}
-                raise forms.ValidationError(message)
 
     def range_gauge(self, field=None, cleaned_data=None, lower_bound=None,
                     upper_bound=None, ae_grade_3_lower=None, ae_grade_3_upper=None,

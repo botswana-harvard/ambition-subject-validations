@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_constants.constants import YES, NO, POS
 from django.test.utils import override_settings
 
@@ -50,7 +50,7 @@ class TestBloodResultFormValidator(TestCase):
         cleaned_data = {
             'subject_visit': self.subject_visit,
             'creatinine': 0.3,
-            'creatinine_unit': None,
+            'creatinine_unit': 'mg/dL',
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -63,9 +63,9 @@ class TestBloodResultFormValidator(TestCase):
     def test_creatinine_mg_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'creatinine': 0.3,
+            'creatinine': 2.48,
             'creatinine_unit': 'mg/dL',
-            'are_results_normal': YES
+            'are_results_normal': YES,
         }
         form_validator = BloodResultFormValidator(
             cleaned_data=cleaned_data
@@ -92,7 +92,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_creatinine_umol_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'creatinine': 43,
+            'creatinine': 217,
             'creatinine_unit': 'umol/L',
             'are_results_normal': YES
         }
