@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
-from edc_constants.constants import YES, NO, POS
+from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE
 from django.test.utils import override_settings
 
 from ..form_validators import BloodResultFormValidator
@@ -72,7 +72,6 @@ class TestBloodResultFormValidator(TestCase):
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    @tag('s')
     def test_no_creatinine_mg_sodium_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
@@ -216,6 +215,19 @@ class TestBloodResultFormValidator(TestCase):
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
+
+    def test_sodium_invalid_1(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'sodium': 119,
+            'are_results_normal': NO,
+            'abnormal_results_in_ae_range': NOT_APPLICABLE
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
 
     def test_sodium(self):
 
