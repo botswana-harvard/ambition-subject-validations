@@ -72,6 +72,19 @@ class TestBloodResultFormValidator(TestCase):
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
+    @tag('s')
+    def test_no_creatinine_mg_sodium_invalid(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'creatinine': 900,
+            'creatinine_unit': 'umol/L',
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
+
     def test_creatinine_mg_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,

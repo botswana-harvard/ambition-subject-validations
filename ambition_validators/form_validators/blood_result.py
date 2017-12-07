@@ -121,6 +121,7 @@ class BloodResultFormValidator(FormValidator):
 
         grade_4_high = True if Grade 4 AE > ae_grade_3_upper.
         """
+
         if self.cleaned_data.get(field):
             if ((self.cleaned_data.get(field) > lower_bound
                  and self.cleaned_data.get(field) < upper_bound)
@@ -144,6 +145,7 @@ class BloodResultFormValidator(FormValidator):
                     'are_results_normal': f'{field} is abnormal and is Grade IV AE, got '
                     f'{self.cleaned_data.get(field)}. '
                     'This field should be No.'}
+                raise forms.ValidationError(message)
             elif (not grade_4_high
                   and self.cleaned_data.get(field) < ae_grade_3_lower
                   and self.cleaned_data.get('are_results_normal') != NO):
