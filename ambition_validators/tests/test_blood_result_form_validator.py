@@ -18,12 +18,24 @@ class TestBloodResultFormValidator(TestCase):
             subject_identifier='11111111',
             appointment_id=uuid.uuid4())
 
-    def test_haemoglobin_units_invalid(self):
+    def test_haemoglobin_units_invalid_female(self):
         self.subject_consent.gender = 'F'
         self.subject_consent.save()
         cleaned_data = {
             'subject_visit': self.subject_visit,
             'haemoglobin': 6.4,
+            'are_results_normal': YES
+        }
+        form_validator = BloodResultFormValidator(
+            cleaned_data=cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('are_results_normal', form_validator._errors)
+
+    def test_haemoglobin_units_invalid_male(self):
+        cleaned_data = {
+            'subject_visit': self.subject_visit,
+            'haemoglobin': 6.9,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -210,7 +222,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_alt_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'alt': 179,
+            'alt': 201,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(
@@ -262,7 +274,7 @@ class TestBloodResultFormValidator(TestCase):
     def test_absolute_neutrophil_invalid(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 0.4,
+            'absolute_neutrophil': 0.5,
             'are_results_normal': YES
         }
         form_validator = BloodResultFormValidator(

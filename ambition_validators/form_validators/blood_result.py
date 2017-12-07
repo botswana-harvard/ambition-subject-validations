@@ -9,21 +9,29 @@ from edc_constants.constants import NO, YES
 class BloodResultFormValidator(FormValidator):
 
     def clean(self):
-        # model_cls = django_apps.get_model(self.cleaned_data.get(
-        # 'subject_visit')._meta.consent_model)
+        model_cls = django_apps.get_model(self.cleaned_data.get(
+            'subject_visit')._meta.consent_model)
 
-        # subject_identifier = self.cleaned_data.get(
-        # 'subject_visit').subject_identifier
-        #
-        # gender = model_cls.objects.get(
-        # subject_identifier=subject_identifier).gender
+        subject_identifier = self.cleaned_data.get(
+            'subject_visit').subject_identifier
 
-        self.range_gauge(
-            field='haemoglobin',
-            cleaned_data=self.cleaned_data,
-            lower_bound=12.0, upper_bound=17.5,
-            ae_grade_3_lower=6.5, ae_grade_3_upper=7.5,
-            grade_4_high=False)
+        gender = model_cls.objects.get(
+            subject_identifier=subject_identifier).gender
+
+        if gender == 'M':
+            self.range_gauge(
+                field='haemoglobin',
+                cleaned_data=self.cleaned_data,
+                lower_bound=13.5, upper_bound=17.5,
+                ae_grade_3_lower=7.0, ae_grade_3_upper=9.0,
+                grade_4_high=False)
+        if gender == 'F':
+            self.range_gauge(
+                field='haemoglobin',
+                cleaned_data=self.cleaned_data,
+                lower_bound=12.0, upper_bound=15.5,
+                ae_grade_3_lower=6.5, ae_grade_3_upper=8.5,
+                grade_4_high=False)
 
         if self.cleaned_data.get('creatinine_unit') == 'mg/dL':
             self.range_gauge(
@@ -53,7 +61,7 @@ class BloodResultFormValidator(FormValidator):
         self.range_gauge(
             field='potassium', cleaned_data=self.cleaned_data,
             lower_bound=3.6, upper_bound=5.2,
-            ae_grade_3_lower=6.6, ae_grade_3_upper=7.0,
+            ae_grade_3_lower=6.5, ae_grade_3_upper=7.0,
             grade_4_high=True)
 
         self.range_gauge(
@@ -65,13 +73,13 @@ class BloodResultFormValidator(FormValidator):
         self.range_gauge(
             field='sodium', cleaned_data=self.cleaned_data,
             lower_bound=135, upper_bound=145,
-            ae_grade_3_lower=155, ae_grade_3_upper=159,
+            ae_grade_3_lower=154, ae_grade_3_upper=159,
             grade_4_high=True)
 
         self.range_gauge(
             field='alt', cleaned_data=self.cleaned_data,
             lower_bound=10, upper_bound=40,
-            ae_grade_3_lower=177, ae_grade_3_upper=350,
+            ae_grade_3_lower=200, ae_grade_3_upper=400,
             grade_4_high=True)
 
         self.range_gauge(
@@ -83,7 +91,7 @@ class BloodResultFormValidator(FormValidator):
         self.range_gauge(
             field='absolute_neutrophil', cleaned_data=self.cleaned_data,
             lower_bound=2.5, upper_bound=7.5,
-            ae_grade_3_lower=0.5, ae_grade_3_upper=0.75,
+            ae_grade_3_lower=0.4, ae_grade_3_upper=0.59,
             grade_4_high=False)
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
