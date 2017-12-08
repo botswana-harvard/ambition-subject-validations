@@ -23,7 +23,6 @@ class TestBloodResultFormValidator(TestCase):
             'alt': 10,
             'creatinine': 100,
             'creatinine_unit': 'umol/L',
-            'haemoglobin': 14.0,
             'absolute_neutrophil': 3,
             'sodium': 135,
             'potassium': 4.0,
