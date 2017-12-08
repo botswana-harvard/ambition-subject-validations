@@ -35,63 +35,63 @@ class BloodResultFormValidator(FormValidator):
 
         if self.cleaned_data.get('creatinine_unit') == 'mg/dL':
             self.range_gauge(
-                field='creatinine', cleaned_data=self.cleaned_data,
+                field='creatinine',
                 lower_bound=0.6, upper_bound=1.3,
                 ae_grade_3_lower=2.47, ae_grade_3_upper=4.42,
                 grade_4_high=True)
         if self.cleaned_data.get('creatinine_unit') == 'umol/L':
             self.range_gauge(
-                field='creatinine', cleaned_data=self.cleaned_data,
+                field='creatinine',
                 lower_bound=53, upper_bound=115,
                 ae_grade_3_lower=216, ae_grade_3_upper=400,
                 grade_4_high=True)
 
         if self.cleaned_data.get('magnesium'):
             self.range_gauge(
-                field='magnesium', cleaned_data=self.cleaned_data,
+                field='magnesium',
                 lower_bound=0.75, upper_bound=1.2,
                 ae_grade_3_lower=0.3, ae_grade_3_upper=0.44,
                 grade_4_high=False)
 
         self.range_gauge(
-            field='potassium', cleaned_data=self.cleaned_data,
+            field='potassium',
             lower_bound=3.6, upper_bound=5.2,
             ae_grade_3_lower=2.0, ae_grade_3_upper=2.4,
             grade_4_high=False)
 
         self.range_gauge(
-            field='potassium', cleaned_data=self.cleaned_data,
+            field='potassium',
             lower_bound=3.6, upper_bound=5.2,
             ae_grade_3_lower=6.5, ae_grade_3_upper=7.0,
             grade_4_high=True)
 
         if self.cleaned_data.get('sodium') < 135:
             self.range_gauge(
-                field='sodium', cleaned_data=self.cleaned_data,
+                field='sodium',
                 lower_bound=135, upper_bound=145,
                 ae_grade_3_lower=121, ae_grade_3_upper=124,
                 grade_4_high=False)
         else:
             self.range_gauge(
-                field='sodium', cleaned_data=self.cleaned_data,
+                field='sodium',
                 lower_bound=135, upper_bound=145,
                 ae_grade_3_lower=154, ae_grade_3_upper=159,
                 grade_4_high=True)
 
         self.range_gauge(
-            field='alt', cleaned_data=self.cleaned_data,
+            field='alt',
             lower_bound=10, upper_bound=40,
             ae_grade_3_lower=200, ae_grade_3_upper=400,
             grade_4_high=True)
 
         self.range_gauge(
-            field='platelets', cleaned_data=self.cleaned_data,
+            field='platelets',
             lower_bound=150, upper_bound=450,
             ae_grade_3_lower=25, ae_grade_3_upper=51,
             grade_4_high=False)
 
         self.range_gauge(
-            field='absolute_neutrophil', cleaned_data=self.cleaned_data,
+            field='absolute_neutrophil',
             lower_bound=2.5, upper_bound=7.5,
             ae_grade_3_lower=0.4, ae_grade_3_upper=0.59,
             grade_4_high=False)
@@ -116,7 +116,7 @@ class BloodResultFormValidator(FormValidator):
             field='bios_crag',
             field_required='crag_t2_result')
 
-    def range_gauge(self, field=None, cleaned_data=None, lower_bound=None,
+    def range_gauge(self, field=None, lower_bound=None,
                     upper_bound=None, ae_grade_3_lower=None, ae_grade_3_upper=None,
                     grade_4_high=None):
         """Method to validate for Grade 3 and Grade 4 results.
