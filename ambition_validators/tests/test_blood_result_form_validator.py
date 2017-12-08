@@ -18,40 +18,48 @@ class TestBloodResultFormValidator(TestCase):
             subject_identifier='11111111',
             appointment_id=uuid.uuid4())
 
+        self.cleaned_data = {
+            'haemoglobin': 15,
+            'alt': 10,
+            'creatinine': 100,
+            'creatinine_unit': 'umol/L',
+            'haemoglobin': 14.0,
+            'absolute_neutrophil': 3,
+            'sodium': 135,
+            'potassium': 4.0,
+            'platelets': 450,
+            'subject_visit': self.subject_visit,
+            'are_results_normal': YES
+        }
+
     def test_haemoglobin_units_invalid_female(self):
         self.subject_consent.gender = 'F'
         self.subject_consent.save()
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'haemoglobin': 6.4,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            haemoglobin=6.4,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_haemoglobin_units_invalid_male(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'haemoglobin': 6.9,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            haemoglobin=6.9,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_haemoglobin_units_male_valid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'haemoglobin': 14,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            haemoglobin=14,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         try:
             form_validator.validate()
@@ -59,334 +67,300 @@ class TestBloodResultFormValidator(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_no_creatinine_mg_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 0.3,
-            'creatinine_unit': 'mg/dL',
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            creatinine=0.3,
+            creatinine_unit='mg/dL',
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_no_creatinine_mg_sodium_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 900,
-            'creatinine_unit': 'umol/L',
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            creatinine=900,
+            creatinine_unit='umol/L',
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_creatinine_mg_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 2.48,
-            'creatinine_unit': 'mg/dL',
-            'are_results_normal': YES,
-        }
+        self.cleaned_data.update(
+            creatinine=2.48,
+            creatinine_unit='mg/dL',
+            are_results_normal=YES,)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_creatinine_mg(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 1.3,
-            'creatinine_unit': 'mg/dL',
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': YES
-        }
+        self.cleaned_data.update(
+            creatinine=1.3,
+            creatinine_unit='mg/dL',
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_creatinine_umol_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 217,
-            'creatinine_unit': 'umol/L',
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            creatinine=217,
+            creatinine_unit='umol/L',
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_creatinine_umol(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'creatinine': 100,
-            'creatinine_unit': 'mg/dL',
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': YES
-        }
+        self.cleaned_data.update(
+            creatinine=100,
+            creatinine_unit='mg/dL',
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_magnesium_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'magnesium': 0.01,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            magnesium=0.01,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_magnesium(self):
-
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'magnesium': 0.35,
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': YES}
+        self.cleaned_data.update(
+            magnesium=0.35,
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_potassium_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'potassium': 1.0,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            potassium=1.0,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_potassium_high(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'potassium': 6.8,
-            'are_results_normal': YES,
-            'abnormal_results_in_ae_range': NO}
+        self.cleaned_data.update(
+            potassium=6.8,
+            are_results_normal=YES,
+            abnormal_results_in_ae_range=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_potassium_low(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'potassium': 2.3,
-            'are_results_normal': YES,
-            'abnormal_results_in_ae_range': NO}
+        self.cleaned_data.update(
+            potassium=2.3,
+            are_results_normal=YES,
+            abnormal_results_in_ae_range=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_sodium_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'sodium': 100,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            sodium=100,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_sodium_invalid_1(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'sodium': 119,
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': NOT_APPLICABLE
-        }
+        self.cleaned_data.update(
+            sodium=119,
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
+
+    def test_sodium_invalid_2(self):
+        self.cleaned_data.update(
+            sodium=119,
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=NO)
+        form_validator = BloodResultFormValidator(
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
 
     def test_sodium(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'sodium': 135,
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': YES
-        }
+        self.cleaned_data.update(
+            sodium=135,
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=YES
+        )
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_alt_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'alt': 201,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            alt=201,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_alt(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'alt': 10,
-            'are_results_normal': YES,
-        }
+        self.cleaned_data.update(
+            alt=10,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_platelets_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'platelets': 50,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            platelets=50,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_platelets(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'platelets': 450,
-            'are_results_normal': YES,
-        }
+        self.cleaned_data.update(
+            platelets=450,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_absolute_neutrophil_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 0.5,
-            'are_results_normal': YES
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=0.5,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
-        )
+            cleaned_data=self.cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('are_results_normal', form_validator._errors)
 
     def test_absolute_neutrophil(self):
 
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
-            'are_results_normal': YES,
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=self.cleaned_data)
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_abnormal_results_in_ae_range_invalid(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'sodium': 1000,
-            'are_results_normal': NO,
-            'abnormal_results_in_ae_range': NO
-        }
+        self.cleaned_data.update(
+            sodium=1000,
+            are_results_normal=NO,
+            abnormal_results_in_ae_range=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('abnormal_results_in_ae_range', form_validator._errors)
 
     def test_crag_country_botswana_crag_control_result_none(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
-            'are_results_normal': YES,
-            'bios_crag': YES
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES,
+            bios_crag=YES
+        )
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_control_result', form_validator._errors)
 
     def test_crag_country_botswana_crag_t1_result_none(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
-            'are_results_normal': YES,
-            'bios_crag': YES,
-            'crag_control_result': POS
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES,
+            bios_crag=YES,
+            crag_control_result=POS
+        )
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_t1_result', form_validator._errors)
 
     def test_crag_country_botswana_crag_t2_result_none(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
-            'are_results_normal': YES,
-            'bios_crag': YES,
-            'crag_control_result': POS,
-            'crag_t1_result': POS
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES,
+            bios_crag=YES,
+            crag_control_result=POS,
+            crag_t1_result=POS)
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_t2_result', form_validator._errors)
 
     @override_settings(COUNTRY='zimbabwe')
     def test_crag_country_zimbabwe_crag_control_result_yes(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'absolute_neutrophil': 4,
-            'are_results_normal': YES,
-            'bios_crag': YES
-        }
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES,
+            bios_crag=YES
+        )
         form_validator = BloodResultFormValidator(
-            cleaned_data=cleaned_data
+            cleaned_data=self.cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('bios_crag', form_validator._errors)
