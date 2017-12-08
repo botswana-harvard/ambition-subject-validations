@@ -21,14 +21,12 @@ class BloodResultFormValidator(FormValidator):
         if gender == 'M':
             self.range_gauge(
                 field='haemoglobin',
-                cleaned_data=self.cleaned_data,
                 lower_bound=13.5, upper_bound=17.5,
                 ae_grade_3_lower=7.0, ae_grade_3_upper=9.0,
                 grade_4_high=False)
         if gender == 'F':
             self.range_gauge(
                 field='haemoglobin',
-                cleaned_data=self.cleaned_data,
                 lower_bound=12.0, upper_bound=15.5,
                 ae_grade_3_lower=6.5, ae_grade_3_upper=8.5,
                 grade_4_high=False)
