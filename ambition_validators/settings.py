@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'edc_base.apps.AppConfig',
     'edc_device.apps.AppConfig',
+    'edc_form_validators',
     'ambition_validators.apps.AppConfig'
 ]
 
