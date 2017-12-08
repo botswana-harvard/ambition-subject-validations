@@ -4,6 +4,7 @@ from django.db.models.deletion import PROTECT
 from edc_base.model_mixins import ListModelMixin, BaseUuidModel
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO
+from edc_registration.model_mixins import UpdatesOrCreatesRegistrationModelMixin
 
 
 options.DEFAULT_NAMES = (options.DEFAULT_NAMES + ('consent_model',))
@@ -29,7 +30,7 @@ class RequiresConsentMixin(models.Model):
         consent_model = None
 
 
-class SubjectConsent(BaseUuidModel):
+class SubjectConsent(UpdatesOrCreatesRegistrationModelMixin, BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=25)
 
@@ -43,7 +44,7 @@ class SubjectVisit(RequiresConsentMixin, BaseUuidModel):
     appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
 
     class Meta(RequiresConsentMixin.Meta):
-        consent_model = SubjectConsent._meta.label_lower
+        consent_model = 'ambition_validator.subjectconsent'
 
 
 class SubjectScreening(BaseUuidModel):

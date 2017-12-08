@@ -3,33 +3,33 @@ from django.conf import settings
 from django.forms import forms
 
 from edc_form_validators import FormValidator
-from edc_constants.constants import NO, YES
+from edc_constants.constants import NO, YES, MALE, FEMALE
 
 
 class BloodResultFormValidator(FormValidator):
 
     def clean(self):
-        model_cls = django_apps.get_model(self.cleaned_data.get(
-            'subject_visit')._meta.consent_model)
 
         subject_identifier = self.cleaned_data.get(
             'subject_visit').subject_identifier
-
-        gender = model_cls.objects.get(
-            subject_identifier=subject_identifier).gender
-
-        if gender == 'M':
+        RegisteredSubject = django_apps.get_model(
+            'edc_registration.registeredsubject')
+        registered_subject = RegisteredSubject.objects.get(
+            subject_identifier=subject_identifier)
+        if registered_subject.gender == MALE:
             self.range_gauge(
                 field='haemoglobin',
                 lower_bound=13.5, upper_bound=17.5,
                 ae_grade_3_lower=7.0, ae_grade_3_upper=9.0,
                 grade_4_high=False)
-        if gender == 'F':
+        elif registered_subject.gender == FEMALE:
             self.range_gauge(
                 field='haemoglobin',
                 lower_bound=12.0, upper_bound=15.5,
                 ae_grade_3_lower=6.5, ae_grade_3_upper=8.5,
                 grade_4_high=False)
+        else:
+            raise ValueError(f'gender is unknown! See {repr(self)}')
 
         if self.cleaned_data.get('creatinine_unit') == 'mg/dL':
             self.range_gauge(
