@@ -1,3 +1,4 @@
+import uuid
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -6,6 +7,7 @@ from edc_constants.constants import YES, OTHER
 
 from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValidator
 from ..form_validators import FluconazoleMissedDosesFormValidator
+from .models import SubjectVisit, TestModel
 
 
 class TestWeek2Form(TestCase):
@@ -58,14 +60,26 @@ class TestWeek2Form(TestCase):
 
 class TestSignificantDiagnosesForm(TestCase):
 
+    def setUp(self):
+
+        self.subject_visit = SubjectVisit.objects.create(
+            subject_identifier='11111111',
+            appointment_id=uuid.uuid4())
+
+        self.week2 = TestModel.objects.create(
+            subject_visit=self.subject_visit,
+            other_significant_dx=YES)
+
     def test_significant_diagnoses_no_specification_invalid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_specification_valid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': 'pneumonia'}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         try:
@@ -74,14 +88,16 @@ class TestSignificantDiagnosesForm(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_significant_diagnoses_no_date_invalid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': 'pneumonia',
                         'dx_date': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_date_valid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': 'pneumonia',
                         'dx_date': get_utcnow()}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
@@ -91,14 +107,16 @@ class TestSignificantDiagnosesForm(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_significant_diagnoses_other_not_specified_invalid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': OTHER,
                         'dx_other': None}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
 
     def test_significant_diagnoses_other_specified_valid(self):
-        cleaned_data = {'other_significant_diagnoses': YES,
+        cleaned_data = {'week2': self.week2,
+                        'other_significant_diagnoses': YES,
                         'possible_diagnoses': OTHER,
                         'dx_other': 'blah'}
         form = SignificantDiagnosesFormValidator(cleaned_data=cleaned_data)
@@ -108,13 +126,15 @@ class TestSignificantDiagnosesForm(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_flucon_day_missed_no_reason_invalid(self):
-        cleaned_data = {'flucon_day_missed': 1,
+        cleaned_data = {'week2': self.week2,
+                        'flucon_day_missed': 1,
                         'flucon_missed_reason': None}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
 
     def test_flucon_day_missed_reason_ivalid(self):
-        cleaned_data = {'flucon_day_missed': 1,
+        cleaned_data = {'week2': self.week2,
+                        'flucon_day_missed': 1,
                         'flucon_missed_reason': 'blah'}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         try:
@@ -123,14 +143,16 @@ class TestSignificantDiagnosesForm(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_flucon_day_missed_no_reason_other_not_provided_invalid(self):
-        cleaned_data = {'flucon_day_missed': 1,
+        cleaned_data = {'week2': self.week2,
+                        'flucon_day_missed': 1,
                         'flucon_missed_reason': OTHER,
                         'missed_reason_other': None}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
 
     def test_flucon_day_missed_reason_other_not_provided_ivalid(self):
-        cleaned_data = {'flucon_day_missed': 1,
+        cleaned_data = {'week2': self.week2,
+                        'flucon_day_missed': 1,
                         'flucon_missed_reason': OTHER,
                         'missed_reason_other': 'blah'}
         form = FluconazoleMissedDosesFormValidator(cleaned_data=cleaned_data)
