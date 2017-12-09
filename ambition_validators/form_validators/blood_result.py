@@ -3,7 +3,7 @@ from django.conf import settings
 from django.forms import forms
 
 from edc_form_validators import FormValidator
-from edc_constants.constants import NO, YES, MALE, FEMALE
+from edc_constants.constants import NO, YES, MALE, FEMALE, NOT_APPLICABLE
 
 
 class BloodResultFormValidator(FormValidator):
@@ -95,25 +95,25 @@ class BloodResultFormValidator(FormValidator):
             grade_4_high=False)
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
-        condition = (self.cleaned_data.get('bios_crag') == YES
-                     and (settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'))
-        self.required_if_true(
-            condition=condition, field_required='bios_crag')
+        condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
 
-        self.required_if(
+        self.applicable_if_true(
+            condition=condition, field_applicable='bios_crag')
+
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_control_result')
+            field_applicable='crag_control_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t1_result')
+            field_applicable='crag_t1_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t2_result')
+            field_applicable='crag_t2_result')
 
     def range_gauge(self, field=None, lower_bound=None,
                     upper_bound=None, ae_grade_3_lower=None, ae_grade_3_upper=None,
