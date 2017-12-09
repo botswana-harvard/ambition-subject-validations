@@ -31,7 +31,7 @@ class DeathReportFormValidator(FormValidator):
     def study_day(self, field):
         if self.cleaned_data.get(field):
             subject_identifier = self.cleaned_data.get(
-                'subject_visit').appointment.subject_identifier
+                'subject_identifier')
             consent = self.subject_consent_model_cls.objects.get(
                 subject_identifier=subject_identifier)
 
@@ -43,8 +43,9 @@ class DeathReportFormValidator(FormValidator):
                 if self.cleaned_data.get('study_day') > study_days:
                     message = {
                         'study_day': f'Randomization date is '
-                        f'{consent.consent_datetime.date()}, death on study day should '
-                        f'be {study_days} days or less.'}
-                self._errors.update(message)
-                self._error_codes.append(NOT_REQUIRED_ERROR)
-                raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
+                        f'{consent.consent_datetime.date()}, death on study '
+                        f'day should be {study_days} days or less.'}
+                    self._errors.update(message)
+                    self._error_codes.append(NOT_REQUIRED_ERROR)
+                    raise forms.ValidationError(
+                        message, code=NOT_REQUIRED_ERROR)
