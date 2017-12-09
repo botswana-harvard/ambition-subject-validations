@@ -95,9 +95,10 @@ class BloodResultFormValidator(FormValidator):
             grade_4_high=False)
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
-        condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
-        self.applicable_if_true(
-            condition=condition, field_applicable='bios_crag')
+        condition = (self.cleaned_data.get('bios_crag') == YES
+                     and (settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'))
+        self.required_if_true(
+            condition=condition, field_required='bios_crag')
 
         self.required_if(
             YES,
