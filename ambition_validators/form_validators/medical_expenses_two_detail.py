@@ -8,11 +8,6 @@ class MedicalExpensesTwoDetailFormValidator(FormValidator):
     def clean(self):
         self.validate_other_specify(field='location_care')
 
-        self.not_applicable_if(
-            'home',
-            field='location_care',
-            field_applicable='transport_form')
-
         self.only_not_required_if(
             NOT_APPLICABLE,
             field='transport_form',
