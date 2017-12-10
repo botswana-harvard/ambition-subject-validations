@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'edc_protocol.apps.AppConfig',
     'edc_registration.apps.AppConfig',
     'edc_form_validators.apps.AppConfig',
+    'ambition_labs.apps.AppConfig',
     'ambition_validators.apps.AppConfig'
 ]
 

@@ -3,7 +3,9 @@ from django.conf import settings
 from django.forms import forms
 
 from edc_form_validators import FormValidator
-from edc_constants.constants import NO, YES, MALE, FEMALE
+from edc_constants.constants import NO, YES, NOT_APPLICABLE
+from edc_reportable import site_reportables, NotEvaluated, GRADE3, GRADE4
+from pprint import pprint
 
 
 class BloodResultFormValidator(FormValidator):
@@ -14,85 +16,29 @@ class BloodResultFormValidator(FormValidator):
             'subject_visit').subject_identifier
         RegisteredSubject = django_apps.get_model(
             'edc_registration.registeredsubject')
+        subject_visit = self.cleaned_data.get('subject_visit')
         registered_subject = RegisteredSubject.objects.get(
             subject_identifier=subject_identifier)
-        if registered_subject.gender == MALE:
-            self.range_gauge(
-                field='haemoglobin',
-                lower_bound=13.5, upper_bound=17.5,
-                ae_grade_3_lower=7.0, ae_grade_3_upper=9.0,
-                grade_4_high=False)
-        elif registered_subject.gender == FEMALE:
-            self.range_gauge(
-                field='haemoglobin',
-                lower_bound=12.0, upper_bound=15.5,
-                ae_grade_3_lower=6.5, ae_grade_3_upper=8.5,
-                grade_4_high=False)
-        else:
-            raise ValueError(f'gender is unknown! See {repr(self)}')
+        gender = registered_subject.gender
+        dob = registered_subject.dob
 
-        if self.cleaned_data.get('creatinine_unit') == 'mg/dL':
-            self.range_gauge(
-                field='creatinine',
-                lower_bound=0.6, upper_bound=1.3,
-                ae_grade_3_lower=2.47, ae_grade_3_upper=4.42,
-                grade_4_high=True)
-        if self.cleaned_data.get('creatinine_unit') == 'umol/L':
-            self.range_gauge(
-                field='creatinine',
-                lower_bound=53, upper_bound=115,
-                ae_grade_3_lower=216, ae_grade_3_upper=400,
-                grade_4_high=True)
+        # check normal ranges and grade result values
+        opts = dict(
+            gender=gender, dob=dob, report_datetime=subject_visit.report_datetime)
+        for field, value in self.cleaned_data.items():
+            grp = site_reportables.get('ambition').get(field)
+            if value and grp:
+                self.evaluate_result(field, value, grp, **opts)
 
-        if self.cleaned_data.get('magnesium'):
-            self.range_gauge(
-                field='magnesium',
-                lower_bound=0.75, upper_bound=1.2,
-                ae_grade_3_lower=0.3, ae_grade_3_upper=0.44,
-                grade_4_high=False)
-
-        self.range_gauge(
-            field='potassium',
-            lower_bound=3.6, upper_bound=5.2,
-            ae_grade_3_lower=2.0, ae_grade_3_upper=2.4,
-            grade_4_high=False)
-
-        self.range_gauge(
-            field='potassium',
-            lower_bound=3.6, upper_bound=5.2,
-            ae_grade_3_lower=6.5, ae_grade_3_upper=7.0,
-            grade_4_high=True)
-
-        if self.cleaned_data.get('sodium') < 135:
-            self.range_gauge(
-                field='sodium',
-                lower_bound=135, upper_bound=145,
-                ae_grade_3_lower=121, ae_grade_3_upper=124,
-                grade_4_high=False)
-        else:
-            self.range_gauge(
-                field='sodium',
-                lower_bound=135, upper_bound=145,
-                ae_grade_3_lower=154, ae_grade_3_upper=159,
-                grade_4_high=True)
-
-        self.range_gauge(
-            field='alt',
-            lower_bound=10, upper_bound=40,
-            ae_grade_3_lower=200, ae_grade_3_upper=400,
-            grade_4_high=True)
-
-        self.range_gauge(
-            field='platelets',
-            lower_bound=150, upper_bound=450,
-            ae_grade_3_lower=25, ae_grade_3_upper=51,
-            grade_4_high=False)
-
-        self.range_gauge(
-            field='absolute_neutrophil',
-            lower_bound=2.5, upper_bound=7.5,
-            ae_grade_3_lower=0.4, ae_grade_3_upper=0.59,
-            grade_4_high=False)
+        # results_abnormal
+        self.validate_final_assessment(
+            field='results_abnormal', responses=[YES], suffix='_abnormal', word='abnormal')
+        self.applicable_if(
+            YES, field='results_abnormal',
+            field_applicable='results_reportable')
+        self.validate_final_assessment(
+            field='results_reportable', responses=[GRADE3, GRADE4],
+            suffix='_reportable', word='reportable')
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
@@ -114,60 +60,68 @@ class BloodResultFormValidator(FormValidator):
             field='bios_crag',
             field_required='crag_t2_result')
 
-    def range_gauge(self, field=None, lower_bound=None,
-                    upper_bound=None, ae_grade_3_lower=None, ae_grade_3_upper=None,
-                    grade_4_high=None):
-        """Method to validate for Grade 3 and Grade 4 results.
+    def evaluate_result(self, field, value, grp, **opts):
+        """Evaluate a single result value.
 
-        grade_4_high = True if Grade 4 AE > ae_grade_3_upper.
+        Grading is done first. If the value is not gradeable,
+        the value is checked against the normal limits.
+
+        Expected field naming convention:
+            * {field}
+            * {field}_units
+            * {field}_abnormal [YES, (NO)]
+            * {field}_reportable [(NOT_APPLICABLE), NO, GRADE3, GRADE4]
         """
-        valid_result = (self.cleaned_data.get(field) > lower_bound
-                        and self.cleaned_data.get(field) < upper_bound)
-
-        within_grade_3 = (self.cleaned_data.get(field) > ae_grade_3_lower
-                          and self.cleaned_data.get(field) < ae_grade_3_upper)
-
-        grade_4_gt = self.cleaned_data.get(field) > ae_grade_3_upper
-
-        grade_4_lt = self.cleaned_data.get(field) < ae_grade_3_lower
-
-        if (not within_grade_3 and not grade_4_gt and not grade_4_lt
-                and valid_result
-                and self.cleaned_data.get('are_results_normal') != YES):
-            message = {
-                'are_results_normal': f'Results are not within Grade III or IV range.'
-                ' This field should be Yes.'}
-            raise forms.ValidationError(message)
-
-        elif (within_grade_3
-                and self.cleaned_data.get('are_results_normal') != NO):
-            message = {
-                'are_results_normal': f'{field} is abnormal and is Grade III AE, got '
-                f'{self.cleaned_data.get(field)}. '
-                'This field should be No.'}
-            raise forms.ValidationError(message)
-
-        elif (grade_4_high
-              and grade_4_gt
-              and self.cleaned_data.get('are_results_normal') != NO):
-            message = {
-                'are_results_normal': f'{field} is abnormal and is Grade IV AE, got '
-                f'{self.cleaned_data.get(field)}. '
-                'This field should be No.'}
-            raise forms.ValidationError(message)
-
-        elif (not grade_4_high
-              and grade_4_lt
-              and self.cleaned_data.get('are_results_normal') != NO):
-            message = {
-                'are_results_normal': f'{field} is abnormal and is Grade IV AE, got '
-                f'{self.cleaned_data.get(field)}. '
-                'This field should be No.'}
-            raise forms.ValidationError(message)
+        abnormal = self.cleaned_data.get(f'{field}_abnormal')
+        reportable = self.cleaned_data.get(f'{field}_reportable')
+        units = self.cleaned_data.get(f'{field}_units')
+        opts.update(units=units)
+        if not units:
+            raise forms.ValidationError(
+                {f'{field}_units': f'Units required.'})
+        try:
+            grade = grp.get_grade(value, **opts)
+        except NotEvaluated as e:
+            raise forms.ValidationError({field: str(e)})
+        if grade and grade.grade and reportable != str(grade.grade):
+            raise forms.ValidationError({
+                field: f'{field.title()} is reportable. Got {grade.description}.'})
+        elif not grade and reportable not in [NO, NOT_APPLICABLE]:
+            raise forms.ValidationError({
+                f'{field}_reportable': 'Invalid. Expected \'No\' or \'Not applicable\'.'})
         else:
-            if (self.cleaned_data.get('are_results_normal') == NO
-                    and self.cleaned_data.get('abnormal_results_in_ae_range') != YES):
-                message = {
-                    'abnormal_results_in_ae_range': 'Results are within Grade III '
-                    'or IV. This field should be Yes.'}
-                raise forms.ValidationError(message)
+            try:
+                normal = grp.get_normal(value, **opts)
+            except NotEvaluated as e:
+                raise forms.ValidationError({field: str(e)})
+            if not normal and abnormal == NO:
+                descriptions = grp.get_normal_description(**opts)
+                raise forms.ValidationError({
+                    field:
+                    f'{field.title()} is abnormal. Normal ranges: {", ".join(descriptions)}'})
+            elif normal and not grade and abnormal == YES:
+                raise forms.ValidationError({
+                    f'{field}_abnormal': 'Invalid. Result is not abnormal'})
+        if abnormal == YES and reportable == NOT_APPLICABLE:
+            raise forms.ValidationError(
+                {f'{field}_reportable': 'This field is applicable if result is abnormal'})
+        elif abnormal == NO and reportable != NOT_APPLICABLE:
+            raise forms.ValidationError(
+                {f'{field}_reportable': 'This field is not applicable'})
+
+    def validate_final_assessment(self, field=None, responses=None, suffix=None, word=None):
+        """Common code to validate fields `results_abnormal`
+        and `results_reportable`.
+        """
+        answers = list({k: v for k, v in self.cleaned_data.items()
+                        if k.endswith(suffix)}.values())
+        answers_as_bool = [True for v in answers if v in responses]
+        if self.cleaned_data.get(field) == NO:
+            if any(answers_as_bool):
+                are = 'is' if len(answers_as_bool) == 1 else 'are'
+                raise forms.ValidationError(
+                    {field: f'{len(answers_as_bool)} of the above results {are} {word}'})
+        elif self.cleaned_data.get(field) == YES:
+            if not any(answers_as_bool):
+                raise forms.ValidationError(
+                    {field: f'None of the above results are {word}'})

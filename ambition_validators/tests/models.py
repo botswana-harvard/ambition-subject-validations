@@ -36,12 +36,17 @@ class SubjectConsent(UpdatesOrCreatesRegistrationModelMixin, BaseUuidModel):
 
     gender = models.CharField(max_length=25)
 
+    dob = models.DateField()
+
 
 class SubjectVisit(RequiresConsentMixin, BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=25)
 
     appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
+
+    report_datetime = models.DateTimeField(
+        default=get_utcnow)
 
     class Meta(RequiresConsentMixin.Meta):
         consent_model = 'ambition_validator.subjectconsent'
