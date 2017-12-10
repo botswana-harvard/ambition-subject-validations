@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase, tag
+from django.test import TestCase
 from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
 
 from ..form_validators import MedicalExpensesTwoDetailFormValidator
@@ -15,15 +15,6 @@ class TestMedicalExpensesTwoDetailFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('location_care_other', form._errors)
-
-    def test_location_care_home_transport_form_invalid(self):
-
-        cleaned_data = {'location_care': 'home',
-                        'transport_form': 'bus'}
-        form = MedicalExpensesTwoDetailFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('transport_form', form._errors)
 
     def test_transport_form_transport_cost_invalid(self):
 

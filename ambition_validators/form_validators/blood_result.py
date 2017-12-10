@@ -1,11 +1,9 @@
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.forms import forms
-
-from edc_form_validators import FormValidator
 from edc_constants.constants import NO, YES, NOT_APPLICABLE
+from edc_form_validators import FormValidator
 from edc_reportable import site_reportables, NotEvaluated, GRADE3, GRADE4
-from pprint import pprint
 
 
 class BloodResultFormValidator(FormValidator):
@@ -42,23 +40,24 @@ class BloodResultFormValidator(FormValidator):
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
+
         self.applicable_if_true(
             condition=condition, field_applicable='bios_crag')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_control_result')
+            field_applicable='crag_control_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t1_result')
+            field_applicable='crag_t1_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t2_result')
+            field_applicable='crag_t2_result')
 
     def evaluate_result(self, field, value, grp, **opts):
         """Evaluate a single result value.

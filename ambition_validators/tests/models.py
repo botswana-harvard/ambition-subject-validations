@@ -3,7 +3,7 @@ from django.db.models import options
 from django.db.models.deletion import PROTECT
 from edc_base.model_mixins import ListModelMixin, BaseUuidModel
 from edc_base.utils import get_utcnow
-from edc_constants.choices import YES_NO
+from edc_constants.choices import YES_NO, YES_NO_NA
 from edc_registration.model_mixins import UpdatesOrCreatesRegistrationModelMixin
 
 
@@ -77,3 +77,13 @@ class PatientHistory(BaseUuidModel):
     first_arv_regimen = models.CharField(
         verbose_name='Drug used in first line arv regimen',
         max_length=50)
+
+
+class TestModel(BaseUuidModel):
+
+    subject_visit = models.OneToOneField(SubjectVisit, on_delete=PROTECT)
+
+    other_significant_dx = models.CharField(
+        verbose_name='Other significant diagnosis since last visit?',
+        max_length=5,
+        choices=YES_NO_NA)

@@ -340,7 +340,8 @@ class TestBloodResultFormValidator(TestCase):
         self.cleaned_data.update(
             absolute_neutrophil=4,
             are_results_normal=YES,
-            bios_crag=YES
+            bios_crag=YES,
+            crag_control_result=NOT_APPLICABLE
         )
         form_validator = BloodResultFormValidator(
             cleaned_data=self.cleaned_data
@@ -353,7 +354,8 @@ class TestBloodResultFormValidator(TestCase):
             absolute_neutrophil=4,
             are_results_normal=YES,
             bios_crag=YES,
-            crag_control_result=POS
+            crag_control_result=POS,
+            crag_t1_result=NOT_APPLICABLE
         )
         form_validator = BloodResultFormValidator(
             cleaned_data=self.cleaned_data
@@ -367,7 +369,8 @@ class TestBloodResultFormValidator(TestCase):
             are_results_normal=YES,
             bios_crag=YES,
             crag_control_result=POS,
-            crag_t1_result=POS)
+            crag_t1_result=POS,
+            crag_t2_result=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
             cleaned_data=self.cleaned_data
         )
@@ -380,6 +383,19 @@ class TestBloodResultFormValidator(TestCase):
             absolute_neutrophil=4,
             results_abnormal=NO,
             bios_crag=YES
+        )
+        form_validator = BloodResultFormValidator(
+            cleaned_data=self.cleaned_data
+        )
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('bios_crag', form_validator._errors)
+
+    @override_settings(COUNTRY='zimbabwe')
+    def test_crag_country_zimbabwe_crag_control_result_no(self):
+        self.cleaned_data.update(
+            absolute_neutrophil=4,
+            are_results_normal=YES,
+            bios_crag=NO
         )
         form_validator = BloodResultFormValidator(
             cleaned_data=self.cleaned_data

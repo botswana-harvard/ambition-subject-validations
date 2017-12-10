@@ -68,14 +68,15 @@ class StudyTerminationConclusionFormValidator(FormValidator):
 
         self.required_if_true(
             condition=(
-                self.patient_history_obj().first_arv_regimen == NOT_APPLICABLE
-                and self.cleaned_data.get('first_line_regimen') == NOT_APPLICABLE),
+                self.patient_history_obj() is not None
+                and (self.patient_history_obj().first_arv_regimen == NOT_APPLICABLE
+                     and self.cleaned_data.get('first_line_regimen') == NOT_APPLICABLE)),
             field_required='arvs_delay_reason')
 
     def patient_history_obj(self):
+
         subject_identifier = self.cleaned_data.get(
             'subject_identifier')
-
         try:
             patient_history = self.patient_history_cls.objects.get(
                 subject_visit__subject_identifier=subject_identifier)
