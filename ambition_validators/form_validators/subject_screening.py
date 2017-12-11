@@ -1,6 +1,5 @@
-from django.forms import forms
-from edc_form_validators import FormValidator, REQUIRED_ERROR
-from edc_constants.constants import FEMALE, YES, NO, MALE, NOT_APPLICABLE
+from edc_form_validators import FormValidator
+from edc_constants.constants import FEMALE, YES, NO, MALE
 
 
 class SubjectScreeningFormValidator(FormValidator):
@@ -14,18 +13,11 @@ class SubjectScreeningFormValidator(FormValidator):
         self.required_if_true(
             condition=condition, field_required='preg_test_date')
 
-        if (self.cleaned_data.get('gender') == MALE and
-                self.cleaned_data.get('pregnancy') not in [NOT_APPLICABLE]):
-            message = {
-                'pregnancy': 'This field is not applicable'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        self.applicable_if(FEMALE, field='gender',
+                           field_applicable='pregnancy')
 
-        if (self.cleaned_data.get('gender') == MALE and
-                self.cleaned_data.get('breast_feeding') not in [NOT_APPLICABLE]):
-            message = {
-                'breast_feeding': 'This field is not applicable'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        self.not_applicable_if(MALE, field='gender',
+                               field_applicable='pregnancy')
+
+        self.not_applicable_if(MALE, field='gender',
+                               field_applicable='breast_feeding')

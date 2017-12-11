@@ -15,7 +15,7 @@ class TestSubjectConsentForm(TestCase):
             screening_identifier=self.screening_identifier, age_in_years=20)
         subject_screening_model = SubjectConsentFormValidator.subject_screening_model
         subject_screening_model = subject_screening_model.replace(
-            'ambition_subject', 'ambition_validators')
+            'ambition_screening', 'ambition_validators')
         SubjectConsentFormValidator.subject_screening_model = subject_screening_model
 
     def test_subject_screening_ok(self):

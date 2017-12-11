@@ -1,3 +1,5 @@
+from .constants import DEVIATION, VIOLATION, TUBERCULOSIS, UNPERFORMED
+from .constants import HEADACHE, VISUAL_LOSS, WORKING, MEDICATION_NONCOMPLIANCE
 from .form_validators import AdverseEventFormValidator
 from .form_validators import AmphotericinMissedDosesFormValidator
 from .form_validators import BloodResultFormValidator

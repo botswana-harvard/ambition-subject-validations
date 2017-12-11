@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'edc_protocol.apps.AppConfig',
     'edc_registration.apps.AppConfig',
     'edc_form_validators.apps.AppConfig',
+    'ambition_screening.apps.AppConfig',
     'ambition_labs.apps.AppConfig',
     'ambition_validators.apps.AppConfig'
 ]
@@ -117,6 +118,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DASHBOARD_URL_NAMES = {
+    'subject_models_url': 'subject_models_url',
+    'subject_listboard_url': 'ambition_dashboard:subject_listboard_url',
+    'screening_listboard_url': 'ambition_dashboard:screening_listboard_url',
+    'subject_dashboard_url': 'ambition_dashboard:subject_dashboard_url',
+}
+
 
 if 'test' in sys.argv:
 

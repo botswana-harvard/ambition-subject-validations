@@ -6,7 +6,7 @@ from django.test import TestCase, tag
 from django.test.utils import override_settings
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE
-from edc_reportable import GRAMS_PER_DECILITER, UI_LITER, TEN_X_9_PER_LITER
+from edc_reportable import GRAMS_PER_DECILITER, IU_LITER, TEN_X_9_PER_LITER
 from edc_reportable import MICROMOLES_PER_LITER, MILLIGRAMS_PER_DECILITER, MILLIMOLES_PER_LITER
 
 from ..form_validators import BloodResultFormValidator
@@ -29,7 +29,7 @@ class TestBloodResultFormValidator(TestCase):
             'haemoglobin_abnormal': NO,
             'haemoglobin_reportable': NOT_APPLICABLE,
             'alt': 10,
-            'alt_units': UI_LITER,
+            'alt_units': IU_LITER,
             'alt_abnormal': NO,
             'alt_reportable': NOT_APPLICABLE,
 
