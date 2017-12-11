@@ -2,6 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_constants.constants import YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
 
+from ..constants import CONSENT_WITHDRAWAL
+
 
 class StudyTerminationConclusionFormValidator(FormValidator):
 
@@ -26,8 +28,13 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field='termination_reason',
             field_required='death_date')
 
+        self.required_if(
+            CONSENT_WITHDRAWAL,
+            field='termination_reason',
+            field_required='consent_withdrawal_reason')
+
         self.applicable_if(
-            'consent_withdrawn',
+            CONSENT_WITHDRAWAL,
             field='termination_reason',
             field_applicable='willing_to_complete_10w')
 

@@ -5,6 +5,7 @@ from django.test import TestCase
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 from edc_base.utils import get_utcnow
 
+from ..constants import CONSENT_WITHDRAWAL
 from ..form_validators import StudyTerminationConclusionFormValidator
 from .models import PatientHistory, SubjectVisit
 
@@ -65,6 +66,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             is consent_withdrawn.
         """
         cleaned_data = {'termination_reason': 'consent_withdrawn',
+                        'consent_withdrawal_reason': 'Reason',
                         'willing_to_complete_10w': NOT_APPLICABLE}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data)
@@ -220,6 +222,24 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             'subject_identifier': '11111111',
             'first_line_regimen': NOT_APPLICABLE,
             'arvs_delay_reason': 'bahblah'}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_consent_withdrawal_reason_invalid(self):
+        cleaned_data = {'termination_reason': CONSENT_WITHDRAWAL,
+                        'consent_withdrawal_reason': None}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('consent_withdrawal_reason', form_validator._errors)
+
+    def test_consent_withdrawal_reason_valid(self):
+        cleaned_data = {'termination_reason': CONSENT_WITHDRAWAL,
+                        'consent_withdrawal_reason': 'Reason'}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         try:
