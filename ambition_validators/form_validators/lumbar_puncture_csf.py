@@ -107,23 +107,24 @@ class LumbarPunctureCSFFormValidator(FormValidator):
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
+
         self.applicable_if_true(
             condition=condition, field_applicable='bios_crag')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_control_result')
+            field_applicable='crag_control_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t1_result')
+            field_applicable='crag_t1_result')
 
-        self.required_if(
+        self.applicable_if(
             YES,
             field='bios_crag',
-            field_required='crag_t2_result')
+            field_applicable='crag_t2_result')
 
     def percentage_limit_validation(self, field=None, unit=None):
         if self.cleaned_data.get(field):
