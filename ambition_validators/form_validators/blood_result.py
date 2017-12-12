@@ -84,7 +84,7 @@ class BloodResultFormValidator(FormValidator):
             raise forms.ValidationError({field: str(e)})
         if grade and grade.grade and reportable != str(grade.grade):
             raise forms.ValidationError({
-                field: f'{field.title()} is reportable. Got {grade.description}.'})
+                field: f'{field.upper()} is reportable. Got {grade.description}.'})
         elif not grade and reportable not in [NO, NOT_APPLICABLE]:
             raise forms.ValidationError({
                 f'{field}_reportable': 'Invalid. Expected \'No\' or \'Not applicable\'.'})
@@ -97,7 +97,7 @@ class BloodResultFormValidator(FormValidator):
                 descriptions = grp.get_normal_description(**opts)
                 raise forms.ValidationError({
                     field:
-                    f'{field.title()} is abnormal. Normal ranges: {", ".join(descriptions)}'})
+                    f'{field.upper()} is abnormal. Normal ranges: {", ".join(descriptions)}'})
             elif normal and not grade and abnormal == YES:
                 raise forms.ValidationError({
                     f'{field}_abnormal': 'Invalid. Result is not abnormal'})

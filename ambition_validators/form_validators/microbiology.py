@@ -1,12 +1,13 @@
 from edc_form_validators import FormValidator
 from edc_constants.constants import POS, YES, OTHER
+from ..constants import BACTERIA
 
 
 class MicrobiologyFormValidator(FormValidator):
 
     def clean(self):
         condition = (
-            self.cleaned_data.get('blood_culture_organism') == 'bacteria'
+            self.cleaned_data.get('blood_culture_organism') == BACTERIA
             or self.cleaned_data.get(
                 'blood_culture_organism') == 'bacteria_and_cryptococcus')
 
@@ -127,27 +128,3 @@ class MicrobiologyFormValidator(FormValidator):
             field='tissue_biopsy_organism',
             other_specify_field='tissue_biopsy_organism_other',
             other_stored_value=OTHER)
-
-#     def check_sample_study_day(self):
-#         # TODO: is form date UTC??
-#         """DOCSTRING please.
-#         """
-#         blood_taken_date = self.cleaned_data.get('blood_taken_date')
-#         subject_identifier = self.cleaned_data.get(
-#             'subject_visit').subject_identifier
-#         consent = self.subject_consent_model_cls.objects.get(
-#             subject_identifier=subject_identifier)
-#
-#         if blood_taken_date:
-#             study_days = (
-#                 blood_taken_date - consent.consent_datetime.date()).days
-#             if self.cleaned_data.get('day_blood_taken'):
-#                 if self.cleaned_data.get('day_blood_taken') > study_days:
-#                     message = {
-#                         'day_blood_taken': f'Randomization date is '
-#                         f'{consent.consent_datetime.date()}, blood sample study day should '
-#                         f'be {study_days} days or less.'}
-#                     self._errors.update(message)
-#                     self._error_codes.append(NOT_REQUIRED_ERROR)
-#                     raise forms.ValidationError(
-#                         message, code=NOT_REQUIRED_ERROR)

@@ -1,5 +1,6 @@
-from edc_form_validators import FormValidator
+from ambition_rando.constants import SINGLE_DOSE, CONTROL
 from edc_constants.constants import YES, NO, UNKNOWN
+from edc_form_validators import FormValidator
 
 
 class AdverseEventFormValidator(FormValidator):
@@ -16,11 +17,11 @@ class AdverseEventFormValidator(FormValidator):
             field_required='possiblity_detail')
 
         regimen_1_condition = (
-            self.cleaned_data.get('regimen') == 'Single Dose' and
+            self.cleaned_data.get('regimen') == SINGLE_DOSE and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
 
         regimen_1_condition_control = (
-            self.cleaned_data.get('regimen') == 'Control' and
+            self.cleaned_data.get('regimen') == CONTROL and
             self.cleaned_data.get('ae_study_relation_possibility') == YES
         )
 
@@ -33,7 +34,7 @@ class AdverseEventFormValidator(FormValidator):
             field_applicable='fluconazole_relation')
 
         regimen_2_condition = (
-            self.cleaned_data.get('regimen') == 'Control' and
+            self.cleaned_data.get('regimen') == CONTROL and
             self.cleaned_data.get('ae_study_relation_possibility') == YES)
 
         self.applicable_if_true(

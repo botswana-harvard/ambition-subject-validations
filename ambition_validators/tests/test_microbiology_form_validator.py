@@ -4,6 +4,7 @@ from django.test import TestCase
 from edc_base.utils import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 
+from ..constants import KLEBSIELLA_SPP, BACTERIA, NO_GROWTH, CRYPTOCOCCUS_NEOFORMANS
 from ..form_validators import MicrobiologyFormValidator
 
 
@@ -19,7 +20,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
     def test_urine_culture_performed_no_require_urine_culture_results(self):
         cleaned_data = {'urine_culture_performed': NO,
-                        'urine_culture_results': 'no_growth'}
+                        'urine_culture_results': NO_GROWTH}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
@@ -31,7 +32,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
 #     def test_urine_culture_performed_yes_given_urine_culture_results(self):
 #         cleaned_data = {'urine_culture_performed': YES,
-#                         'urine_culture_results': 'no_growth'}
+#                         'urine_culture_results': NO_GROWTH}
 #         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form_validator.validate)
 #         self.assertIn('urine_culture_results', form_validator._errors)
@@ -52,7 +53,7 @@ class TestMicrobiologyFormValidator(TestCase):
     def test_pos_urine_results_with_urine_culture_organism(self):
         cleaned_data = {
             'urine_culture_results': POS,
-            'urine_culture_organism': 'klebsiella_sp'}
+            'urine_culture_organism': KLEBSIELLA_SPP}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:
             form_validator.validate()
@@ -89,7 +90,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
     def test_no_blood_culture_performed_with_blood_culture_results(self):
         cleaned_data = {'blood_culture_performed': NO,
-                        'blood_culture_results': 'no_growth'}
+                        'blood_culture_results': NO_GROWTH}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
@@ -102,7 +103,7 @@ class TestMicrobiologyFormValidator(TestCase):
 #     def test_pos_blood_culture_results_with_date_blood_taken(self):
 #         cleaned_data = {'blood_culture_results': POS,
 #                         'date_blood_taken': get_utcnow(),
-#                         'blood_culture_organism': 'cryptococcus_neoformans'}
+#                         'blood_culture_organism': CRYPTOCOCCUS_NEOFORMANS}
 #         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form_validator.validate)
 #         self.assertIn('blood_culture_organism', form_validator._errors)
@@ -124,7 +125,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
 #     def test_pos_blood_culture_results_with_blood_culture_organism(self):
 #         cleaned_data = {'blood_culture_results': POS,
-#                         'blood_culture_organism': 'cryptococcus_neoformans',
+#                         'blood_culture_organism': CRYPTOCOCCUS_NEOFORMANS,
 #                         'date_blood_taken': get_utcnow()}
 #         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form_validator.validate)
@@ -137,8 +138,8 @@ class TestMicrobiologyFormValidator(TestCase):
         self.assertRaises(ValidationError, form_validator.validate)
 
     def test_other_blood_culture_organism_na_culture_organism_other(self):
-        cleaned_data = {'blood_culture_organism': 'cryptococcus_neoformans',
-                        'blood_culture_organism_other': 'cryptococcus_neoformans'}
+        cleaned_data = {'blood_culture_organism': CRYPTOCOCCUS_NEOFORMANS,
+                        'blood_culture_organism_other': CRYPTOCOCCUS_NEOFORMANS}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
@@ -152,7 +153,7 @@ class TestMicrobiologyFormValidator(TestCase):
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_blood_organism_is_bacteria_require_bacteria_identified(self):
-        cleaned_data = {'blood_culture_organism': 'bacteria',
+        cleaned_data = {'blood_culture_organism': BACTERIA,
                         'bacteria_identified': NOT_APPLICABLE}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
@@ -160,13 +161,13 @@ class TestMicrobiologyFormValidator(TestCase):
 
     def test_blood_organism_is_bacteria_na_bacteria_identified(self):
         cleaned_data = {'blood_culture_organism': NOT_APPLICABLE,
-                        'bacteria_identified': 'klebsiella_sp'}
+                        'bacteria_identified': KLEBSIELLA_SPP}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('bacteria_identified', form_validator._errors)
 
 #     def test_blood_organism_is_bacteria_with_bacteria_identified(self):
-#         cleaned_data = {'blood_culture_organism': 'bacteria',
+#         cleaned_data = {'blood_culture_organism': BACTERIA,
 #                         'bacteria_identified': 'staphylococus_aureus'}
 #         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
 #         try:
@@ -224,7 +225,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
 #     def test_tissue_biopsy_taken_with_tissue_biopsy_results(self):
 #         cleaned_data = {'tissue_biopsy_taken': YES,
-#                         'tissue_biopsy_results': 'no_growth'}
+#                         'tissue_biopsy_results': NO_GROWTH}
 #         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
 #         self.assertRaises(ValidationError, form_validator.validate)
 #         self.assertIn('urine_culture_results', form_validator._errors)
@@ -238,7 +239,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
     def no_test_tissue_biopsy_taken_with_tissue_biopsy_results(self):
         cleaned_data = {'tissue_biopsy_taken': NO,
-                        'tissue_biopsy_results': 'no_growth'}
+                        'tissue_biopsy_results': NO_GROWTH}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
 
@@ -295,7 +296,7 @@ class TestMicrobiologyFormValidator(TestCase):
 
     def test_other_tissue_biopsy_org_with_tissue_biopsy_org_other(self):
         cleaned_data = {'tissue_biopsy_organism': OTHER,
-                        'tissue_biopsy_organism_other': 'tissue organism'}
+                        'tissue_biopsy_organism_other': 'some tissue organism'}
         form_validator = MicrobiologyFormValidator(cleaned_data=cleaned_data)
         try:
             form_validator.validate()

@@ -28,7 +28,7 @@ class SubjectConsentFormValidator(FormValidator):
                 screening_identifier=self.screening_identifier)
         except ObjectDoesNotExist:
             raise forms.ValidationError(
-                'Complete the Subject Screening form before proceeding.',
+                'Complete the "Subject Screening" form before proceeding.',
                 code='missing_subject_screening')
 
         if self.add_form and not self.consent_datetime:

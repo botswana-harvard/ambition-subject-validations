@@ -13,8 +13,8 @@ class PreviousOpportunisticInfectionFormValidator(FormValidator):
             condition=condition,
             field_required='previous_non_tb_oi',
             not_required_msg=(
-                'Cannot fill in this form without any previous'
-                ' opportunistic infections in patient history form.'))
+                'Cannot fill in this form without any previous '
+                'opportunistic infections in patient\'s history form.'))
 
         self.not_required_if(
             None,

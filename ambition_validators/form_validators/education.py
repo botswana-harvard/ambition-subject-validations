@@ -8,8 +8,7 @@ class EducationFormValidator(FormValidator):
 
     def clean(self):
 
-        self.education_years(
-            cleaned_data=self.cleaned_data)
+        self.education_years()
 
         self.required_if(
             YES,
@@ -26,7 +25,7 @@ class EducationFormValidator(FormValidator):
             field='higher_education',
             field_required='higher_years')
 
-    def education_years(self, cleaned_data=None):
+    def education_years(self):
         """Raises an expcetion if the total years of education is not
         the sum of the years spent in primary/secondary/higher
         """
@@ -39,7 +38,7 @@ class EducationFormValidator(FormValidator):
             if(education_sum != self.cleaned_data.get('education_years')):
                 raise forms.ValidationError({
                     'education_years':
-                    'the total years of education should be the sum of '
+                    'The total years of education should be the sum of '
                     'the years spent in primary/secondary/higher.'
                     'Expecting %d' % (education_sum)
                 })

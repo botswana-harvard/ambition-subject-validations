@@ -20,28 +20,21 @@ class FollowUpFormValidator(FormValidator):
             field='rifampicin_started',
             field_required='rifampicin_start_date')
 
-        dependencies = [
-            'location_care', 'transport_form',
-            'care_provider', 'paid_treatment',
-            'medication_bought', 'other_place_visited']
-
-        not_required_dependencies = [
-            'transport_cost', 'transport_duration',
-            'paid_treatment_amount', 'medication_payment'
-        ]
-
-        for dependency in dependencies:
+        for field_applicable in ['location_care', 'transport_form',
+                                 'care_provider', 'paid_treatment',
+                                 'medication_bought', 'other_place_visited']:
             self.not_applicable_if(
                 NO,
                 field='care_before_hospital',
-                field_applicable=dependency,
+                field_applicable=field_applicable,
             )
 
-        for dependency in not_required_dependencies:
+        for field_required in ['transport_cost', 'transport_duration',
+                               'paid_treatment_amount', 'medication_payment']:
             self.only_not_required_if(
                 NO,
                 field='care_before_hospital',
-                field_required=dependency,
+                field_required=field_required,
                 cleaned_data=self.cleaned_data
             )
 

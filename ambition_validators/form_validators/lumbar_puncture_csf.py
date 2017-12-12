@@ -2,10 +2,10 @@ from django import forms
 from django.conf import settings
 from edc_form_validators import FormValidator
 from edc_form_validators import NOT_REQUIRED_ERROR, REQUIRED_ERROR
-from edc_constants.constants import NOT_APPLICABLE, YES
+from edc_constants.constants import NOT_APPLICABLE, YES, NOT_DONE
 
 
-class LumbarPunctureCSFFormValidator(FormValidator):
+class LumbarPunctureCsfFormValidator(FormValidator):
 
     # TODO: WHAT IS THIS, why not use "required_if"??
     def only_required_if(self, field=None, field_required=None, cleaned_data=None):
@@ -51,7 +51,7 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                     self.cleaned_data.get('differential_lymphocyte_unit') and
                     self.cleaned_data.get('differential_lymphocyte_unit') != NOT_APPLICABLE):
                 message = {
-                    'differential_lymphocyte_unit': 'This field is not applicable'}
+                    'differential_lymphocyte_unit': 'This field is not applicable.'}
                 self._errors.update(message)
                 self._error_codes.append(REQUIRED_ERROR)
                 raise forms.ValidationError(message, code=REQUIRED_ERROR)
@@ -68,7 +68,7 @@ class LumbarPunctureCSFFormValidator(FormValidator):
         if (self.cleaned_data.get('differential_neutrophil_count') and not
                 self.cleaned_data.get('differential_neutrophil_unit')):
             message = {
-                'differential_neutrophil_unit': 'This field is required'}
+                'differential_neutrophil_unit': 'This field is required.'}
             self._errors.update(message)
             self._error_codes.append(REQUIRED_ERROR)
             raise forms.ValidationError(message, code=REQUIRED_ERROR)
@@ -77,7 +77,7 @@ class LumbarPunctureCSFFormValidator(FormValidator):
                     self.cleaned_data.get('differential_neutrophil_unit')and
                     self.cleaned_data.get('differential_neutrophil_unit') != NOT_APPLICABLE):
                 message = {
-                    'differential_neutrophil_unit': 'This field is not applicable'}
+                    'differential_neutrophil_unit': 'This field is not applicable.'}
                 self._errors.update(message)
                 self._error_codes.append(REQUIRED_ERROR)
                 raise forms.ValidationError(message, code=REQUIRED_ERROR)
@@ -88,21 +88,21 @@ class LumbarPunctureCSFFormValidator(FormValidator):
 
         if (self.cleaned_data.get('csf_glucose') and not
                 self.cleaned_data.get('csf_glucose_units')):
-            message = {'csf_glucose_units': 'This field is required'}
+            message = {'csf_glucose_units': 'This field is required.'}
             self._errors.update(message)
             self._error_codes.append(REQUIRED_ERROR)
             raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
-        if (self.cleaned_data.get('csf_cr_ag') == 'not_done'
-                and self.cleaned_data.get('india_ink') == 'not_done'):
-            message = {'csf_cr_ag': 'CSF CrAg and India Ink cannot both be Not Done.',
-                       'india_ink': 'CSF CrAg and India Ink cannot both be Not Done.'}
+        if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
+                and self.cleaned_data.get('india_ink') == NOT_DONE):
+            message = {'csf_cr_ag': 'CSF CrAg and India Ink cannot both be "Not done".',
+                       'india_ink': 'CSF CrAg and India Ink cannot both be "Not done".'}
             self._errors.update(message)
             self._error_codes.append(REQUIRED_ERROR)
             raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
         self.not_required_if(
-            'not_done', field='csf_cr_ag',
+            NOT_DONE, field='csf_cr_ag',
             field_required='csf_cr_ag_lfa')
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
