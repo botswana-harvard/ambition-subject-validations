@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_constants.constants import YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
 
-from ..constants import CONSENT_WITHDRAWAL
+from ..constants import CONSENT_WITHDRAWAL, DEAD
 
 
 class StudyTerminationConclusionFormValidator(FormValidator):
@@ -15,7 +15,7 @@ class StudyTerminationConclusionFormValidator(FormValidator):
         self.death_report_cls = death_report_cls
 
     def clean(self):
-        if self.cleaned_data.get('termination_reason') == 'dead':
+        if self.cleaned_data.get('termination_reason') == DEAD:
             try:
                 self.death_report_cls.objects.get(
                     subject_visit__subject_identifier=self.cleaned_data.get(
@@ -40,7 +40,7 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='readmission_date')
 
         self.required_if(
-            'dead',
+            DEAD,
             field='termination_reason',
             field_required='death_date')
 

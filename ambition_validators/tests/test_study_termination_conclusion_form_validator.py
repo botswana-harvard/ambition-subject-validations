@@ -5,7 +5,7 @@ from django.test import TestCase
 from edc_constants.constants import YES, NO, OTHER, NOT_APPLICABLE
 from edc_base.utils import get_utcnow
 
-from ..constants import CONSENT_WITHDRAWAL
+from ..constants import CONSENT_WITHDRAWAL, DEAD
 from ..form_validators import StudyTerminationConclusionFormValidator
 from .models import PatientHistory, SubjectVisit, TestModel
 
@@ -25,10 +25,11 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             subject_visit=self.subject_visit)
 
     def test_termination_reason_death_no_death_form_invalid(self):
-        cleaned_data = {'termination_reason': 'dead',
+        cleaned_data = {'termination_reason': DEAD,
                         'death_date': get_utcnow()}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory,
+            death_report_cls=TestModel)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('__all__', form_validator._errors)
 
@@ -87,7 +88,7 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
 
     def test_died_no_death_date_invalid(self):
         cleaned_data = {'subject_identifier': '11111111',
-                        'termination_reason': 'dead',
+                        'termination_reason': DEAD,
                         'death_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
             cleaned_data=cleaned_data, patient_history_cls=PatientHistory,

@@ -1,6 +1,7 @@
 BACTERIA = 'bacteria'
 CONSENT_WITHDRAWAL = 'consent_withdrawn'
 CRYPTOCOCCUS_NEOFORMANS = 'cryptococcus_neoformans'
+DEAD = 'dead'
 DEVIATION = 'DEVIATION'
 HEADACHE = 'headache'
 KLEBSIELLA_SPP = 'klebsiella_sp'
