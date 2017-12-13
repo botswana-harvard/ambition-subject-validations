@@ -24,7 +24,7 @@ class StudyTerminationConclusionFormValidator(FormValidator):
             field_required='readmission_date')
 
         self.required_if(
-            'died',
+            'dead',
             field='termination_reason',
             field_required='death_date')
 

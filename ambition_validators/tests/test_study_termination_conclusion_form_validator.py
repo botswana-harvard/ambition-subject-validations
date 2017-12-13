@@ -54,10 +54,10 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         self.assertIn('readmission_date', form_validator._errors)
 
     def test_died_no_death_date_invalid(self):
-        cleaned_data = {'termination_reason': 'died',
+        cleaned_data = {'termination_reason': 'dead',
                         'death_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('death_date', form_validator._errors)
 
