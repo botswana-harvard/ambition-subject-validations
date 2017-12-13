@@ -31,7 +31,7 @@ class TestAdverseEventFormValidator(TestCase):
                       form_validator._errors)
         self.assertIn(NOT_REQUIRED_ERROR, form_validator._error_codes)
 
-    def test_single_dose_drug_relation_invalid(self):
+    def test_single_dose_drug_relation_invalid1(self):
         options = {
             'regimen': 'Single dose',
             'ae_study_relation_possibility': YES,
@@ -40,6 +40,16 @@ class TestAdverseEventFormValidator(TestCase):
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('ambisome_relation', form_validator._errors)
+
+    def test_control_drug_relation_invalid2(self):
+        options = {
+            'regimen': 'Control',
+            'ae_study_relation_possibility': YES,
+            'amphotericin_b_relation': NOT_APPLICABLE,
+        }
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('amphotericin_b_relation', form_validator._errors)
 
     def test_sae_reason_not_applicable(self):
         options = {
