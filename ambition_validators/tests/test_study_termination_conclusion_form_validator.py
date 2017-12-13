@@ -7,7 +7,7 @@ from edc_base.utils import get_utcnow
 
 from ..constants import CONSENT_WITHDRAWAL
 from ..form_validators import StudyTerminationConclusionFormValidator
-from .models import PatientHistory, SubjectVisit
+from .models import PatientHistory, SubjectVisit, TestModel
 
 
 class TestStudyTerminationConclusionFormValidator(TestCase):
@@ -20,6 +20,17 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         PatientHistory.objects.create(
             subject_visit=self.subject_visit,
             first_arv_regimen=NOT_APPLICABLE)
+
+        TestModel.objects.create(
+            subject_visit=self.subject_visit)
+
+    def test_termination_reason_death_no_death_form_invalid(self):
+        cleaned_data = {'termination_reason': 'dead',
+                        'death_date': get_utcnow()}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('__all__', form_validator._errors)
 
     def test_yes_discharged_after_initial_admission_none_date_discharged(self):
         cleaned_data = {'discharged_after_initial_admission': YES,
@@ -36,6 +47,27 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('initial_discharge_date', form_validator._errors)
+
+    def test_no_discharged_after_initial_admission_readmission_invalid(self):
+        cleaned_data = {'discharged_after_initial_admission': NO,
+                        'initial_discharge_date': None,
+                        'readmission_after_initial_discharge': YES}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn(
+            'readmission_after_initial_discharge', form_validator._errors)
+
+    def ttest_no_discharged_after_initial_admission_no_readmission_valid(self):
+        cleaned_data = {'discharged_after_initial_admission': NO,
+                        'initial_discharge_date': None,
+                        'readmission_after_initial_discharge': NOT_APPLICABLE}
+        form_validator = StudyTerminationConclusionFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except forms.ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_yes_readmission_none_readmission_date(self):
         cleaned_data = {'readmission_after_initial_discharge': YES,
@@ -54,10 +86,12 @@ class TestStudyTerminationConclusionFormValidator(TestCase):
         self.assertIn('readmission_date', form_validator._errors)
 
     def test_died_no_death_date_invalid(self):
-        cleaned_data = {'termination_reason': 'dead',
+        cleaned_data = {'subject_identifier': '11111111',
+                        'termination_reason': 'dead',
                         'death_date': None}
         form_validator = StudyTerminationConclusionFormValidator(
-            cleaned_data=cleaned_data, patient_history_cls=PatientHistory)
+            cleaned_data=cleaned_data, patient_history_cls=PatientHistory,
+            death_report_cls=TestModel)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('death_date', form_validator._errors)
 

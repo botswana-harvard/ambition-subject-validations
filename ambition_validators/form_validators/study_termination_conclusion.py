@@ -1,3 +1,4 @@
+from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from edc_constants.constants import YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
@@ -7,16 +8,31 @@ from ..constants import CONSENT_WITHDRAWAL
 
 class StudyTerminationConclusionFormValidator(FormValidator):
 
-    def __init__(self, patient_history_cls=None, *args, **kwargs):
+    def __init__(self, patient_history_cls=None, death_report_cls=None,
+                 *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.patient_history_cls = patient_history_cls
+        self.death_report_cls = death_report_cls
 
     def clean(self):
+        if self.cleaned_data.get('termination_reason') == 'dead':
+            try:
+                self.death_report_cls.objects.get(
+                    subject_visit__subject_identifier=self.cleaned_data.get(
+                        'subject_identifier'))
+            except ObjectDoesNotExist:
+                raise forms.ValidationError('Cannot complete study termination.'
+                                            'Please complete death form first.')
 
         self.required_if(
             YES,
             field='discharged_after_initial_admission',
             field_required='initial_discharge_date')
+
+        self.applicable_if(
+            YES,
+            field='discharged_after_initial_admission',
+            field_applicable='readmission_after_initial_discharge')
 
         self.required_if(
             YES,
