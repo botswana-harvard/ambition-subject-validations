@@ -31,25 +31,101 @@ class TestAdverseEventFormValidator(TestCase):
                       form_validator._errors)
         self.assertIn(NOT_REQUIRED_ERROR, form_validator._error_codes)
 
-    def test_single_dose_drug_relation_invalid1(self):
+    def test_ambisome_relation_invalid(self):
         options = {
-            'regimen': 'Single dose',
             'ae_study_relation_possibility': YES,
-            'ambisome_relation': NOT_APPLICABLE,
+            'ambisome_relation': NOT_APPLICABLE
         }
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('ambisome_relation', form_validator._errors)
 
-    def test_control_drug_relation_invalid2(self):
+    def test_fluconazole_relation_invalid(self):
         options = {
-            'regimen': 'Control',
             'ae_study_relation_possibility': YES,
-            'amphotericin_b_relation': NOT_APPLICABLE,
+            'ambisome_relation': 'possibly_related',
+            'fluconazole_relation': NOT_APPLICABLE
+        }
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('fluconazole_relation', form_validator._errors)
+
+    def test_amphotericin_b_relation_invalid(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'possibly_related',
+            'fluconazole_relation': 'possibly_related',
+            'amphotericin_b_relation': NOT_APPLICABLE
         }
         form_validator = AdverseEventFormValidator(cleaned_data=options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('amphotericin_b_relation', form_validator._errors)
+
+    def test_flucytosine_relation_invalid(self):
+        options = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'possibly_related',
+            'fluconazole_relation': 'possibly_related',
+            'amphotericin_b_relation': 'not_related',
+            'flucytosine_relation': NOT_APPLICABLE
+        }
+        form_validator = AdverseEventFormValidator(cleaned_data=options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('flucytosine_relation', form_validator._errors)
+
+    def test_ambisome_relation_valid(self):
+        cleaned_data = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'not_related'
+        }
+        form_validator = AdverseEventFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_fluconazole_relation_valid(self):
+        cleaned_data = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'not_related',
+            'fluconazole_relation': 'possibly_related',
+        }
+        form_validator = AdverseEventFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_amphotericin_b_relation_valid(self):
+        cleaned_data = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'not_related',
+            'fluconazole_relation': 'possibly_related',
+            'amphotericin_b_relation': 'possibly_related'
+        }
+        form_validator = AdverseEventFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
+
+    def test_flucytosine_relation_valid(self):
+        cleaned_data = {
+            'ae_study_relation_possibility': YES,
+            'ambisome_relation': 'not_related',
+            'fluconazole_relation': 'possibly_related',
+            'amphotericin_b_relation': 'possibly_related',
+            'flucytosine_relation': 'not_related'
+        }
+        form_validator = AdverseEventFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_sae_reason_not_applicable(self):
         options = {
