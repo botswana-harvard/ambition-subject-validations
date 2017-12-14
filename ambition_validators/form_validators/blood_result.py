@@ -39,10 +39,10 @@ class BloodResultFormValidator(FormValidator):
             suffix='_reportable', word='reportable')
 
         # TODO: Use site code to validate not country, Gaborone & Blantyre
-        condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
-
-        self.applicable_if_true(
-            condition=condition, field_applicable='bios_crag')
+        if (settings.COUNTRY not in ['botswana', 'malawi']
+                and self.cleaned_data.get('bios_crag') != NOT_APPLICABLE):
+            raise forms.ValidationError(
+                {f'bios_crag': 'This field is not applicable'})
 
         self.applicable_if(
             YES,
