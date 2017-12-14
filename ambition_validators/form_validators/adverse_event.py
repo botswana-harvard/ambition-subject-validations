@@ -11,40 +11,15 @@ class AdverseEventFormValidator(FormValidator):
         #         self.patient_regimen(
         #             cleaned_data=self.cleaned_data)
 
-        single_dose_reg = (
-            self.cleaned_data.get('regimen') == 'Single dose'
-            and self.cleaned_data.get(
-                'ae_study_relation_possibility') == YES
-        )
+        drugs = ['ambisome_relation', 'fluconazole_relation',
+                 'amphotericin_b_relation', 'flucytosine_relation']
 
-        control_reg = (
-            self.cleaned_data.get('regimen') == 'Control'
-            and self.cleaned_data.get(
-                'ae_study_relation_possibility') == YES
-        )
-
-        single_dose_or_control_reg = (
-            self.cleaned_data.get('regimen') == 'Control'
-            or self.cleaned_data.get('regimen') == 'Single dose'
-            and self.cleaned_data.get(
-                'ae_study_relation_possibility') == YES
-        )
-
-        single_dose_or_control_drugs = [
-            'fluconazole_relation', 'flucytosine_relation']
-
-        self.applicable_if_true(
-            condition=single_dose_reg,
-            field_applicable='ambisome_relation')
-
-        self.applicable_if_true(
-            condition=control_reg,
-            field_applicable='amphotericin_b_relation')
-
-        for drug in single_dose_or_control_drugs:
-            self.applicable_if_true(
-                condition=single_dose_or_control_reg,
-                field_applicable=drug)
+        for drug in drugs:
+            self.applicable_if(
+                YES,
+                field='ae_study_relation_possibility',
+                field_applicable=drug
+            )
 
         self.required_if(
             YES,
