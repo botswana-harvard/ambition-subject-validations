@@ -12,23 +12,24 @@ class TestMedicalExpensesFormValidator(TestCase):
         """Assert raises exception if personal money spent and
         proxy money spent doesn't equal total money spent"""
         cleaned_data = {
-            'personal_he_spend': 10,
-            'proxy_he_spend': 10,
-            'he_spend_last_4weeks': 10
+            'subject_spent_last_4wks': 10,
+            'someone_spent_last_4wks': 10,
+            'total_spent_last_4wks': 10
         }
         form_validator = MedicalExpensesFormValidator(
             cleaned_data=cleaned_data
         )
         self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('he_spend_last_4weeks', form_validator._errors)
+        self.assertIn('total_spent_last_4wks', form_validator._errors)
 
     def test_total_money_spent(self):
         """Assert validate that personal money spent and proxy money
-        spent equal total money spent"""
+        spent equal total money spent.
+        """
         cleaned_data = {
-            'personal_he_spend': 10,
-            'proxy_he_spend': 10,
-            'he_spend_last_4weeks': 20}
+            'subject_spent_last_4wks': 10,
+            'someone_spent_last_4wks': 10,
+            'total_spent_last_4wks': 20}
         form_validator = MedicalExpensesFormValidator(
             cleaned_data=cleaned_data)
         try:

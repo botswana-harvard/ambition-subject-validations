@@ -1,22 +1,11 @@
 from django import forms
 from django.conf import settings
+from edc_constants.constants import YES, NOT_DONE
 from edc_form_validators import FormValidator
-from edc_form_validators import NOT_REQUIRED_ERROR, REQUIRED_ERROR
-from edc_constants.constants import NOT_APPLICABLE, YES, NOT_DONE
+from edc_form_validators import REQUIRED_ERROR
 
 
 class LumbarPunctureCsfFormValidator(FormValidator):
-
-    # TODO: WHAT IS THIS, why not use "required_if"??
-    def only_required_if(self, field=None, field_required=None, cleaned_data=None):
-        if (cleaned_data.get(field) == 0
-            and ((cleaned_data.get(field_required)
-                  and cleaned_data.get(field_required) != NOT_APPLICABLE))):
-            message = {
-                field_required: 'This field is not required.'}
-            self._errors.update(message)
-            self._error_codes.append(NOT_REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=NOT_REQUIRED_ERROR)
 
     def clean(self):
 
@@ -27,87 +16,59 @@ class LumbarPunctureCsfFormValidator(FormValidator):
             field='csf_culture',
             field_required='other_csf_culture')
 
-        if self.cleaned_data.get('csf_wbc_cell_count'):
-            if (self.cleaned_data.get('csf_wbc_cell_count') > 0
-                    and self.cleaned_data.get('csf_wbc_cell_count') < 3):
+        try:
+            if 0 < self.cleaned_data.get('csf_wbc_cell_count') < 3:
                 raise forms.ValidationError({
                     'csf_wbc_cell_count':
-                    'If the count is less than 2, a record of 0 is expected.'})
+                    'If the count is less than "2", a record of "0" is expected.'})
+        except TypeError:
+            pass
 
-        self.only_required_if(
+        # differential_lymphocyte_count
+        self.require_together(
             field='csf_wbc_cell_count',
-            field_required='differential_lymphocyte_count',
-            cleaned_data=self.cleaned_data)
+            field_required='differential_lymphocyte_count')
 
-        if (self.cleaned_data.get('differential_lymphocyte_count') and not
-                self.cleaned_data.get('differential_lymphocyte_unit')):
-            message = {
-                'differential_lymphocyte_unit': 'This field is required'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
-        else:
-            if (not self.cleaned_data.get('differential_lymphocyte_count') and
-                    self.cleaned_data.get('differential_lymphocyte_unit') and
-                    self.cleaned_data.get('differential_lymphocyte_unit') != NOT_APPLICABLE):
-                message = {
-                    'differential_lymphocyte_unit': 'This field is not applicable.'}
-                self._errors.update(message)
-                self._error_codes.append(REQUIRED_ERROR)
-                raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        self.require_together(
+            field='differential_lymphocyte_count',
+            field_required='differential_lymphocyte_unit')
 
-        self.percentage_limit_validation(
+        self.validate_percentage(
             field='differential_lymphocyte_count',
             unit='differential_lymphocyte_unit')
 
-        self.only_required_if(
+        # differential_neutrophil_count
+        self.require_together(
             field='csf_wbc_cell_count',
-            field_required='differential_neutrophil_count',
-            cleaned_data=self.cleaned_data)
+            field_required='differential_neutrophil_count')
 
-        if (self.cleaned_data.get('differential_neutrophil_count') and not
-                self.cleaned_data.get('differential_neutrophil_unit')):
-            message = {
-                'differential_neutrophil_unit': 'This field is required.'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
-        else:
-            if (not self.cleaned_data.get('differential_neutrophil_count') and
-                    self.cleaned_data.get('differential_neutrophil_unit')and
-                    self.cleaned_data.get('differential_neutrophil_unit') != NOT_APPLICABLE):
-                message = {
-                    'differential_neutrophil_unit': 'This field is not applicable.'}
-                self._errors.update(message)
-                self._error_codes.append(REQUIRED_ERROR)
-                raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        self.require_together(
+            field='differential_neutrophil_count',
+            field_required='differential_neutrophil_unit')
 
-        self.percentage_limit_validation(
+        self.validate_percentage(
             field='differential_neutrophil_count',
             unit='differential_neutrophil_unit')
 
-        if (self.cleaned_data.get('csf_glucose') and not
-                self.cleaned_data.get('csf_glucose_units')):
-            message = {'csf_glucose_units': 'This field is required.'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        # csf_glucose
+        self.require_together(
+            field='csf_glucose',
+            field_required='csf_glucose_units')
 
-        if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
-                and self.cleaned_data.get('india_ink') == NOT_DONE):
-            message = {'csf_cr_ag': 'CSF CrAg and India Ink cannot both be "Not done".',
-                       'india_ink': 'CSF CrAg and India Ink cannot both be "Not done".'}
-            self._errors.update(message)
-            self._error_codes.append(REQUIRED_ERROR)
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
-
+        # csf_cr_ag
         self.not_required_if(
             NOT_DONE, field='csf_cr_ag',
             field_required='csf_cr_ag_lfa')
 
+        # csf_cr_ag and india_ink
+        if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
+                and self.cleaned_data.get('india_ink') == NOT_DONE):
+            error_msg = 'CSF CrAg and India Ink cannot both be "not done".'
+            message = {'csf_cr_ag': error_msg, 'india_ink': error_msg}
+            raise forms.ValidationError(message, code=REQUIRED_ERROR)
+
         # TODO: Use site code to validate not country, Gaborone & Blantyre
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
-
         self.applicable_if_true(
             condition=condition, field_applicable='bios_crag')
 
@@ -126,17 +87,19 @@ class LumbarPunctureCsfFormValidator(FormValidator):
             field='bios_crag',
             field_applicable='crag_t2_result')
 
-    def percentage_limit_validation(self, field=None, unit=None):
+    def validate_percentage(self, field=None, unit=None):
         if self.cleaned_data.get(field):
-            if (self.cleaned_data.get(unit) == '%' and self.cleaned_data.get(field) > 100):
+            if self.cleaned_data.get(unit) == '%' and self.cleaned_data.get(field) > 100:
                 raise forms.ValidationError({
-                    field: 'Percent cannot be greater than 100'})
+                    field: 'Cannot be greater than 100%.'})
 
     def validate_opening_closing_pressure(self):
-        if (self.cleaned_data.get('opening_pressure')
-                and self.cleaned_data.get('closing_pressure')):
-            if (self.cleaned_data.get('opening_pressure')
-                    <= self.cleaned_data.get('closing_pressure')):
+        opening_pressure = self.cleaned_data.get('opening_pressure')
+        closing_pressure = self.cleaned_data.get('closing_pressure')
+        try:
+            if opening_pressure <= closing_pressure:
                 raise forms.ValidationError({
                     'closing_pressure':
-                    'Closing pressure should be lower than opening pressure'})
+                    'Cannot be greater than the opening pressure.'})
+        except TypeError:
+            pass

@@ -9,7 +9,16 @@ class MedicalExpensesFormValidator(FormValidator):
 
     def clean(self):
 
-        self.total_money_spent(cleaned_data=self.cleaned_data)
+        subject_costs = self.cleaned_data.get('subject_spent_last_4wks')
+        someone_costs = self.cleaned_data.get('someone_spent_last_4wks')
+        try:
+            total = subject_costs + someone_costs
+        except TypeError:
+            pass
+        else:
+            if total != self.cleaned_data.get('total_spent_last_4wks'):
+                raise forms.ValidationError({
+                    'total_spent_last_4wks': f'Expected \'{total}\'.'})
 
         self.validate_other_specify(field='care_before_hospital')
 
@@ -37,24 +46,9 @@ class MedicalExpensesFormValidator(FormValidator):
         self.required_if_true(
             condition=self.cleaned_data.get(
                 'form_of_transport') != NOT_APPLICABLE,
-            field_required='travel_time'
-        )
+            field_required='travel_time')
 
         self.required_if(
             YES,
             field='private_healthcare',
             field_required='healthcare_insurance')
-
-    def total_money_spent(self, cleaned_data=None):
-
-        total_money = ((cleaned_data.get('personal_he_spend') or 0)
-                       + (cleaned_data.get('proxy_he_spend') or 0))
-
-        if (total_money
-                != (self.cleaned_data.get('he_spend_last_4weeks') or 0)):
-            raise forms.ValidationError({
-                'he_spend_last_4weeks':
-                'The amount you spent and the amount someone else '
-                'spent should equal the total amount spent on your '
-                'healthcare. Expecting %d' % (total_money)
-            })

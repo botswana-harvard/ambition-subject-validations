@@ -1,10 +1,7 @@
-from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
-from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NO, NOT_APPLICABLE, OTHER
+from edc_constants.constants import YES, NO
 
-from ..constants import DEVIATION, VIOLATION
 from ..form_validators import PkPdCrfFormValidator
 
 
