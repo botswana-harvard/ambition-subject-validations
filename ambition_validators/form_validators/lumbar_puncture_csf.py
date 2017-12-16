@@ -67,7 +67,6 @@ class LumbarPunctureCsfFormValidator(FormValidator):
             message = {'csf_cr_ag': error_msg, 'india_ink': error_msg}
             raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
-        # TODO: Use site code to validate not country, Gaborone & Blantyre
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
         self.applicable_if_true(
             condition=condition, field_applicable='bios_crag')

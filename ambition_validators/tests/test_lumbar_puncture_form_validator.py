@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
-from edc_constants.constants import YES, NO, NOT_DONE
+from django.test.utils import override_settings
+from edc_constants.constants import YES, NO, NOT_DONE, NOT_APPLICABLE
 
 from ..form_validators import LumbarPunctureCsfFormValidator
 
@@ -140,3 +141,39 @@ class TestLumbarPunctureFormValidator(TestCase):
         self.assertIn(
             'Cannot be greater than 100%',
             str(form_validator._errors.get('differential_lymphocyte_count')))
+
+    @override_settings(COUNTRY='botswana')
+    def test_country_specific1(self):
+        cleaned_data = {'bios_crag': NOT_APPLICABLE}
+        form_validator = LumbarPunctureCsfFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('bios_crag', form_validator._errors)
+
+    @override_settings(COUNTRY='botswana')
+    def test_country_specific2(self):
+        cleaned_data = {'bios_crag': YES}
+        form_validator = LumbarPunctureCsfFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got {e}')
+
+    @override_settings(COUNTRY='zimbabwe')
+    def test_country_specific3(self):
+        cleaned_data = {'bios_crag': YES}
+        form_validator = LumbarPunctureCsfFormValidator(
+            cleaned_data=cleaned_data)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('bios_crag', form_validator._errors)
+
+    @override_settings(COUNTRY='zimbabwe')
+    def test_country_specific4(self):
+        cleaned_data = {'bios_crag': NOT_APPLICABLE}
+        form_validator = LumbarPunctureCsfFormValidator(
+            cleaned_data=cleaned_data)
+        try:
+            form_validator.validate()
+        except ValidationError as e:
+            self.fail(f'ValidationError unexpectedly raised. Got {e}')
