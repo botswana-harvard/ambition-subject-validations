@@ -60,12 +60,6 @@ class PatientHistoryFormValidator(FormValidator):
                 field_applicable=arv_req_field,
             )
 
-        self.required_if_true(
-            condition=(
-                self.cleaned_data.get('patient_adherence') == NO and
-                not self.cleaned_data.get('tablets_missed')),
-            field_required='last_dose')
-
         self.not_required_if(
             None,
             field='last_viral_load',
