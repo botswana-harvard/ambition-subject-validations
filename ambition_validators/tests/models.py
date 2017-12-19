@@ -23,7 +23,7 @@ class Appointment(BaseUuidModel):
         blank=True)
 
 
-class RequiresConsentMixin(models.Model):
+class RequiresConsentModelMixin(models.Model):
 
     class Meta:
         abstract = True
@@ -39,7 +39,7 @@ class SubjectConsent(UpdatesOrCreatesRegistrationModelMixin, BaseUuidModel):
     dob = models.DateField()
 
 
-class SubjectVisit(RequiresConsentMixin, BaseUuidModel):
+class SubjectVisit(RequiresConsentModelMixin, BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=25)
 
@@ -48,7 +48,7 @@ class SubjectVisit(RequiresConsentMixin, BaseUuidModel):
     report_datetime = models.DateTimeField(
         default=get_utcnow)
 
-    class Meta(RequiresConsentMixin.Meta):
+    class Meta(RequiresConsentModelMixin.Meta):
         consent_model = 'ambition_validator.subjectconsent'
 
 
