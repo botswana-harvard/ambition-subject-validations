@@ -137,14 +137,6 @@ class TestPatientHistoryFormValidator(TestCase):
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('patient_adherence', form._errors)
 
-    def test_patient_adherence_last_dose_and_days_missed_invalid(self):
-        cleaned_data = {'patient_adherence': NO,
-                        'tablets_missed': 0,
-                        'last_dose': 0}
-        form = PatientHistoryFormValidator(cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form.validate)
-        self.assertIn('last_dose', form._errors)
-
     def test_no_last_viral_load_date_invalid(self):
         cleaned_data = {'last_viral_load': None,
                         'viral_load_date': get_utcnow()}
