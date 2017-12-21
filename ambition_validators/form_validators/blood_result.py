@@ -114,6 +114,9 @@ class BloodResultFormValidator(FormValidator):
         """
         answers = list({k: v for k, v in self.cleaned_data.items()
                         if k.endswith(suffix)}.values())
+        if len([True for v in answers if v is not None]) == 0:
+            raise forms.ValidationError(
+                {'results_abnormal': f'No results have been entered.'})
         answers_as_bool = [True for v in answers if v in responses]
         if self.cleaned_data.get(field) == NO:
             if any(answers_as_bool):
