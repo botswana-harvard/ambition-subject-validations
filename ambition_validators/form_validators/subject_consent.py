@@ -40,12 +40,12 @@ class SubjectConsentFormValidator(FormValidator):
         if screening_age_in_years != subject_screening.age_in_years:
             raise forms.ValidationError(
                 {'dob':
-                 'The date of birth entered does not match the age at '
+                 'Age mismatch. The date of birth entered does not match the age at '
                  f'screening. Expected {subject_screening.age_in_years}. '
                  f'Got {screening_age_in_years}.'})
 
         if subject_screening.mental_status == ABNORMAL and not self.guardian_name:
             raise forms.ValidationError(
                 {'guardian_name':
-                 'Patient mental status at screening is '
-                 f'{subject_screening.mental_status}, guardian name is required.'})
+                 'This field is required. Patient mental status at screening is '
+                 f'{subject_screening.mental_status}.'})
