@@ -1,11 +1,28 @@
 from edc_form_validators import FormValidator
 from edc_constants.constants import POS, YES, OTHER
+from ambition_prn.form_validators import StudyDayFormValidatorMixin
+
 from ..constants import BACTERIA
 
 
-class MicrobiologyFormValidator(FormValidator):
+class MicrobiologyFormValidator(StudyDayFormValidatorMixin, FormValidator):
 
     def clean(self):
+
+        self.validate_study_day_with_datetime(
+            subject_identifier=self.cleaned_data.get(
+                'subject_visit').subject_identifier,
+            study_day=self.cleaned_data.get('day_blood_taken'),
+            compare_date=self.cleaned_data.get('blood_taken_date'),
+            study_day_field='day_blood_taken')
+
+        self.validate_study_day_with_datetime(
+            subject_identifier=self.cleaned_data.get(
+                'subject_visit').subject_identifier,
+            study_day=self.cleaned_data.get('day_biopsy_taken'),
+            compare_date=self.cleaned_data.get('biopsy_date'),
+            study_day_field='day_biopsy_taken')
+
         condition = (
             self.cleaned_data.get('blood_culture_organism') == BACTERIA
             or self.cleaned_data.get(
