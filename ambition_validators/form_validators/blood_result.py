@@ -4,6 +4,7 @@ from django.forms import forms
 from edc_constants.constants import NO, YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
 from edc_reportable import site_reportables, NotEvaluated, GRADE3, GRADE4
+from ambition_subject.constants import ALREADY_REPORTED
 
 
 class BloodResultFormValidator(FormValidator):
@@ -83,8 +84,9 @@ class BloodResultFormValidator(FormValidator):
         except NotEvaluated as e:
             raise forms.ValidationError({field: str(e)})
         if grade and grade.grade and reportable != str(grade.grade):
-            raise forms.ValidationError({
-                field: f'{field.upper()} is reportable. Got {grade.description}.'})
+            if reportable != ALREADY_REPORTED:
+                raise forms.ValidationError({
+                    field: f'{field.upper()} is reportable. Got {grade.description}.'})
         elif not grade and reportable not in [NO, NOT_APPLICABLE]:
             raise forms.ValidationError({
                 f'{field}_reportable': 'Invalid. Expected \'No\' or \'Not applicable\'.'})
