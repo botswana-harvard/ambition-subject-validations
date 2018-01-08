@@ -8,7 +8,7 @@ from edc_visit_tracking.form_validators import VisitFormValidator
 class SubjectVisitFormValidator(VisitFormValidator):
 
     def clean(self):
-        # super().clean()
+        super().clean()
         condition = (
             self.cleaned_data.get('appointment')
             and self.cleaned_data.get('appointment').visit_code_sequence == 0)
