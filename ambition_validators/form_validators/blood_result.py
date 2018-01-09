@@ -5,7 +5,6 @@ from edc_constants.constants import NO, YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
 from edc_reportable import site_reportables, NotEvaluated, GRADE3, GRADE4
 from ambition_subject.constants import ALREADY_REPORTED
-from pprint import pprint
 
 
 class BloodResultFormValidator(FormValidator):
