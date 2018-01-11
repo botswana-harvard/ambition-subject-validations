@@ -1,3 +1,4 @@
+from django import forms
 from edc_form_validators import FormValidator
 from edc_constants.constants import YES, NO, OTHER
 
@@ -44,21 +45,31 @@ class PatientHistoryFormValidator(FormValidator):
             field='arv_date',
             field_applicable='arv_date_estimated')
 
+        self.applicable_if(
+            YES, field='taking_arv',
+            field_applicable='first_arv_regimen')
+
         self.validate_other_specify(field='first_arv_regimen')
 
         self.validate_other_specify(field='second_arv_regimen')
 
-        arv_req_fields = [
-            'first_arv_regimen',
-            'first_line_choice',
-            'patient_adherence',
-        ]
-        for arv_req_field in arv_req_fields:
-            self.applicable_if(
-                YES,
-                field='taking_arv',
-                field_applicable=arv_req_field,
-            )
+        self.applicable_if(
+            YES, field='taking_arv',
+            field_applicable='first_line_choice')
+
+        if (self.cleaned_data.get('first_arv_regimen') == OTHER
+                and self.cleaned_data.get('first_line_choice') != OTHER):
+            raise forms.ValidationError(
+                {'first_line_choice': 'Invalid. Expected "Other"'})
+
+        if (self.cleaned_data.get('first_arv_regimen') != OTHER
+                and self.cleaned_data.get('first_line_choice') == OTHER):
+            raise forms.ValidationError(
+                {'first_line_choice': 'Invalid. Cannot be "Other"'})
+
+        self.applicable_if(
+            YES, field='taking_arv',
+            field_applicable='patient_adherence')
 
         self.not_required_if(
             None,
