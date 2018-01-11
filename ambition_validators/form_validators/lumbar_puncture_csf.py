@@ -24,26 +24,16 @@ class LumbarPunctureCsfFormValidator(FormValidator):
         except TypeError:
             pass
 
-        # differential_lymphocyte_count
-        self.require_together(
-            field='csf_wbc_cell_count',
-            field_required='differential_lymphocyte_count')
-
-        self.require_together(
-            field='differential_lymphocyte_count',
+        self.not_required_if(
+            None, field='differential_lymphocyte_count',
             field_required='differential_lymphocyte_unit')
 
         self.validate_percentage(
             field='differential_lymphocyte_count',
             unit='differential_lymphocyte_unit')
 
-        # differential_neutrophil_count
-        self.require_together(
-            field='csf_wbc_cell_count',
-            field_required='differential_neutrophil_count')
-
-        self.require_together(
-            field='differential_neutrophil_count',
+        self.not_required_if(
+            None, field='differential_neutrophil_count',
             field_required='differential_neutrophil_unit')
 
         self.validate_percentage(

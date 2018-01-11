@@ -80,30 +80,6 @@ class TestLumbarPunctureFormValidator(TestCase):
         self.assertIn('csf_cr_ag', form_validator._errors)
         self.assertIn('india_ink', form_validator._errors)
 
-    def test_differential_lymphocyte_count_required(self):
-        cleaned_data = {
-            'csf_wbc_cell_count': 0,
-            'differential_neutrophil_count': 0,
-            'differential_neutrophil_unit': '%'}
-        form_validator = LumbarPunctureCsfFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('differential_lymphocyte_count', form_validator._errors)
-        self.assertIn('is required', str(
-            form_validator._errors.get('differential_lymphocyte_count')))
-
-    def test_neutrophil_count_required(self):
-        cleaned_data = {
-            'csf_wbc_cell_count': 0,
-            'differential_lymphocyte_count': 50,
-            'differential_lymphocyte_unit': '%'}
-        form_validator = LumbarPunctureCsfFormValidator(
-            cleaned_data=cleaned_data)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('differential_neutrophil_count', form_validator._errors)
-        self.assertIn('is required', str(
-            form_validator._errors.get('differential_neutrophil_count')))
-
     def test_csf_cr_ag_no_csf_cr_ag_lfa_not_required(self):
         cleaned_data = {'csf_cr_ag': NOT_DONE,
                         'csf_cr_ag_lfa': YES}
