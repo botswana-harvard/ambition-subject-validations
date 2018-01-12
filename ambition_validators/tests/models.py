@@ -53,6 +53,20 @@ class SubjectVisit(RequiresConsentModelMixin, BaseUuidModel):
         consent_model = 'ambition_validator.subjectconsent'
 
 
+class SubjectRequisition(BaseUuidModel):
+
+    subject_identifier = models.CharField(max_length=25)
+
+    subject_visit = models.ForeignKey(SubjectVisit, on_delete=PROTECT)
+
+    requisition_datetime = models.DateTimeField(
+        default=get_utcnow)
+
+    def save(self, *args, **kwargs):
+        self.subject_identifier = self.subject_visit.subject_identifier
+        super().save(*args, **kwargs)
+
+
 class SubjectScreening(BaseUuidModel):
 
     screening_identifier = models.CharField(max_length=25, unique=True)
@@ -64,6 +78,15 @@ class SubjectScreening(BaseUuidModel):
         max_length=10)
 
     age_in_years = models.IntegerField()
+
+
+class BloodResult(BaseUuidModel):
+
+    subject_visit = models.OneToOneField(SubjectVisit, on_delete=PROTECT)
+
+    ft_fields = ['creatinine', 'urea', 'sodium',
+                 'potassium', 'magnesium', 'alt']
+    cbc_fields = ['haemoglobin', 'wbc', 'neutrophil', 'platelets']
 
 
 class PatientHistory(BaseUuidModel):

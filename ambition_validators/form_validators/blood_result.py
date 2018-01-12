@@ -1,15 +1,92 @@
+from ambition_labs.labs import cd4_panel, viral_load_panel, fbc_panel
+from ambition_labs.labs import chemistry_panel, chemistry_alt_panel
+from ambition_subject.constants import ALREADY_REPORTED
+from arrow.arrow import Arrow
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.forms import forms
+from django.utils import timezone
+from edc_base.utils import convert_php_dateformat
 from edc_constants.constants import NO, YES, NOT_APPLICABLE
 from edc_form_validators import FormValidator
 from edc_reportable import site_reportables, NotEvaluated, GRADE3, GRADE4
-from ambition_subject.constants import ALREADY_REPORTED
 
 
 class BloodResultFormValidator(FormValidator):
 
     def clean(self):
+
+        self.required_if_true(
+            any([self.cleaned_data.get(f) is not None
+                 for f in [f for f in self.instance.ft_fields]]),
+            field_required='ft_requisition')
+
+        ft_requisition = self.cleaned_data.get('ft_requisition')
+        if ft_requisition and ft_requisition.panel_object not in [
+                chemistry_panel, chemistry_alt_panel]:
+            raise forms.ValidationError(
+                {'ft_requisition': 'Incorrect requisition.'})
+
+        self.required_if_true(
+            self.cleaned_data.get('ft_requisition'),
+            field_required='ft_assay_datetime')
+
+        ft_assay_datetime = self.cleaned_data.get('ft_assay_datetime')
+        self.validate_assay_datetime(
+            ft_assay_datetime, ft_requisition, 'ft_assay_datetime')
+
+        self.required_if_true(
+            any([self.cleaned_data.get(f) is not None
+                 for f in [f for f in self.instance.cbc_fields]]),
+            field_required='cbc_requisition')
+
+        cbc_requisition = self.cleaned_data.get('cbc_requisition')
+        if cbc_requisition and cbc_requisition.panel_object != fbc_panel:
+            raise forms.ValidationError(
+                {'cbc_requisition': 'Incorrect requisition.'})
+
+        self.required_if_true(
+            self.cleaned_data.get('cbc_requisition'),
+            field_required='cbc_assay_datetime')
+
+        cbc_assay_datetime = self.cleaned_data.get('cbc_assay_datetime')
+        self.validate_assay_datetime(
+            cbc_assay_datetime, cbc_requisition, 'cbc_assay_datetime')
+
+        self.required_if_true(
+            self.cleaned_data.get('cd4') is not None,
+            field_required='cd4_requisition')
+
+        cd4_requisition = self.cleaned_data.get('cd4_requisition')
+        if cd4_requisition and cd4_requisition.panel_object != cd4_panel:
+            raise forms.ValidationError(
+                {'cd4_requisition': 'Incorrect requisition.'})
+
+        self.required_if_true(
+            self.cleaned_data.get('cd4_requisition'),
+            field_required='cd4_assay_datetime')
+
+        cd4_assay_datetime = self.cleaned_data.get('cd4_assay_datetime')
+        self.validate_assay_datetime(
+            cd4_assay_datetime, cd4_requisition, 'cd4_assay_datetime')
+
+        self.required_if_true(
+            self.cleaned_data.get('vl') is not None,
+            field_required='vl_requisition')
+
+        vl_requisition = self.cleaned_data.get('vl_requisition')
+        if vl_requisition and vl_requisition.panel_object != viral_load_panel:
+            raise forms.ValidationError(
+                {'vl_requisition': 'Incorrect requisition.'})
+
+        self.required_if_true(
+            self.cleaned_data.get('vl_requisition'),
+            field_required='vl_assay_datetime')
+
+        vl_assay_datetime = self.cleaned_data.get('vl_assay_datetime')
+        self.validate_assay_datetime(
+            vl_assay_datetime, vl_requisition, 'vl_assay_datetime')
+
         subject_identifier = self.cleaned_data.get(
             'subject_visit').subject_identifier
         RegisteredSubject = django_apps.get_model(
@@ -128,3 +205,14 @@ class BloodResultFormValidator(FormValidator):
             if not any(answers_as_bool):
                 raise forms.ValidationError(
                     {field: f'None of the above results are {word}'})
+
+    def validate_assay_datetime(self, assay_datetime, requisition, field):
+        if assay_datetime:
+            assay_datetime = Arrow.fromdatetime(
+                assay_datetime, assay_datetime.tzinfo).to('utc').datetime
+            if assay_datetime < requisition.requisition_datetime:
+                formatted = timezone.localtime(requisition.requisition_datetime).strftime(
+                    convert_php_dateformat(settings.SHORT_DATETIME_FORMAT))
+                raise forms.ValidationError({
+                    field: (f'Invalid. Cannot be before date of '
+                            f'requisition {formatted}.')})

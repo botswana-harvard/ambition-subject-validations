@@ -10,7 +10,7 @@ from edc_reportable import GRAMS_PER_DECILITER, IU_LITER, TEN_X_9_PER_LITER
 from edc_reportable import MICROMOLES_PER_LITER, MILLIGRAMS_PER_DECILITER, MILLIMOLES_PER_LITER
 
 from ..form_validators import BloodResultFormValidator
-from .models import SubjectVisit, SubjectConsent
+from .models import SubjectVisit, SubjectConsent, SubjectRequisition, BloodResult
 
 
 class TestBloodResultFormValidator(TestCase):
@@ -24,6 +24,7 @@ class TestBloodResultFormValidator(TestCase):
             appointment_id=uuid.uuid4())
 
         self.cleaned_data = {
+            'subject_visit': self.subject_visit,
             'haemoglobin': 15,
             'haemoglobin_units': GRAMS_PER_DECILITER,
             'haemoglobin_abnormal': NO,
@@ -72,8 +73,8 @@ class TestBloodResultFormValidator(TestCase):
             haemoglobin=6.4,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('haemoglobin', form_validator._errors)
 
@@ -82,8 +83,8 @@ class TestBloodResultFormValidator(TestCase):
             haemoglobin=6.9,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('haemoglobin', form_validator._errors)
 
@@ -92,8 +93,8 @@ class TestBloodResultFormValidator(TestCase):
             haemoglobin=14,
             results_abnormal=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -104,7 +105,8 @@ class TestBloodResultFormValidator(TestCase):
             creatinine=0.3,
             creatinine_units=MILLIGRAMS_PER_DECILITER)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('creatinine', form_validator._errors)
 
@@ -114,7 +116,8 @@ class TestBloodResultFormValidator(TestCase):
             creatinine_units=MICROMOLES_PER_LITER,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('creatinine', form_validator._errors)
 
@@ -124,8 +127,8 @@ class TestBloodResultFormValidator(TestCase):
             creatinine_units=MILLIGRAMS_PER_DECILITER,
             results_abnormal=YES,)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('creatinine', form_validator._errors)
 
@@ -137,7 +140,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=NO,
             results_reportable=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -149,8 +153,8 @@ class TestBloodResultFormValidator(TestCase):
             creatinine_units=MICROMOLES_PER_LITER,
             are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('creatinine', form_validator._errors)
 
@@ -160,7 +164,8 @@ class TestBloodResultFormValidator(TestCase):
             creatinine=100,
             creatinine_units=MICROMOLES_PER_LITER)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -171,8 +176,8 @@ class TestBloodResultFormValidator(TestCase):
             magnesium=0.01,
             are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('magnesium', form_validator._errors)
 
@@ -182,7 +187,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('magnesium', form_validator._errors)
 
@@ -191,8 +197,8 @@ class TestBloodResultFormValidator(TestCase):
             potassium=1.0,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('potassium', form_validator._errors)
 
@@ -203,7 +209,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('potassium', form_validator._errors)
 
@@ -213,7 +220,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('potassium', form_validator._errors)
 
@@ -222,8 +230,8 @@ class TestBloodResultFormValidator(TestCase):
             sodium=100,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('sodium', form_validator._errors)
 
@@ -233,8 +241,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('sodium', form_validator._errors)
 
@@ -244,8 +252,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('sodium', form_validator._errors)
 
@@ -255,7 +263,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=NO,
             results_reportable=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -266,8 +275,8 @@ class TestBloodResultFormValidator(TestCase):
             alt=201,
             are_results_normal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('alt', form_validator._errors)
 
@@ -277,19 +286,21 @@ class TestBloodResultFormValidator(TestCase):
             alt=10,
             results_abnormal=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
     def test_platelets_invalid(self):
+
         self.cleaned_data.update(
             platelets=50,
             results_abnormal=YES)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('platelets', form_validator._errors)
 
@@ -299,7 +310,8 @@ class TestBloodResultFormValidator(TestCase):
             platelets=450,
             results_abnormal=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -309,7 +321,8 @@ class TestBloodResultFormValidator(TestCase):
         self.cleaned_data.update(
             neutrophil=0.5)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('neutrophil', form_validator._errors)
 
@@ -319,7 +332,8 @@ class TestBloodResultFormValidator(TestCase):
             neutrophil=4,
             results_abnormal=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data)
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         try:
             form_validator.validate()
         except ValidationError as e:
@@ -331,8 +345,8 @@ class TestBloodResultFormValidator(TestCase):
             results_abnormal=YES,
             results_reportable=NO)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('sodium', form_validator._errors)
 
@@ -344,8 +358,8 @@ class TestBloodResultFormValidator(TestCase):
             crag_control_result=NOT_APPLICABLE
         )
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_control_result', form_validator._errors)
 
@@ -358,8 +372,8 @@ class TestBloodResultFormValidator(TestCase):
             crag_t1_result=NOT_APPLICABLE
         )
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_t1_result', form_validator._errors)
 
@@ -372,8 +386,8 @@ class TestBloodResultFormValidator(TestCase):
             crag_t1_result=POS,
             crag_t2_result=NOT_APPLICABLE)
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('crag_t2_result', form_validator._errors)
 
@@ -385,8 +399,8 @@ class TestBloodResultFormValidator(TestCase):
             bios_crag=YES
         )
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('bios_crag', form_validator._errors)
 
@@ -398,7 +412,7 @@ class TestBloodResultFormValidator(TestCase):
             bios_crag=NO
         )
         form_validator = BloodResultFormValidator(
-            cleaned_data=self.cleaned_data
-        )
+            cleaned_data=self.cleaned_data,
+            instance=BloodResult())
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('bios_crag', form_validator._errors)
