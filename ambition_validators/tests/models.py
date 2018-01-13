@@ -40,14 +40,32 @@ class SubjectConsent(UpdatesOrCreatesRegistrationModelMixin, BaseUuidModel):
     dob = models.DateField()
 
 
-class SubjectVisit(RequiresConsentModelMixin, BaseUuidModel):
+class Appointment(BaseUuidModel):
 
     subject_identifier = models.CharField(max_length=25)
+
+    appt_datetime = models.DateTimeField(default=get_utcnow)
+
+    visit_code = models.CharField(max_length=25)
+
+
+class SubjectVisit(RequiresConsentModelMixin, BaseUuidModel):
+
+    appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
+
+    subject_identifier = models.CharField(max_length=25)
+
+    visit_code = models.CharField(max_length=25)
 
     appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
 
     report_datetime = models.DateTimeField(
         default=get_utcnow)
+
+    def save(self, *args, **kwargs):
+        self.visit_code = self.appointment.visit_code
+        self.subject_identifier = self.appointment.subject_identifier
+        super().save(*args, **kwargs)
 
     class Meta(RequiresConsentModelMixin.Meta):
         consent_model = 'ambition_validator.subjectconsent'
@@ -87,6 +105,11 @@ class BloodResult(BaseUuidModel):
     ft_fields = ['creatinine', 'urea', 'sodium',
                  'potassium', 'magnesium', 'alt']
     cbc_fields = ['haemoglobin', 'wbc', 'neutrophil', 'platelets']
+
+
+class LumbarPunctureCsf(BaseUuidModel):
+
+    subject_visit = models.OneToOneField(SubjectVisit, on_delete=PROTECT)
 
 
 class PatientHistory(BaseUuidModel):

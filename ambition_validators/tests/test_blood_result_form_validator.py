@@ -1,5 +1,4 @@
-import uuid
-
+from ambition_visit_schedule import DAY1
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
@@ -10,18 +9,23 @@ from edc_reportable import GRAMS_PER_DECILITER, IU_LITER, TEN_X_9_PER_LITER
 from edc_reportable import MICROMOLES_PER_LITER, MILLIGRAMS_PER_DECILITER, MILLIMOLES_PER_LITER
 
 from ..form_validators import BloodResultFormValidator
-from .models import SubjectVisit, SubjectConsent, SubjectRequisition, BloodResult
+from .models import SubjectVisit, SubjectConsent, BloodResult, Appointment
 
 
 class TestBloodResultFormValidator(TestCase):
 
     def setUp(self):
+
         self.subject_consent = SubjectConsent.objects.create(
             subject_identifier='11111111',
             gender='M', dob=(get_utcnow() - relativedelta(years=25)).date())
+
+        appointment = Appointment.objects.create(
+            subject_identifier=self.subject_consent.subject_identifier,
+            appt_datetime=get_utcnow(),
+            visit_code=DAY1)
         self.subject_visit = SubjectVisit.objects.create(
-            subject_identifier='11111111',
-            appointment_id=uuid.uuid4())
+            appointment=appointment)
 
         self.cleaned_data = {
             'subject_visit': self.subject_visit,

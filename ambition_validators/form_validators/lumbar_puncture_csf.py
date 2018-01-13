@@ -3,11 +3,19 @@ from django.conf import settings
 from edc_constants.constants import YES, NOT_DONE
 from edc_form_validators import FormValidator
 from edc_form_validators import REQUIRED_ERROR
+from edc_lab import CrfRequisitionFormValidatorMixin
+from ambition_visit_schedule.constants import DAY1
+from ambition_labs.labs import csf_chemistry_panel
 
 
-class LumbarPunctureCsfFormValidator(FormValidator):
+class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValidator):
+
+    requisition_fields = [('requisition', 'assay_datetime')]
 
     def clean(self):
+
+        self.validate_requisition(
+            'requisition', 'assay_datetime', csf_chemistry_panel)
 
         self.validate_opening_closing_pressure()
 
@@ -15,6 +23,11 @@ class LumbarPunctureCsfFormValidator(FormValidator):
             YES,
             field='csf_culture',
             field_required='other_csf_culture')
+
+        self.required_if_true(
+            self.cleaned_data.get('subject_visit').visit_code == DAY1,
+            field_required='csf_wbc_cell_count',
+            inverse=False)
 
         try:
             if 0 < self.cleaned_data.get('csf_wbc_cell_count') < 3:
@@ -51,11 +64,12 @@ class LumbarPunctureCsfFormValidator(FormValidator):
             field_required='csf_cr_ag_lfa')
 
         # csf_cr_ag and india_ink
-        if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
-                and self.cleaned_data.get('india_ink') == NOT_DONE):
-            error_msg = 'CSF CrAg and India Ink cannot both be "not done".'
-            message = {'csf_cr_ag': error_msg, 'india_ink': error_msg}
-            raise forms.ValidationError(message, code=REQUIRED_ERROR)
+        if self.cleaned_data.get('subject_visit').visit_code == DAY1:
+            if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
+                    and self.cleaned_data.get('india_ink') == NOT_DONE):
+                error_msg = 'CSF CrAg and India Ink cannot both be "not done".'
+                message = {'csf_cr_ag': error_msg, 'india_ink': error_msg}
+                raise forms.ValidationError(message, code=REQUIRED_ERROR)
 
         condition = settings.COUNTRY == 'botswana' or settings.COUNTRY == 'malawi'
         self.applicable_if_true(

@@ -1,14 +1,14 @@
+from ambition_visit_schedule import DAY1
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from edc_base import get_utcnow
 from edc_constants.constants import YES, NO, POS, NOT_APPLICABLE, OTHER
 from edc_registration.models import RegisteredSubject
-from uuid import uuid4
 
 from ..constants import KLEBSIELLA_SPP, BACTERIA, NO_GROWTH, CRYPTOCOCCUS_NEOFORMANS
 from ..form_validators import MicrobiologyFormValidator
-from .models import SubjectVisit
+from .models import SubjectVisit, Appointment
 
 
 class TestMicrobiologyFormValidator(TestCase):
@@ -18,9 +18,12 @@ class TestMicrobiologyFormValidator(TestCase):
         RegisteredSubject.objects.create(
             subject_identifier=self.subject_identifier,
             randomization_datetime=get_utcnow())
-        self.subject_visit = SubjectVisit.objects.create(
+        appointment = Appointment.objects.create(
             subject_identifier=self.subject_identifier,
-            appointment_id=uuid4())
+            appt_datetime=get_utcnow(),
+            visit_code=DAY1)
+        self.subject_visit = SubjectVisit.objects.create(
+            appointment=appointment)
 
     def test_urine_culture_performed_yes_require_urine_culture_results(self):
         cleaned_data = {

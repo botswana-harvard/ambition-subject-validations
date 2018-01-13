@@ -1,4 +1,4 @@
-import uuid
+from ambition_visit_schedule import DAY1
 from django import forms
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -7,7 +7,7 @@ from edc_constants.constants import YES, OTHER
 
 from ..form_validators import Week2FormValidator, SignificantDiagnosesFormValidator
 from ..form_validators import FluconazoleMissedDosesFormValidator
-from .models import SubjectVisit, TestModel
+from .models import SubjectVisit, TestModel, Appointment
 
 
 class TestWeek2Form(TestCase):
@@ -61,10 +61,12 @@ class TestWeek2Form(TestCase):
 class TestSignificantDiagnosesForm(TestCase):
 
     def setUp(self):
-
-        self.subject_visit = SubjectVisit.objects.create(
+        appointment = Appointment.objects.create(
             subject_identifier='11111111',
-            appointment_id=uuid.uuid4())
+            appt_datetime=get_utcnow(),
+            visit_code=DAY1)
+        self.subject_visit = SubjectVisit.objects.create(
+            appointment=appointment)
 
         self.week2 = TestModel.objects.create(
             subject_visit=self.subject_visit,
