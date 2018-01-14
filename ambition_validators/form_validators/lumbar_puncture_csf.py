@@ -1,11 +1,11 @@
+from ambition_labs.panels import csf_chemistry_panel
+from ambition_visit_schedule.constants import DAY1
 from django import forms
 from django.conf import settings
 from edc_constants.constants import YES, NOT_DONE
 from edc_form_validators import FormValidator
 from edc_form_validators import REQUIRED_ERROR
 from edc_lab import CrfRequisitionFormValidatorMixin
-from ambition_visit_schedule.constants import DAY1
-from ambition_labs.labs import csf_chemistry_panel
 
 
 class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValidator):

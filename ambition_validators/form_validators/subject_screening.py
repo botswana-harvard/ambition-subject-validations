@@ -1,5 +1,5 @@
-from edc_form_validators import FormValidator
 from edc_constants.constants import FEMALE, YES, NO, MALE
+from edc_form_validators import FormValidator
 
 
 class SubjectScreeningFormValidator(FormValidator):

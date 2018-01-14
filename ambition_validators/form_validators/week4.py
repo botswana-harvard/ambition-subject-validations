@@ -1,5 +1,5 @@
-from edc_form_validators import FormValidator
 from edc_constants.constants import YES, OTHER
+from edc_form_validators import FormValidator
 
 
 class Week4FormValidator(FormValidator):

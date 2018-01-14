@@ -1,5 +1,5 @@
-from ambition_labs.labs import cd4_panel, viral_load_panel, fbc_panel
-from ambition_labs.labs import chemistry_panel, chemistry_alt_panel
+from ambition_labs.panels import cd4_panel, viral_load_panel, fbc_panel
+from ambition_labs.panels import chemistry_panel, chemistry_alt_panel
 from ambition_subject.constants import ALREADY_REPORTED
 from django.apps import apps as django_apps
 from django.conf import settings

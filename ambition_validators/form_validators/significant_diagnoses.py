@@ -1,5 +1,5 @@
-from edc_form_validators import FormValidator
 from edc_constants.constants import OTHER, YES
+from edc_form_validators import FormValidator
 
 
 class SignificantDiagnosesFormValidator(FormValidator):

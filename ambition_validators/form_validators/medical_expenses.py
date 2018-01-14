@@ -1,6 +1,6 @@
 from django.forms import forms
-from edc_form_validators import FormValidator
 from edc_constants.constants import YES, OTHER, NOT_APPLICABLE
+from edc_form_validators import FormValidator
 
 from ..constants import WORKING
 

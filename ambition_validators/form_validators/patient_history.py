@@ -1,6 +1,6 @@
 from django import forms
-from edc_form_validators import FormValidator
 from edc_constants.constants import YES, NO, OTHER
+from edc_form_validators import FormValidator
 
 from ..constants import HEADACHE, VISUAL_LOSS
 

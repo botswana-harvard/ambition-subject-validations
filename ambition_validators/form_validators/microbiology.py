@@ -1,6 +1,6 @@
-from edc_form_validators import FormValidator
-from edc_constants.constants import POS, YES, OTHER
 from ambition_prn.form_validators import StudyDayFormValidatorMixin
+from edc_constants.constants import POS, YES, OTHER
+from edc_form_validators import FormValidator
 
 from ..constants import BACTERIA
 

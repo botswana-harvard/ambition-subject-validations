@@ -1,6 +1,6 @@
 from django.forms import forms
-from edc_form_validators import FormValidator, NOT_REQUIRED_ERROR
 from edc_constants.constants import YES, NOT_APPLICABLE
+from edc_form_validators import FormValidator, NOT_REQUIRED_ERROR
 
 
 class MedicalExpensesTwoDetailFormValidator(FormValidator):
