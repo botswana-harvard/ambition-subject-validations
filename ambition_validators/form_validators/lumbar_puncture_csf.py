@@ -1,4 +1,5 @@
-from ambition_labs.panels import csf_chemistry_panel
+from ambition_labs.panels import csf_chemistry_panel, csf_panel
+from ambition_subject.constants import THERAPEUTIC_PL
 from ambition_visit_schedule.constants import DAY1
 from django import forms
 from django.conf import settings
@@ -10,25 +11,40 @@ from edc_lab import CrfRequisitionFormValidatorMixin
 
 class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValidator):
 
-    requisition_fields = [('requisition', 'assay_datetime')]
+    requisition_fields = [
+        ('qc_requisition', 'qc_assay_datetime'),
+        ('csf_requisition', 'csf_assay_datetime')]
 
     def clean(self):
 
+        #         self.not_required_if(
+        #             THERAPEUTIC_PL,
+        #             field='reason_for_lp',
+        #             field_required='csf_amount_removed')
+
         self.validate_requisition(
-            'requisition', 'assay_datetime', csf_chemistry_panel)
+            'qc_requisition', 'qc_assay_datetime', csf_panel)
 
         self.validate_opening_closing_pressure()
+
+        self.required_if_true(
+            self.cleaned_data.get('qc_requisition') is not None,
+            field='qc_requisition',
+            field_required='quantitative_culture')
 
         self.required_if(
             YES,
             field='csf_culture',
             field_required='other_csf_culture')
 
+        self.validate_requisition(
+            'csf_requisition', 'csf_assay_datetime', csf_chemistry_panel)
+
+        # csf_wbc_cell_count
         self.required_if_true(
             self.cleaned_data.get('subject_visit').visit_code == DAY1,
             field_required='csf_wbc_cell_count',
             inverse=False)
-
         try:
             if 0 < self.cleaned_data.get('csf_wbc_cell_count') < 3:
                 raise forms.ValidationError({
