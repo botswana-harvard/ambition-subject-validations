@@ -18,8 +18,8 @@ class PkPdCrfFormValidator(FormValidator):
 
         self.required_if(
             YES,
-            field='fluconazole_dose_missed',
-            field_required='reason_fluconazole_dose_missed')
+            field='blood_sample_missed',
+            field_required='reason_blood_sample_missed')
 
         self.required_if(
             YES,
