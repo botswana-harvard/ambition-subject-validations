@@ -6,30 +6,33 @@ class PkPdCrfFormValidator(FormValidator):
 
     def clean(self):
 
-        self.required_if(
-            YES,
-            field='flucytosine_doses_missed',
-            field_required='flucytosine_dose_missed')
+        for num in ['one', 'two', 'three', 'four']:
+            self.required_if(
+                YES,
+                field=f'flucytosine_dose_{num}_given',
+                field_required=f'flucytosine_dose_{num}_datetime')
+
+            self.required_if(
+                NO,
+                field=f'flucytosine_dose_{num}_given',
+                field_required=f'flucytosine_dose_reason_missed',
+                inverse=False)
 
         self.required_if(
             YES,
-            field='fluconazole_dose_missed',
-            field_required='reason_fluconazole_dose_missed')
+            field='fluconazole_dose_given',
+            field_required='fluconazole_dose_datetime')
+
+        self.required_if(
+            NO,
+            field='fluconazole_dose_given',
+            field_required='fluconazole_dose_reason_missed')
 
         self.required_if(
             YES,
             field='blood_sample_missed',
-            field_required='reason_blood_sample_missed')
-
-        self.required_if(
-            YES,
-            field='any_day_one_sample_missed',
-            field_required='reason_day_one_missed')
-
-        self.required_if(
-            YES,
-            field='any_day_seven_sample_missed',
-            field_required='reason_day_seven_missed')
+            field_required='blood_sample_reason_missed',
+            inverse=False)
 
         self.required_if(
             NO,
