@@ -12,6 +12,35 @@ class PkPdCrfFormValidator(FormValidator):
             field_required='flucytosine_dose_missed')
 
         self.required_if(
+            NO,
+            field='flucytosine_dose_1_missed',
+            field_required='flucytosine_dose_one_datetime')
+
+        self.required_if(
+            NO,
+            field='flucytosine_dose_2_missed',
+            field_required='flucytosine_dose_two_datetime')
+
+        self.required_if(
+            NO,
+            field='flucytosine_dose_3_missed',
+            field_required='flucytosine_dose_three_datetime')
+
+        self.required_if(
+            NO,
+            field='flucytosine_dose_4_missed',
+            field_required='flucytosine_dose_four_datetime')
+
+        condition = (self.cleaned_data.get('flucytosine_dose_1_missed') == YES or
+                     self.cleaned_data.get('flucytosine_dose_2_missed') == YES or
+                     self.cleaned_data.get('flucytosine_dose_3_missed') == YES or
+                     self.cleaned_data.get('flucytosine_dose_4_missed') == YES)
+
+        self.required_if_true(
+            condition=condition,
+            field_required='reason_flucytosine_dose_missed')
+
+        self.required_if(
             YES,
             field='fluconazole_dose_missed',
             field_required='reason_fluconazole_dose_missed')
