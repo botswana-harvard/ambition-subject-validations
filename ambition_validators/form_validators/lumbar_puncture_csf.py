@@ -1,5 +1,4 @@
 from ambition_labs.panels import csf_chemistry_panel, csf_panel
-from ambition_subject.constants import THERAPEUTIC_PL
 from ambition_visit_schedule.constants import DAY1
 from django import forms
 from django.conf import settings
@@ -42,7 +41,8 @@ class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValid
 
         # csf_wbc_cell_count
         self.required_if_true(
-            self.cleaned_data.get('subject_visit').visit_code == DAY1,
+            (self.cleaned_data.get('subject_visit').visit_code == DAY1
+             and self.cleaned_data.get('subject_visit').visit_code_sequence == 0),
             field_required='csf_wbc_cell_count',
             inverse=False)
         try:
@@ -80,7 +80,8 @@ class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValid
             field_required='csf_cr_ag_lfa')
 
         # csf_cr_ag and india_ink
-        if self.cleaned_data.get('subject_visit').visit_code == DAY1:
+        if (self.cleaned_data.get('subject_visit').visit_code == DAY1
+                and self.cleaned_data.get('subject_visit').visit_code_sequence == 0):
             if (self.cleaned_data.get('csf_cr_ag') == NOT_DONE
                     and self.cleaned_data.get('india_ink') == NOT_DONE):
                 error_msg = 'CSF CrAg and India Ink cannot both be "not done".'
