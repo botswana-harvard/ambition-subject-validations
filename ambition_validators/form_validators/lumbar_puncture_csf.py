@@ -16,11 +16,6 @@ class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValid
 
     def clean(self):
 
-        #         self.not_required_if(
-        #             THERAPEUTIC_PL,
-        #             field='reason_for_lp',
-        #             field_required='csf_amount_removed')
-
         self.validate_requisition(
             'qc_requisition', 'qc_assay_datetime', csf_panel)
 
@@ -39,19 +34,11 @@ class LumbarPunctureCsfFormValidator(CrfRequisitionFormValidatorMixin, FormValid
         self.validate_requisition(
             'csf_requisition', 'csf_assay_datetime', csf_chemistry_panel)
 
-        # csf_wbc_cell_count
         self.required_if_true(
             (self.cleaned_data.get('subject_visit').visit_code == DAY1
              and self.cleaned_data.get('subject_visit').visit_code_sequence == 0),
             field_required='csf_wbc_cell_count',
             inverse=False)
-        try:
-            if 0 < self.cleaned_data.get('csf_wbc_cell_count') < 3:
-                raise forms.ValidationError({
-                    'csf_wbc_cell_count':
-                    'If the count is less than "2", a record of "0" is expected.'})
-        except TypeError:
-            pass
 
         self.not_required_if(
             None, field='differential_lymphocyte_count',

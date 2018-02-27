@@ -10,6 +10,7 @@ from edc_constants.constants import YES, NO, NOT_DONE, NOT_APPLICABLE
 
 from ..form_validators import LumbarPunctureCsfFormValidator
 from .models import SubjectConsent, SubjectVisit, LumbarPunctureCsf, Appointment
+from pprint import pprint
 
 
 class TestLumbarPunctureFormValidator(TestCase):
@@ -91,14 +92,16 @@ class TestLumbarPunctureFormValidator(TestCase):
         self.assertIn('not required', str(
             form_validator._errors.get('other_csf_culture')))
 
-    def test_csf_wbc_cell_count_less_than_three(self):
+    @tag('1')
+    def test_csf_wbc_cell_count_less_than_zero(self):
         cleaned_data = {
             'subject_visit': self.subject_visit,
-            'csf_wbc_cell_count': 2}
+            'csf_wbc_cell_count': -1}
         form_validator = LumbarPunctureCsfFormValidator(
             cleaned_data=cleaned_data,
             instance=LumbarPunctureCsf())
         self.assertRaises(ValidationError, form_validator.validate)
+        pprint(form_validator._errors)
         self.assertIn('csf_wbc_cell_count', form_validator._errors)
         self.assertIn('a record of "0" is expected',
                       str(form_validator._errors.get('csf_wbc_cell_count')))
