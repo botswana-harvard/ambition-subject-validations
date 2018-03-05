@@ -7,6 +7,7 @@ from ..constants import WORKING
 from ..form_validators import MedicalExpensesFormValidator
 
 
+@tag('1')
 class TestMedicalExpensesFormValidator(TestCase):
 
     def test_total_money_spent_error(self):
@@ -77,17 +78,6 @@ class TestMedicalExpensesFormValidator(TestCase):
             cleaned_data=cleaned_data)
         self.assertRaises(ValidationError, form.validate)
         self.assertIn('earnings_lost_amount', form._errors)
-
-    def test_transport_fare_invalid_na(self):
-        cleaned_data = {
-            'form_of_transport': NOT_APPLICABLE,
-            'transport_fare': 10.00,
-        }
-        form_validator = MedicalExpensesFormValidator(
-            cleaned_data=cleaned_data
-        )
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('transport_fare', form_validator._errors)
 
     def test_transport_fare_invalid_bicycle(self):
         cleaned_data = {
