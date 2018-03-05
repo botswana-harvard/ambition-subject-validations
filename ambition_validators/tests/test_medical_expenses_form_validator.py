@@ -7,7 +7,6 @@ from ..constants import WORKING
 from ..form_validators import MedicalExpensesFormValidator
 
 
-@tag('1')
 class TestMedicalExpensesFormValidator(TestCase):
 
     def test_total_money_spent_error(self):
