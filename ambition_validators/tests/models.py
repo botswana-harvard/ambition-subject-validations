@@ -1,11 +1,12 @@
-from django.db import models
-from django.db.models import options
-from django.db.models.deletion import PROTECT
 from edc_appointment.models import Appointment
 from edc_base.model_mixins import ListModelMixin, BaseUuidModel
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO, YES_NO_NA
 from edc_registration.model_mixins import UpdatesOrCreatesRegistrationModelMixin
+
+from django.db import models
+from django.db.models import options
+from django.db.models.deletion import PROTECT
 
 
 options.DEFAULT_NAMES = (options.DEFAULT_NAMES + ('consent_model',))
@@ -56,6 +57,8 @@ class SubjectVisit(RequiresConsentModelMixin, BaseUuidModel):
     subject_identifier = models.CharField(max_length=25)
 
     visit_code = models.CharField(max_length=25)
+
+    visit_code_sequence = models.IntegerField(max_length=25, default=0)
 
     appointment = models.OneToOneField(Appointment, on_delete=PROTECT)
 

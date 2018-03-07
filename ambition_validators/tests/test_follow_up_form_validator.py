@@ -7,7 +7,6 @@ from edc_constants.constants import YES, NO
 from ..form_validators import FollowUpFormValidator
 
 
-@tag('1')
 class TestFollowUpFormValidator(TestCase):
 
     def test_rifampicin_started_yes_require_rifampicin_start_date(self):

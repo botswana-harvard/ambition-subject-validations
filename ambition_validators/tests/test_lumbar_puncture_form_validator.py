@@ -1,5 +1,3 @@
-import uuid
-
 from ambition_visit_schedule import DAY1
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
@@ -90,18 +88,6 @@ class TestLumbarPunctureFormValidator(TestCase):
         self.assertIn('other_csf_culture', form_validator._errors)
         self.assertIn('not required', str(
             form_validator._errors.get('other_csf_culture')))
-
-    def test_csf_wbc_cell_count_less_than_three(self):
-        cleaned_data = {
-            'subject_visit': self.subject_visit,
-            'csf_wbc_cell_count': 2}
-        form_validator = LumbarPunctureCsfFormValidator(
-            cleaned_data=cleaned_data,
-            instance=LumbarPunctureCsf())
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('csf_wbc_cell_count', form_validator._errors)
-        self.assertIn('a record of "0" is expected',
-                      str(form_validator._errors.get('csf_wbc_cell_count')))
 
     def test_india_ink_csf_arg_not_done_invalid(self):
         """Assert that either csf_cr_ag or india_ink is done.
