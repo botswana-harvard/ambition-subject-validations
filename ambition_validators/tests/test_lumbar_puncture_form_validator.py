@@ -1,5 +1,3 @@
-import uuid
-
 from ambition_visit_schedule import DAY1
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
@@ -10,7 +8,6 @@ from edc_constants.constants import YES, NO, NOT_DONE, NOT_APPLICABLE
 
 from ..form_validators import LumbarPunctureCsfFormValidator
 from .models import SubjectConsent, SubjectVisit, LumbarPunctureCsf, Appointment
-from pprint import pprint
 
 
 class TestLumbarPunctureFormValidator(TestCase):
